@@ -5,6 +5,7 @@ import session from 'express-session'
 import { createClient } from 'redis'
 import connectRedis from 'connect-redis'
 import { ContextIntegration, AddressInfo } from './utils/server-utils'
+import { routes } from './routes/routes'
 import { Server, createServer } from 'http'
 import { prepareGQLDocuments } from './utils/prepareGQLDocuments'
 import { createTypeormConnection } from './utils/createConnection'
@@ -53,6 +54,7 @@ export const startApolloServer = (
           },
         }),
       )
+      app.use('/', routes)
       //for axios
       app.set('trust proxy', 1)
       const corsOptions = { credentials: true, origin: '*' }

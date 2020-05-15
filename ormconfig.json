@@ -1,4 +1,5 @@
-{
+[{
+   "name": "development",
    "type": "postgres",
    "host": "localhost",
    "port": 5432,
@@ -6,8 +7,34 @@
    "password": "",
    "database": "ts-server-db",
    "synchronize": true,
-   "logging": false,
    "dropSchema": true,
+   "logging": true,
+   "entities": [
+      "src/entity/**/*.ts"
+   ],
+   "migrations": [
+      "src/migration/**/*.ts"
+   ],
+   "subscribers": [
+      "src/subscriber/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+   }
+},
+{
+   "name": "test",
+   "type": "postgres",
+   "host": "localhost",
+   "port": 5432,
+   "username": "postgres",
+   "password": "",
+   "database": "ts-server-db-test",
+   "synchronize": true,
+   "dropSchema": true,
+   "logging": false,
    "entities": [
       "src/entity/**/*.ts"
    ],
@@ -23,3 +50,4 @@
       "subscribersDir": "src/subscriber"
    }
 }
+]

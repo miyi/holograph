@@ -53,7 +53,8 @@
     "yup": "^0.28.5"
   },
   "scripts": {
-    "start": "nodemon src/index.ts"
+    "start": "NODE_ENV=development nodemon src/index.ts"
+    
   },
   "prettier": {
     "singleQuote": true,
