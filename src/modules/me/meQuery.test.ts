@@ -62,15 +62,11 @@ describe('me', () => {
     })
     user.confirm = true
     user.save()
-    
-    const findUser = await Users.findOne({
-      where: {
-        email,
-      }
-    })
-    expect((findUser as Users).email).toEqual
-    if (findUser) userId = findUser.id
+    console.log('userid: ', user.id)
+    userId = user.id
     expect(userId).not.toBeUndefined()
+    expect(userId).not.toBeNull()
+    expect(user).toBeTruthy()
   })
 
   it('get current user with axios', async () => {
@@ -96,9 +92,9 @@ describe('me', () => {
         throw Error(e)
       })
 
-    expect(meResponse.data.data.me).toEqual({
-      email,
-      id: userId,
-    })
+      expect(meResponse.data.data.me).toEqual({
+        email,
+        id: userId,
+      })
   })
 })

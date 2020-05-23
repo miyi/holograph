@@ -11,8 +11,6 @@ export const resolver: ResolverMap = {
           id: session.userId,
         },
       })
-      console.log('me session: ', session)
-      console.log('me session id: ', session.userId)
       return user
     }),
   },
