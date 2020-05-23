@@ -1,14 +1,15 @@
-import { startServer } from '../../startServer'
+import { startApolloServer } from '../../startApolloServer'
 import { Server } from 'http'
 import { Users } from '../../entity/Users'
 import request from 'graphql-request'
 
-let app: Server
+let server: Server
 let email = 'jim@jim.com'
 let password = 'password123'
 let bademail = 'bob@bob.com'
 let badpassword = 'notrealpassword'
 let badinput = 'aaa'
+let req_url: string
 
 const mutation = (email: string, password: string) => `
 	mutation {
@@ -23,7 +24,16 @@ const mutation = (email: string, password: string) => `
 `
 
 beforeAll(async () => {
-  app = await startServer()
+  server = await startApolloServer()
+  if (process.env.HOST_URL) {
+    req_url = process.env.HOST_URL + '/graphql'
+  } else {
+    throw Error('no url')
+  }
+})
+
+afterAll(async () => {
+  await server.close()
 })
 
 describe('login in user', () => {
@@ -44,23 +54,20 @@ describe('login in user', () => {
   })
 
   it('tests login resolver', async () => {
-    const loginResponse: any = await request(
-      process.env.TEST_HOST as string,
-      mutation(email, password),
-    )
+    const loginResponse: any = await request(req_url, mutation(email, password))
     console.log(loginResponse.login)
     expect(loginResponse.login.success).toBeTruthy()
   })
   it('bad input', async () => {
     const loginResponse: any = await request(
-      process.env.TEST_HOST as string,
+      req_url,
       mutation(badinput, badinput),
     )
     expect(loginResponse.login.success as any).toBeFalsy()
   })
   it('bad email', async () => {
     const loginResponse: any = await request(
-      process.env.TEST_HOST as string,
+      req_url,
       mutation(bademail, password),
     )
     expect(loginResponse.login.success).toBeFalsy()
@@ -69,15 +76,11 @@ describe('login in user', () => {
   })
   it('bad password', async () => {
     const loginResponse: any = await request(
-      process.env.TEST_HOST as string,
+      req_url,
       mutation(email, badpassword),
     )
     expect(loginResponse.login.success).toBeFalsy()
     expect(loginResponse.login.error[0].path).toEqual('password')
     expect(loginResponse.login.error[0].message).toEqual('incorrect password')
   })
-})
-
-afterAll(async () => {
-  await app.close()
 })

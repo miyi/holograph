@@ -53,12 +53,13 @@ describe('tests createConfirmEmailLink', () => {
         email,
       },
     })
-    expect(user).not.toBeUndefined()
+    expect(user).not.toBeNull()
     expect((user as Users).confirm).toBeTruthy()
     const chunks = link.split('/')
     const key = chunks[chunks.length - 1]
-    const value = await redisClient.get(key)
-    expect(value).toBeNull()
+    await redisClient.get(key, (_, reply) => {
+      expect(reply).toBeNull()
+    })
   })
   it('errs when given bad ids', async () => {
     const link = host_url + '/confirm/' + badId

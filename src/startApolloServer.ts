@@ -2,13 +2,13 @@ import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 // import cors from 'cors'
 import session from 'express-session'
-import { createClient } from 'redis'
-import connectRedis from 'connect-redis'
+import { redisClient, RedisStore } from './redisServer'
 import { ContextIntegration, AddressInfo } from './utils/server-utils'
 import { routes } from './routes/routes'
 import { Server, createServer } from 'http'
 import { prepareGQLDocuments } from './utils/prepareGQLDocuments'
 import { createTypeormConnection } from './utils/createConnection'
+import { RedisClient } from 'redis'
 
 let httpServer: Server
 
@@ -19,15 +19,13 @@ export const startApolloServer = (
   new Promise<Server>(async (resolve) => {
     {
       const { resolvers, typeDefs } = await prepareGQLDocuments()
-      const RedisClient = createClient()
-      const RedisStore = connectRedis(session)
       await createTypeormConnection()
       const graphqlServer = new ApolloServer({
         typeDefs,
         resolvers,
         context: ({ req }: ContextIntegration) => ({
-          redis: RedisClient,
-          url: req.get('host'),
+          redis: redisClient,
+          url: 'http://' + req.get('host'),
           session: req.session,
         }),
         playground: {
@@ -40,7 +38,7 @@ export const startApolloServer = (
       app.use(
         session({
           store: new RedisStore({
-            client: RedisClient as any,
+            client: redisClient as RedisClient,
           }),
           name: 'qid',
           secret: process.env.SESSION_SECRET as string,

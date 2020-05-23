@@ -1,15 +1,27 @@
 import { request } from 'graphql-request'
 import { Users } from '../../entity/Users'
-import { startServer } from '../../startServer'
+import { startApolloServer } from '../../startApolloServer'
 import { duplicateEmail } from './errorMessages'
+import { Server } from 'http'
 
 let email = 'bob@bob.com'
 let password = 'asasdfasdfasdf'
 let badEmail = 'asa@a'
 let badPassword = 'aaaaa'
+let server: Server
+let req_url: string
 
 beforeAll(async () => {
-  await startServer()
+  server = await startApolloServer()
+  if (process.env.HOST_URL) {
+    req_url = process.env.HOST_URL + '/graphql'
+  } else {
+    throw Error('no url')
+  }
+})
+
+afterAll(async () => {
+  server.close()
 })
 
 const mutation = (email: string, password: string) => `
@@ -23,10 +35,7 @@ const mutation = (email: string, password: string) => `
 
 describe('register user activity', () => {
   it('register new user', async () => {
-    const response = await request(
-      process.env.TEST_HOST as string,
-      mutation(email, password),
-    )
+    const response = await request(req_url, mutation(email, password))
     expect(response).toEqual({ register: null })
     const users = await Users.find({
       where: { email },
@@ -38,10 +47,7 @@ describe('register user activity', () => {
   })
 
   it('register existing email', async () => {
-    const response: any = await request(
-      process.env.TEST_HOST as string,
-      mutation(email, password),
-    )
+    const response: any = await request(req_url, mutation(email, password))
     expect(response.register.length).toEqual(1)
     expect(response.register[0]).toHaveProperty('path', 'email')
     expect(response.register[0]).toHaveProperty('message', duplicateEmail)
@@ -49,7 +55,7 @@ describe('register user activity', () => {
 
   it('check for valid error messages', async () => {
     const response: any = await request(
-      process.env.TEST_HOST as string,
+      req_url,
       mutation(badEmail, badPassword),
     )
     expect(response.register.length).toBeGreaterThan(0)
