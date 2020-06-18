@@ -1,5 +1,5 @@
 import { ResolverMap } from '../../types/graphql-utils'
-import { MutationLoginArgs, Error } from '../../types/graphql'
+import { MutationLoginArgs, Error} from '../../types/graphql'
 import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
