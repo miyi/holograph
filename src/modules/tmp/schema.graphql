@@ -1,0 +1,11 @@
+type Query {
+  hello(name: String): String!
+  url: String
+  readSessionDummy1: String
+  readSessionDummy2: String
+}
+
+type Mutation {
+  setSessionDummy1: String
+  setSessionDummy2: String
+}
