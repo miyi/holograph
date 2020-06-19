@@ -6,6 +6,7 @@ import tough from 'tough-cookie'
 
 axiosCookieJarSupport(axios)
 const cookieJar = new tough.CookieJar()
+const withCredentials = false
 
 let REQUEST_URL: string
 let server: Server
@@ -31,7 +32,6 @@ const setSession = `
 const readSession = `
 	query {
   	readSessionDummy1
-  	readSessionDummy2
 	}
 `
 
@@ -54,7 +54,7 @@ describe('axios tests', () => {
           query: urlQuery,
         },
         {
-          withCredentials: false,
+          withCredentials,
           jar: cookieJar,
         },
       )
@@ -69,7 +69,7 @@ describe('axios tests', () => {
       .post(
         REQUEST_URL,
         { query: setSession },
-        { withCredentials: true, jar: cookieJar},
+        { withCredentials, jar: cookieJar},
       )
       .catch((e: any) => console.log(e))
 
@@ -81,7 +81,7 @@ describe('axios tests', () => {
       .post(
         REQUEST_URL,
         { query: readSession },
-        { withCredentials: true, jar: cookieJar },
+        { withCredentials, jar: cookieJar },
       )
       .catch((e: any) => console.log(e))
     expect(readResponse.data.data.readSessionDummy1).toBe('true')
@@ -90,7 +90,7 @@ describe('axios tests', () => {
   it('axios instance call', async() => {
     const instance = axios.create({
       baseURL: REQUEST_URL,
-      withCredentials: true,
+      withCredentials,
       jar: cookieJar
     })
     const helloResponse: AxiosResponse = await instance.post(

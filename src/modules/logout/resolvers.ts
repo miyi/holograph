@@ -9,6 +9,12 @@ export const resolvers: ResolverMap = {
 		logout: (_, __, { session }) => {
 			let error: Array<AuthError> = []
 			let success: boolean = false
+			if (!session.userId) {
+				authError = {
+					path: 'session',
+					message: 'no user found',
+				}
+			}
 			return new Promise((res) => session.destroy((err: string) => {
 				if (!err) {
 					success = true

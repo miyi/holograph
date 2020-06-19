@@ -8,6 +8,7 @@ export const resolvers: ResolverMap = {
       return context.url
     },
     readSessionDummy1: (_: void, __: void, context: any) => {
+      console.log(context.session)
       return context.session.dummy1
     },
     readSessionDummy2: (_: void, __: void, context: any) => {
