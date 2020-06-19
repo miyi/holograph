@@ -1,12 +1,12 @@
 import { ResolverMap } from '../../types/graphql-utils'
-import { MutationLoginArgs, Error} from '../../types/graphql'
+import { MutationLoginArgs, AuthError} from '../../types/graphql'
 import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
 import { Users } from '../../entity/Users'
 import { emailError, passwordError, confirmEmailError } from './loginErrors'
 
-export const resolver: ResolverMap = {
+export const resolvers: ResolverMap = {
   Mutation: {
     login: async (_, args: MutationLoginArgs, { session }) => {
       try {
@@ -20,7 +20,7 @@ export const resolver: ResolverMap = {
       }
       const { email, password } = args
       let success: boolean = false
-      let error: Array<Error> = []
+      let error: Array<AuthError> = []
       const user = await Users.findOne({
         where: {
           email,

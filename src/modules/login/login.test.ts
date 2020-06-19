@@ -49,13 +49,11 @@ describe('login in user', () => {
     })
     user.confirm = true
     Users.save(user)
-    console.log(user)
     expect(user).not.toBeNull()
   })
 
   it('tests login resolver', async () => {
     const loginResponse: any = await request(req_url, mutation(email, password))
-    console.log(loginResponse.login)
     expect(loginResponse.login.success).toBeTruthy()
   })
   it('bad input', async () => {

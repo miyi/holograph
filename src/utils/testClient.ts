@@ -30,11 +30,12 @@ export class TestClient {
   }
 
   logout(withCredentials: boolean = true) {
+    console.log('credentials: ', withCredentials)
   	return this.axiosInstance.post(
       '/', 
       {
         query: `
-          Mutation {
+          mutation {
             logout {
               success
               error {

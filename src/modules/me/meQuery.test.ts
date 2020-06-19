@@ -7,6 +7,7 @@ let user: Users
 let server: Server
 let userId: string
 let req_url: string
+let client: any
 const email = 'bob5@bob.com'
 const password = 'jlkajoioiqwe'
 
@@ -14,6 +15,7 @@ beforeAll(async () => {
   server = await startApolloServer()
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
+    client = new TestClient(req_url)
   } else {
     throw Error('no url')
   }
@@ -35,7 +37,6 @@ describe('me', () => {
   })
 
   it('get current user with axios', async () => {
-    const client = new TestClient(req_url)
     await client.login(email, password)
 
     const meResponse = await client.me()

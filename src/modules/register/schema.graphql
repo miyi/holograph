@@ -1,8 +1,8 @@
-type Error {
+type AuthError {
 	path: String!
 	message: String!
 }
 
 type Mutation {
-	register(email: String!, password: String!): [Error!]
+	register(email: String!, password: String!): [AuthError!]
 }

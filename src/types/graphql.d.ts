@@ -11,8 +11,9 @@ export type Scalars = {
 export type Mutation = {
    __typename?: 'Mutation';
   dummyLogin?: Maybe<Scalars['Boolean']>;
-  login?: Maybe<LoginResponse>;
-  register?: Maybe<Array<Error>>;
+  login?: Maybe<AuthResponse>;
+  logout?: Maybe<AuthResponse>;
+  register?: Maybe<Array<AuthError>>;
   setSessionDummy1?: Maybe<Scalars['String']>;
   setSessionDummy2?: Maybe<Scalars['String']>;
 };
@@ -35,10 +36,10 @@ export type MutationRegisterArgs = {
   password: Scalars['String'];
 };
 
-export type LoginResponse = {
-   __typename?: 'LoginResponse';
+export type AuthResponse = {
+   __typename?: 'AuthResponse';
   success?: Maybe<Scalars['Boolean']>;
-  error?: Maybe<Array<Maybe<Error>>>;
+  error?: Maybe<Array<Maybe<AuthError>>>;
 };
 
 export type User = {
@@ -61,8 +62,8 @@ export type QueryHelloArgs = {
   name?: Maybe<Scalars['String']>;
 };
 
-export type Error = {
-   __typename?: 'Error';
+export type AuthError = {
+   __typename?: 'AuthError';
   path: Scalars['String'];
   message: Scalars['String'];
 };
