@@ -14,6 +14,7 @@ export const resolvers: ResolverMap = {
 					path: 'session',
 					message: 'no user found',
 				}
+				error.push(authError)
 			}
 			return new Promise((res) => session.destroy((err: string) => {
 				if (!err) {

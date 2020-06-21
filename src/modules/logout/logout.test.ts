@@ -44,25 +44,26 @@ describe('testing logout', () => {
 		res = await client.me()
 		expect(res.data.data.me.email).toEqual(email)
 	})
-	// it('logging out without credentials', async () => {
-	// 	res = await client.logout(false)
-	// 	expect(res.data.data.logout.error.path).toEqual('session')
-	// 	expect(res.data.data.logout.error.message).not.toBeNull()
-	// })
+	it('logging out without credentials', async () => {
+		res = await client.logout(false)
+		expect(res.data.data.logout.error[0].path).toEqual('session')
+		expect(res.data.data.logout.error[0].message).not.toBeNull()
+	})
 	it('logging out', async () => {
 		res = await client.logout()
+		console.log('with credentials: ', res.data.data.logout)
 		expect(res.data.data.logout.success).toBeTruthy()
-		expect(res.data.data.logout.error).toBeNull()
+		expect(res.data.data.logout.error).toEqual([])
 	})
 	it('me query after logout', async () => {
 		res = await client.me()
 		expect(res.data.data.me).toBeNull()
 	})
 	it('logging out while not logged in', async () => {
-		res = await client.logout(false)
-		expect(res.data.data.logout.error.path).toEqual('session')
-		console.log(res.data.data.logout.error.message)
-		expect(res.data.data.logout.error.message).not.toBeNull()
+		res = await client.logout()
+		console.log('not logged in: ', res.data.data.logout)
+		expect(res.data.data.logout.error[0].path).toEqual('session')
+		expect(res.data.data.logout.error[0].message).not.toBeNull()
 	})
 
 })
