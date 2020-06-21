@@ -17,6 +17,19 @@ export class TestClient {
     })
   }
 
+  register(email: string, password: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          register(email: "${email}", password: "${password}") {
+            path
+            message
+          }
+        }
+      `,
+    })
+  }
+
   login(email: string, password: string) {
     return this.axiosInstance.post('/', {
       query: `

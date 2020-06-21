@@ -44,12 +44,11 @@ describe('testing logout', () => {
 		res = await client.me()
 		expect(res.data.data.me.email).toEqual(email)
 	})
-	it('logging out without credentials', async () => {
-		res = await client.logout(false)
-		expect(res.data.data.logout.error.path).toEqual('session')
-		console.log(res.data.data.logout.error.message)
-		expect(res.data.data.logout.error.message).not.toBeNull()
-	})
+	// it('logging out without credentials', async () => {
+	// 	res = await client.logout(false)
+	// 	expect(res.data.data.logout.error.path).toEqual('session')
+	// 	expect(res.data.data.logout.error.message).not.toBeNull()
+	// })
 	it('logging out', async () => {
 		res = await client.logout()
 		expect(res.data.data.logout.success).toBeTruthy()

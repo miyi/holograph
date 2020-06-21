@@ -1,8 +1,8 @@
-import { request } from 'graphql-request'
 import { Users } from '../../entity/Users'
 import { startApolloServer } from '../../startApolloServer'
 import { duplicateEmail } from './errorMessages'
 import { Server } from 'http'
+import { TestClient } from '../../utils/testClient'
 
 let email = 'bob@bob.com'
 let password = 'asasdfasdfasdf'
@@ -10,11 +10,13 @@ let badEmail = 'asa@a'
 let badPassword = 'aaaaa'
 let server: Server
 let req_url: string
+let client: any
 
 beforeAll(async () => {
   server = await startApolloServer()
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
+    client =  new TestClient(req_url)
   } else {
     throw Error('no url')
   }
@@ -24,19 +26,10 @@ afterAll(async () => {
   server.close()
 })
 
-const mutation = (email: string, password: string) => `
-	mutation {
-		register(email: "${email}", password: "${password}") {
-      path
-      message
-    }
-	}
-`
-
 describe('register user activity', () => {
   it('register new user', async () => {
-    const response = await request(req_url, mutation(email, password))
-    expect(response).toEqual({ register: null })
+    const response = await client.register(email, password)
+    expect(response.data.data.register).toBeNull()
     const users = await Users.find({
       where: { email },
     })
@@ -47,20 +40,16 @@ describe('register user activity', () => {
   })
 
   it('register existing email', async () => {
-    const response: any = await request(req_url, mutation(email, password))
-    expect(response.register.length).toEqual(1)
-    expect(response.register[0]).toHaveProperty('path', 'email')
-    expect(response.register[0]).toHaveProperty('message', duplicateEmail)
+    const response = await client.register(email, password)
+    expect(response.data.data.register.length).toEqual(1)
+    expect(response.data.data.register[0]).toHaveProperty('path', 'email')
+    expect(response.data.data.register[0]).toHaveProperty('message', duplicateEmail)
   })
 
   it('check for valid error messages', async () => {
-    const response: any = await request(
-      req_url,
-      mutation(badEmail, badPassword),
-    )
-    expect(response.register.length).toBeGreaterThan(0)
-    console.log(response.register.length)
-    response.register.forEach((e: any) => {
+    const response = await client.register(badEmail, badPassword)
+    expect(response.data.data.register.length).toBeGreaterThan(0)
+    response.data.data.register.forEach((e: any) => {
       expect(e).toHaveProperty('path')
       expect(e).toHaveProperty('message')
     })
