@@ -1,13 +1,13 @@
-import { RedisClient } from "redis"
+export interface GraphqlContext {
+  redis: any
+  url: string
+  session: Express.Session
+}
 
 export type Resolver = (
   parent: any,
   args: any,
-  context: {
-    redis: RedisClient
-    url: string
-    session: any
-  },
+  context: GraphqlContext,
   info: any,
 ) => any
 
@@ -15,11 +15,7 @@ export type GraphQLMiddlewareFunc = (
   resolver: Resolver,
   parent: any,
   args: any,
-  context: {
-    redis: RedisClient
-    url: string
-    session: any
-  },
+  context: GraphqlContext,
   info: any,
 ) => any
 export interface ResolverMap {

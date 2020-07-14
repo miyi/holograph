@@ -64,5 +64,5 @@
      // "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
    },
    "exclude": ["node_modules"],
-   "include": ["./src/**/*.tsx", "./src/**/*.ts", "src/entity/Users.ts"]
+   "include": ["./src/**/*.tsx", "./src/**/*.ts", "src/entity/Users.ts", "src/modules/tmp/asyncRedis.test.ts"]
  }

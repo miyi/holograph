@@ -2,7 +2,7 @@ import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 // import cors from 'cors'
 import session from 'express-session'
-import { redisClient, RedisStore } from './redisServer'
+import { redis, asyncRedis, RedisStore } from './redisServer'
 import { ContextIntegration, AddressInfo } from './types/server-utils'
 import { routes } from './routes/routes'
 import { Server, createServer } from 'http'
@@ -24,7 +24,7 @@ export const startApolloServer = (
         typeDefs,
         resolvers,
         context: ({ req }: ContextIntegration) => ({
-          redis: redisClient,
+          redis: asyncRedis,
           url: 'http://' + req.get('host'),
           session: req.session,
         }),
@@ -38,7 +38,7 @@ export const startApolloServer = (
       app.use(
         session({
           store: new RedisStore({
-            client: redisClient as RedisClient,
+            client: redis as RedisClient,
           }),
           name: 'qid',
           secret: process.env.SESSION_SECRET as string,

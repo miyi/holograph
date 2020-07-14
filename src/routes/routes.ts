@@ -1,5 +1,5 @@
 import { Router, Response } from 'express'
-import { redisClient } from '../redisServer'
+import { redis } from '../redisServer'
 import { Users } from '../entity/Users'
 
 const routes: Router = Router()
@@ -16,11 +16,11 @@ export { routes }
 
 routes.get('/confirm/:id', async (req, res) => {
 	const { id } = req.params
-	await redisClient.get(id, async (_, reply) => {
+	await redis.get(id, async (_, reply) => {
 		const userId = reply
 		if (userId) {
 			await Users.update({ id: userId }, { confirm: true })
-			await redisClient.del(id)
+			await redis.del(id)
 			res.send('ok')
 		} else {
 			res.send('invalid')

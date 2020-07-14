@@ -1,12 +1,14 @@
 import { createClient } from 'redis'
 import connectRedis from 'connect-redis'
 import session from 'express-session'
+import { promisify } from 'util'
 
-const redisClient = createClient()
+const redis = createClient()
 const RedisStore = connectRedis(session)
+const asyncRedis = promisify(redis.sendCommand).bind(redis)
 
-redisClient.on("error", function(error) {
+redis.on("error", function(error) {
   console.error(error);
 })
 
-export { redisClient, RedisStore }
+export { redis, asyncRedis, RedisStore }
