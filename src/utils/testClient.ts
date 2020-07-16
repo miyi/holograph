@@ -76,4 +76,34 @@ export class TestClient {
 			`,
     })
   }
+
+  setRedis(key: string, value: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          setRedis(key: "${key}", value: "${value}")
+        }
+      `
+    })
+  }
+
+  delRedis(key: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          delRedis(key: "${key}")
+        }
+      `
+    })
+  }
+
+  getRedis(key: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getRedis(key: "${key}")
+        }
+      `
+    })
+  }
 }

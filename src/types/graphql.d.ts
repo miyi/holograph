@@ -10,12 +10,19 @@ export type Scalars = {
 
 export type Mutation = {
    __typename?: 'Mutation';
+  delRedis?: Maybe<Scalars['String']>;
   dummyLogin?: Maybe<Scalars['Boolean']>;
   login?: Maybe<AuthResponse>;
   logout?: Maybe<AuthResponse>;
   register?: Maybe<Array<AuthError>>;
+  setRedis?: Maybe<Scalars['String']>;
   setSessionDummy1?: Maybe<Scalars['String']>;
   setSessionDummy2?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationDelRedisArgs = {
+  key: Scalars['String'];
 };
 
 
@@ -36,6 +43,12 @@ export type MutationRegisterArgs = {
   password: Scalars['String'];
 };
 
+
+export type MutationSetRedisArgs = {
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type AuthResponse = {
    __typename?: 'AuthResponse';
   success?: Maybe<Scalars['Boolean']>;
@@ -50,11 +63,17 @@ export type User = {
 
 export type Query = {
    __typename?: 'Query';
+  getRedis?: Maybe<Scalars['String']>;
   hello: Scalars['String'];
   me?: Maybe<User>;
   readSessionDummy1?: Maybe<Scalars['String']>;
   readSessionDummy2?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetRedisArgs = {
+  key: Scalars['String'];
 };
 
 

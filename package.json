@@ -53,8 +53,8 @@
     "yup": "^0.28.5"
   },
   "scripts": {
-    "start": "NODE_ENV=development nodemon src/index.ts"
-    
+    "start": "NODE_ENV=development nodemon src/index.ts",
+    "generate": "graphql-codegen"
   },
   "prettier": {
     "singleQuote": true,
