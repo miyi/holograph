@@ -29,7 +29,7 @@ afterAll(async () => {
 describe('register user activity', () => {
   it('register new user', async () => {
     const response = await client.register(email, password)
-    expect(response.data.data.register).toBeNull()
+    expect(response.data.data.register.success).toBeTruthy()
     const users = await Users.find({
       where: { email },
     })
@@ -41,15 +41,15 @@ describe('register user activity', () => {
 
   it('register existing email', async () => {
     const response = await client.register(email, password)
-    expect(response.data.data.register.length).toEqual(1)
-    expect(response.data.data.register[0]).toHaveProperty('path', 'email')
-    expect(response.data.data.register[0]).toHaveProperty('message', duplicateEmail)
+    expect(response.data.data.register.error).toEqual(1)
+    expect(response.data.data.register.error[0]).toHaveProperty('path', 'email')
+    expect(response.data.data.register.error[0]).toHaveProperty('message', duplicateEmail)
   })
 
   it('check for valid error messages', async () => {
     const response = await client.register(badEmail, badPassword)
-    expect(response.data.data.register.length).toBeGreaterThan(0)
-    response.data.data.register.forEach((e: any) => {
+    expect(response.data.data.register.error.length).toBeGreaterThan(0)
+    response.data.data.register.error.forEach((e: any) => {
       expect(e).toHaveProperty('path')
       expect(e).toHaveProperty('message')
     })

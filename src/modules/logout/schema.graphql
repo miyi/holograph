@@ -1,3 +1,4 @@
 type Mutation {
-	logout: AuthResponse
+	logout: AuthResponse!
+	logoutAll: AuthResponse!
 }

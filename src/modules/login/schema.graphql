@@ -1,9 +1,14 @@
 type Mutation {
-	login(email: String!, password: String!): AuthResponse
+	login(email: String!, password: String!): AuthResponse!
 	dummyLogin(email: String!, password: String!): Boolean
 }
 
 type AuthResponse {
 	success: Boolean
 	error: [AuthError]
+}
+
+type AuthError {
+	path: String!
+	message: String!
 }

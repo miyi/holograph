@@ -1,5 +1,5 @@
 import { ResolverMap } from '../../types/graphql-utils'
-import { MutationRegisterArgs } from '../../types/graphql'
+import { MutationRegisterArgs, AuthError } from '../../types/graphql';
 import { Users } from '../../entity/Users'
 
 import { formatYupErr } from '../../utils/formatYupError'
@@ -11,10 +11,18 @@ import { emailPasswordSchema } from '../../utils/yupValidate'
 export const resolvers: ResolverMap = {
   Mutation: {
     register: async (_: any, args: MutationRegisterArgs, { redis, url }) => {
+      let success = false
+      let error: AuthError[] = []
+
       try {
         await emailPasswordSchema.validate(args, { abortEarly: false })
       } catch (err) {
-        return formatYupErr(err)
+         const yupError = formatYupErr(err)
+         yupError.forEach(err => error.push(err))
+         return {
+           success,
+           error
+         }
       }
       const { email, password } = args
       const userAlreadyExist = await Users.findOne({
@@ -22,12 +30,11 @@ export const resolvers: ResolverMap = {
         select: ['id'],
       })
       if (userAlreadyExist) {
-        return [
-          {
-            path: 'email',
-            message: duplicateEmail,
-          },
-        ]
+        error.push(duplicateEmail)
+        return {
+          success,
+          error
+        }
       }
 
       const user = await Users.create({

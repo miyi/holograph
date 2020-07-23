@@ -8,7 +8,6 @@ import { routes } from './routes/routes'
 import { Server, createServer } from 'http'
 import { prepareGQLDocuments } from './utils/prepareGQLDocuments'
 import { createTypeormConnection } from './utils/createConnection'
-import { RedisClient } from 'redis'
 
 let httpServer: Server
 
@@ -38,7 +37,7 @@ export const startApolloServer = (
       app.use(
         session({
           store: new RedisStore({
-            client: redis as RedisClient,
+            client: redis as any,
           }),
           name: 'qid',
           secret: process.env.SESSION_SECRET as string,

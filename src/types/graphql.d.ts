@@ -1,4 +1,5 @@
 export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -9,12 +10,13 @@ export type Scalars = {
 };
 
 export type Mutation = {
-   __typename?: 'Mutation';
+  __typename?: 'Mutation';
   delRedis?: Maybe<Scalars['String']>;
   dummyLogin?: Maybe<Scalars['Boolean']>;
-  login?: Maybe<AuthResponse>;
-  logout?: Maybe<AuthResponse>;
-  register?: Maybe<Array<AuthError>>;
+  login: AuthResponse;
+  logout: AuthResponse;
+  logoutAll: AuthResponse;
+  register: AuthResponse;
   setRedis?: Maybe<Scalars['String']>;
   setSessionDummy1?: Maybe<Scalars['String']>;
   setSessionDummy2?: Maybe<Scalars['String']>;
@@ -50,19 +52,25 @@ export type MutationSetRedisArgs = {
 };
 
 export type AuthResponse = {
-   __typename?: 'AuthResponse';
+  __typename?: 'AuthResponse';
   success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Array<Maybe<AuthError>>>;
 };
 
+export type AuthError = {
+  __typename?: 'AuthError';
+  path: Scalars['String'];
+  message: Scalars['String'];
+};
+
 export type User = {
-   __typename?: 'User';
+  __typename?: 'User';
   id: Scalars['ID'];
   email: Scalars['String'];
 };
 
 export type Query = {
-   __typename?: 'Query';
+  __typename?: 'Query';
   getRedis?: Maybe<Scalars['String']>;
   hello: Scalars['String'];
   me?: Maybe<User>;
@@ -79,10 +87,4 @@ export type QueryGetRedisArgs = {
 
 export type QueryHelloArgs = {
   name?: Maybe<Scalars['String']>;
-};
-
-export type AuthError = {
-   __typename?: 'AuthError';
-  path: Scalars['String'];
-  message: Scalars['String'];
 };

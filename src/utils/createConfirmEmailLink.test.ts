@@ -3,13 +3,12 @@ import { Users } from '../entity/Users'
 import fetch from 'node-fetch'
 import { Server } from 'http'
 import { startApolloServer } from '../startApolloServer';
-import { createClient } from 'redis'
+import { asyncRedis } from '../redisServer';
 
 let email = 'timmy@tim.com'
 let password = 'lajfjlkakjl'
 let badId = '1341b2j34'
 let userId = ''
-let redisClient = createClient()
 let server: Server
 let host_url: string
 
@@ -42,10 +41,10 @@ describe('tests createConfirmEmailLink', () => {
     const link = await createConfirmEmailLink(
       host_url as string,
       userId,
-      redisClient,
+      asyncRedis,
     )
     expect(link).not.toBeNull()
-
+    //fetch link to confirm user
     const message = await fetch(link).then((res) => res.text())
     expect(message).toEqual('ok')
     const user = await Users.findOne({
@@ -54,12 +53,13 @@ describe('tests createConfirmEmailLink', () => {
       },
     })
     expect(user).not.toBeNull()
+    //check if user confirmed
     expect((user as Users).confirm).toBeTruthy()
     const chunks = link.split('/')
     const key = chunks[chunks.length - 1]
-    await redisClient.get(key, (_, reply) => {
-      expect(reply).toBeNull()
-    })
+    let reply = await asyncRedis('get', [key])
+    //check if key is deleted from redis
+    expect(reply).toBeNull()
   })
   it('errs when given bad ids', async () => {
     const link = host_url + '/confirm/' + badId
