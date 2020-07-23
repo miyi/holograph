@@ -16,7 +16,7 @@ beforeAll(async () => {
   server = await startApolloServer()
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
-    client =  new TestClient(req_url)
+    client = new TestClient(req_url)
   } else {
     throw Error('no url')
   }
@@ -41,9 +41,7 @@ describe('register user activity', () => {
 
   it('register existing email', async () => {
     const response = await client.register(email, password)
-    expect(response.data.data.register.error).toEqual(1)
-    expect(response.data.data.register.error[0]).toHaveProperty('path', 'email')
-    expect(response.data.data.register.error[0]).toHaveProperty('message', duplicateEmail)
+    expect(response.data.data.register.error[0]).toEqual(duplicateEmail)
   })
 
   it('check for valid error messages', async () => {

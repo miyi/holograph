@@ -22,8 +22,11 @@ export class TestClient {
       query: `
         mutation {
           register(email: "${email}", password: "${password}") {
-            path
-            message
+            success
+            error {
+              path
+              message
+            }
           }
         }
       `,
@@ -43,8 +46,8 @@ export class TestClient {
   }
 
   logout(withCredentials: boolean = true) {
-  	return this.axiosInstance.post(
-      '/', 
+    return this.axiosInstance.post(
+      '/',
       {
         query: `
           mutation {
@@ -56,12 +59,12 @@ export class TestClient {
               }
             }
           }
-        `
+        `,
       },
       {
-        withCredentials
+        withCredentials,
       },
-  	)
+    )
   }
 
   me() {
@@ -83,7 +86,7 @@ export class TestClient {
         mutation {
           setRedis(key: "${key}", value: "${value}")
         }
-      `
+      `,
     })
   }
 
@@ -93,7 +96,7 @@ export class TestClient {
         mutation {
           delRedis(key: "${key}")
         }
-      `
+      `,
     })
   }
 
@@ -103,7 +106,7 @@ export class TestClient {
         {
           getRedis(key: "${key}")
         }
-      `
+      `,
     })
   }
 }

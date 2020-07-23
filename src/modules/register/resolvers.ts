@@ -42,13 +42,18 @@ export const resolvers: ResolverMap = {
         password,
       }).save()
 
+      success = true
+
       if (process.env.TEST_HOST) {
         await createConfirmEmailLink(url, user.id, redis)
       } else {
         const link = await createConfirmEmailLink(url, user.id, redis)
         await sendEmail(user.email, link)
       }
-      return null
+      return {
+        success,
+        error
+      }
     },
   },
 }
