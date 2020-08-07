@@ -1,5 +1,5 @@
 import { ResolverMap } from '../../types/graphql-utils'
-import { MutationLoginArgs, AuthError} from '../../types/graphql'
+import { MutationLoginArgs, AuthError } from '../../types/graphql'
 import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
@@ -8,7 +8,7 @@ import { emailError, passwordError, confirmEmailError } from './loginErrors'
 
 export const resolvers: ResolverMap = {
   Mutation: {
-    login: async (_, args: MutationLoginArgs, { session }) => {
+    login: async (_, args: MutationLoginArgs, { session, redis }) => {
       try {
         await emailPasswordSchema.validate(args, { abortEarly: false })
       } catch (err) {
@@ -38,6 +38,7 @@ export const resolvers: ResolverMap = {
           }
           if (session) {
             session.userId = user.id
+            await redis('lpush', [user.id, session.id])
           }
         }
       }
