@@ -1,5 +1,6 @@
 import { ResolverMap } from '../../types/graphql-utils'
 import { AuthResponse, AuthError } from '../../types/graphql'
+import { sessionUserError, sessionLremError } from '../../utils/auth-utils'
 
 let logoutRes: AuthResponse
 let authError: AuthError
@@ -9,19 +10,11 @@ export const resolvers: ResolverMap = {
 		logout: async (_, __, { session, redis }) => {
 			let error: Array<AuthError> = []
 			let success: boolean = false
-			let sessionId: string
-			let userId: string
 			if (session && !session.userId) {
-				authError = {
-					path: 'session',
-					message: 'no user found',
-				}
-				error.push(authError)
+				error.push(sessionUserError)
 			} else {
-				sessionId = session.id
-				userId = session.userId
-				let rep: string = await redis('lrem', [userId, -1, sessionId])
-				console.log(rep);
+				let reply: number = await redis('lrem', [session.userId, -1, session.id])
+				if (reply < 1) error.push(sessionLremError)
 			}
 			return new Promise((res) => session.destroy(async (err: string) => {
 				if (!err) {

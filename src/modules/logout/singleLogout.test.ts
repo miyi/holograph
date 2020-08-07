@@ -51,7 +51,6 @@ describe('testing logout', () => {
 	})
 	it('logging out', async () => {
 		res = await client.logout()
-		console.log('with credentials: ', res.data.data.logout)
 		expect(res.data.data.logout.success).toBeTruthy()
 		expect(res.data.data.logout.error).toEqual([])
 	})
@@ -61,7 +60,6 @@ describe('testing logout', () => {
 	})
 	it('logging out while not logged in', async () => {
 		res = await client.logout()
-		console.log('not logged in: ', res.data.data.logout)
 		expect(res.data.data.logout.error[0].path).toEqual('session')
 		expect(res.data.data.logout.error[0].message).not.toBeNull()
 	})
