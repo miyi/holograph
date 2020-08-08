@@ -67,6 +67,25 @@ export class TestClient {
     )
   }
 
+  logoutAll() {
+    return this.axiosInstance.post(
+      '/',
+      {
+        query: `
+          mutation {
+            logoutAll {
+              success
+              error {
+                path
+                message
+              }
+            }
+          }
+        `,
+      }
+    )
+  }
+
   me() {
     return this.axiosInstance.post('/', {
       query: `

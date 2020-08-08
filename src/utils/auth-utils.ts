@@ -35,6 +35,13 @@ const sessionLremError: AuthError = {
   message: 'session not registered under user',
 }
 
+const createCustomSessionError = (message: string): AuthError => {
+  return {
+    path: 'session',
+    message: message
+  }
+}
+
 export {
   confirmEmailError,
   emailError,
@@ -43,4 +50,5 @@ export {
   sessionUserError,
   sessionDestroyError,
   sessionLremError,
+  createCustomSessionError
 }

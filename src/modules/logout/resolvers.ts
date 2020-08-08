@@ -1,6 +1,7 @@
+import { redisSessionPrefix } from './../../utils/constants';
 import { ResolverMap } from '../../types/graphql-utils'
 import { AuthResponse, AuthError } from '../../types/graphql'
-import { sessionUserError, sessionLremError } from '../../utils/auth-utils'
+import { sessionUserError, sessionLremError, createCustomSessionError } from '../../utils/auth-utils'
 
 let logoutRes: AuthResponse
 let authError: AuthError
@@ -20,10 +21,7 @@ export const resolvers: ResolverMap = {
 				if (!err) {
 					success = true
 				} else {
-					authError = {
-						path: 'session',
-						message: err,
-					}
+					authError = createCustomSessionError(err)
 					error.push(authError)
 				}
 				logoutRes = {
@@ -32,6 +30,28 @@ export const resolvers: ResolverMap = {
 				}
 				res(logoutRes)
 			}))
+		},
+		logoutAll: async (_, __, {session, redis}) => {
+			let error: Array<AuthError> = []
+			let success: boolean = false
+			// let sessionId: string
+			let userId: string
+			if (session && session.userId) {
+				userId = session.userId
+				let allUserSessionIds: number[]
+				allUserSessionIds = await redis('lrange', [userId, 0, -1])
+				allUserSessionIds.forEach(async (sessionId) => {
+					await redis('del', [`${redisSessionPrefix}${sessionId}`])
+				})
+				await redis('del', [userId])
+				success = true
+			} else {
+				error.push(sessionUserError)
+			}
+			return {
+				success,
+				error
+			}
 		}
 	}
 }

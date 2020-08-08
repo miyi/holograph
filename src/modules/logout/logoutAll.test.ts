@@ -3,6 +3,7 @@ import { Server } from 'http'
 import { TestClient } from '../../utils/testClient'
 import { AxiosResponse } from 'axios'
 import { Users } from '../../entity/Users'
+import { sessionUserError } from '../../utils/auth-utils'
 
 let req_url: string
 let client: any
@@ -25,7 +26,7 @@ afterAll(() => {
   if (server) server.close()
 })
 
-describe('testing logout', () => {
+describe('testing logoutAll', () => {
 	let res: AxiosResponse
 	it('creates new user', async() => {
 		const user = await Users.create({
@@ -44,18 +45,19 @@ describe('testing logout', () => {
 		res = await client.me()
 		expect(res.data.data.me.email).toEqual(email)
 	})
-	it('logging out', async () => {
-		res = await client.logout()
-		expect(res.data.data.logout.success).toBeTruthy()
-		expect(res.data.data.logout.error).toEqual([])
+	it('try logoutAll', async () => {
+		res = await client.logoutAll()
+		expect(res.data.data.logoutAll.success).toBeTruthy()
+		expect(res.data.data.logoutAll.error).toEqual([])
 	})
 	it('me query after logout', async () => {
 		res = await client.me()
 		expect(res.data.data.me).toBeNull()
 	})
-	it('logging out while not logged in', async () => {
-		res = await client.logout()
-		expect(res.data.data.logout.error[0].path).toEqual('session')
-		expect(res.data.data.logout.error[0].message).not.toBeNull()
+	it('logoutAll while not logged in', async () => {
+		res = await client.logoutAll()
+		expect(res.data.data.logoutAll.success).toBeFalsy()
+		expect(res.data.data.logoutAll.error).toEqual([sessionUserError])
 	})
+
 })
