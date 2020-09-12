@@ -42,7 +42,7 @@
     "graphql": "^15.3.0",
     "graphql-tools": "^6.0.14",
     "http": "^0.0.1-security",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "pg": "^8.3.0",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
