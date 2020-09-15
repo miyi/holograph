@@ -1,54 +1,15 @@
-import { AuthError } from '../types/graphql'
+import { userSessionIdPrefix, redisSessionPrefix } from "./constants"
 
-const duplicateEmail: AuthError = {
-  path: 'email',
-  message: 'email already registered',
-}
-
-const emailError: AuthError = {
-  path: 'email',
-  message: 'incorrect email',
-}
-
-const confirmEmailError: AuthError = {
-  path: 'email',
-  message: 'please confirm email',
-}
-
-const passwordError: AuthError = {
-  path: 'password',
-  message: 'incorrect password',
-}
-
-const sessionUserError: AuthError = {
-  path: 'session',
-  message: 'user not found in session',
-}
-
-const sessionDestroyError: AuthError = {
-  path: 'session',
-  message: 'session could not be destroyed',
-}
-
-const sessionLremError: AuthError = {
-  path: 'session',
-  message: 'session not registered under user',
-}
-
-const createCustomSessionError = (message: string): AuthError => {
-  return {
-    path: 'session',
-    message: message
-  }
-}
-
-export {
-  confirmEmailError,
-  emailError,
-  passwordError,
-  duplicateEmail,
-  sessionUserError,
-  sessionDestroyError,
-  sessionLremError,
-  createCustomSessionError
+export const removeAllUserSessions = async (userId: string, asyncRedis: any): Promise<boolean> => {
+	let success = false
+	let allUserSessionIds: string[]
+	allUserSessionIds = await asyncRedis('lrange', [userSessionIdPrefix + userId, 0, -1])
+	if(allUserSessionIds) {
+		allUserSessionIds.forEach(async (sessionId) => {
+			await asyncRedis('del', [`${redisSessionPrefix}${sessionId}`])
+		})
+		await asyncRedis('del', [userSessionIdPrefix + userId])
+		success = true
+	}
+	return success
 }
