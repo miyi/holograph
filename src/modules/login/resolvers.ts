@@ -39,7 +39,7 @@ export const resolvers: ResolverMap = {
           }
           if (session) {
             session.userId = user.id
-            await redis('lpush', [userSessionPrefix+user.id, session.id])
+            await redis('lpush', [userSessionIdPrefix + user.id, session.id])
           }
         }
       }

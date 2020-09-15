@@ -1,2 +1,2 @@
 export const redisSessionPrefix = 'sess:'
-export const userSessionPrefix = 'userSIds:'
+export const userSessionIdPrefix = 'userSIds:'
