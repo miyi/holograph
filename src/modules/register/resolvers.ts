@@ -4,7 +4,7 @@ import { Users } from '../../entity/Users'
 
 import { formatYupErr } from '../../utils/formatYupError'
 import { duplicateEmail } from './errorMessages'
-import { createConfirmEmailLink } from '../../utils/createConfirmEmailLink'
+import { createConfirmEmailLink } from '../../utils/createEmailLink'
 import { sendEmail } from '../../utils/sendEmail'
 import { emailPasswordSchema } from '../../utils/yupValidate'
 

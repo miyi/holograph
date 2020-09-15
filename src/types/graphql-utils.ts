@@ -1,5 +1,7 @@
+import { AsyncRedis } from "../redisServer"
+
 export interface GraphqlContext {
-  redis: any
+  redis: AsyncRedis
   url: string
   session: Express.Session
 }
