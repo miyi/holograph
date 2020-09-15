@@ -5,7 +5,7 @@ import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
 import { Users } from '../../entity/Users'
 import { emailError, passwordError, confirmEmailError } from './loginErrors'
-import { userSessionPrefix } from '../../utils/constants'
+import { userSessionIdPrefix } from '../../utils/constants'
 
 export const resolvers: ResolverMap = {
   Mutation: {
