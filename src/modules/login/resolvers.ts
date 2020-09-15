@@ -5,6 +5,7 @@ import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
 import { Users } from '../../entity/Users'
 import { emailError, passwordError, confirmEmailError } from './loginErrors'
+import { userSessionPrefix } from '../../utils/constants'
 
 export const resolvers: ResolverMap = {
   Mutation: {
@@ -38,7 +39,7 @@ export const resolvers: ResolverMap = {
           }
           if (session) {
             session.userId = user.id
-            await redis('lpush', [user.id, session.id])
+            await redis('lpush', [userSessionPrefix+user.id, session.id])
           }
         }
       }
