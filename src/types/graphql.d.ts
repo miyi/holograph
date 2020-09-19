@@ -1,5 +1,5 @@
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -13,10 +13,12 @@ export type Mutation = {
   __typename?: 'Mutation';
   delRedis?: Maybe<Scalars['String']>;
   dummyLogin?: Maybe<Scalars['Boolean']>;
+  forgotPasswordChange: AuthResponse;
   login: AuthResponse;
   logout: AuthResponse;
   logoutAll: AuthResponse;
   register: AuthResponse;
+  sendForgotPasswordEmail: AuthResponse;
   setRedis?: Maybe<Scalars['String']>;
   setSessionDummy1?: Maybe<Scalars['String']>;
   setSessionDummy2?: Maybe<Scalars['String']>;
@@ -34,6 +36,12 @@ export type MutationDummyLoginArgs = {
 };
 
 
+export type MutationForgotPasswordChangeArgs = {
+  linkId: Scalars['String'];
+  newPassword: Scalars['String'];
+};
+
+
 export type MutationLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -46,6 +54,11 @@ export type MutationRegisterArgs = {
 };
 
 
+export type MutationSendForgotPasswordEmailArgs = {
+  email: Scalars['String'];
+};
+
+
 export type MutationSetRedisArgs = {
   key: Scalars['String'];
   value: Scalars['String'];
@@ -54,7 +67,7 @@ export type MutationSetRedisArgs = {
 export type AuthResponse = {
   __typename?: 'AuthResponse';
   success?: Maybe<Scalars['Boolean']>;
-  error?: Maybe<Array<Maybe<AuthError>>>;
+  error: Array<Maybe<AuthError>>;
 };
 
 export type AuthError = {

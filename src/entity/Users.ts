@@ -22,7 +22,7 @@ import {
     confirm!: boolean
   
     @BeforeInsert()
-    async hashPassword() {
-      this.password = await hashSync(this.password, 12)
+    hashPassword() {
+      this.password = hashSync(this.password, 12)
     }
   }

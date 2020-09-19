@@ -1,4 +1,4 @@
-import { AsyncRedis } from "../redisServer"
+import { AsyncRedis } from "./server-utils"
 
 export interface GraphqlContext {
   redis: AsyncRedis

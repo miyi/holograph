@@ -99,6 +99,38 @@ export class TestClient {
     })
   }
 
+  sendForgotPasswordEmail(email: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+				mutation {
+					sendForgotPasswordEmail(email: "${email}") {
+            success,
+            error {
+              path,
+              message
+            }
+          }
+				}
+			`,
+    })
+  }
+
+  forgotPasswordChange(linkId: string, newPassword: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          forgotPasswordChange(linkId: "${linkId}", newPassword: "${newPassword}") {
+            success,
+            error {
+              path,
+              message
+            }
+          }
+        }
+      `,
+    })
+  }
+
   setRedis(key: string, value: string) {
     return this.axiosInstance.post('/', {
       query: `

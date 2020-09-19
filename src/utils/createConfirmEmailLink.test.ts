@@ -1,4 +1,4 @@
-import { createConfirmEmailLink } from './createEmailLink'
+import { createConfirmEmailLink } from './createLink'
 import { Users } from '../entity/Users'
 import fetch from 'node-fetch'
 import { Server } from 'http'

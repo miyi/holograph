@@ -2,10 +2,7 @@ import { createClient } from 'redis';
 import connectRedis from 'connect-redis'
 import session from 'express-session'
 import { promisify } from 'util'
-
-interface AsyncRedis {
-  (command: string, values: Array<number|string>): Promise<any>
-}
+import { AsyncRedis } from './types/server-utils';
 
 const redis = createClient()
 const RedisStore = connectRedis(session)
@@ -15,4 +12,4 @@ redis.on("error", function(error) {
   console.error(error);
 })
 
-export { redis, asyncRedis, RedisStore, AsyncRedis }
+export { redis, asyncRedis, RedisStore}

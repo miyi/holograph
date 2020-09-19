@@ -1,7 +1,7 @@
 import { userSessionIdPrefix, redisSessionPrefix } from "./constants"
-import { AsyncRedis } from "../redisServer"
+import { AsyncRedis } from "../types/server-utils"
 
-export const removeAllUserSessions = async (userId: string, asyncRedis: AsyncRedis): Promise<boolean> => {
+const removeAllUserSessions = async (userId: string, asyncRedis: AsyncRedis): Promise<boolean> => {
 	let success = false
 	let allUserSessionIds: string[]
 	allUserSessionIds = await asyncRedis('lrange', [userSessionIdPrefix + userId, 0, -1])
@@ -14,3 +14,5 @@ export const removeAllUserSessions = async (userId: string, asyncRedis: AsyncRed
 	}
 	return success
 }
+
+export { removeAllUserSessions }

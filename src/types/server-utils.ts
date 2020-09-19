@@ -1,12 +1,18 @@
 import { Request,  Response } from 'express'
 
-export interface AddressInfo {
+interface AddressInfo {
   address: string
   family: string
   port: number
 }
 
-export interface ContextIntegration {
+interface ContextIntegration {
   req: Request
   res: Response
 }
+
+interface AsyncRedis {
+  (command: string, values: Array<number|string>): Promise<any>
+}
+
+export { ContextIntegration, AddressInfo, AsyncRedis }
