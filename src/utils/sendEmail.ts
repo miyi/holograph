@@ -21,7 +21,7 @@ export const sendConfirmationEmail = async (recipient: string, url: string) => {
   })
 }
 
-export const sendForgotPasswordEmail = async (recipient: string, url: string) => {
+export const sendForgotPasswordEmail = async (recipient: string, forgotPasswordLink: string) => {
   client.transmissions.send({
     options: {
       sandbox: true,
@@ -32,7 +32,7 @@ export const sendForgotPasswordEmail = async (recipient: string, url: string) =>
       html: `<html>
 					<body>
 						<p>Testing SparkPost - the world's most awesomest email service!</p>
-						<a href="${url}">This is the forgot password link</a>
+						<a href="${forgotPasswordLink}">This is the forgot password link</a>
 					</body>
 				</html>`,
     },

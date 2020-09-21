@@ -5,9 +5,9 @@ const removeAllUserSessions = async (userId: string, asyncRedis: AsyncRedis): Pr
 	let success = false
 	let allUserSessionIds: string[]
 	allUserSessionIds = await asyncRedis('lrange', [userSessionIdPrefix + userId, 0, -1])
-	if(allUserSessionIds) {
+	if(allUserSessionIds.length > 0) {
 		allUserSessionIds.forEach(async (sessionId) => {
-			await asyncRedis('del', [`${redisSessionPrefix}${sessionId}`])
+			await asyncRedis('del', [redisSessionPrefix + sessionId])
 		})
 		await asyncRedis('del', [userSessionIdPrefix + userId])
 		success = true

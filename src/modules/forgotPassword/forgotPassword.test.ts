@@ -1,11 +1,11 @@
-import { TestClient } from '../../utils/testClient';
+import { TestClient } from '../../utils/testClient'
 import { Users } from '../../entity/Users'
 import { startApolloServer } from '../../startApolloServer'
 import { Server } from 'http'
-import { AxiosResponse } from 'axios';
-import { createForgotPasswordLink } from '../../utils/createLink';
-import { asyncRedis } from '../../redisServer';
-import { forgotPasswordPrefix } from '../../utils/constants';
+import { AxiosResponse } from 'axios'
+import { createForgotPasswordLink } from '../../utils/createLink'
+import { asyncRedis } from '../../redisServer'
+import { forgotPasswordPrefix } from '../../utils/constants'
 
 let user: Users
 let server: Server
@@ -46,34 +46,40 @@ describe('forgotPassword test suite', () => {
   })
 
   it('logs in as user', async () => {
-		res = await client.login(email, password)
-		expect(res.data.data.login.success).toBeTruthy()
-	})
-	it('requests forgotPasswordLink', async () => {
-		forgotPasswordLink = await createForgotPasswordLink(req_url, userId, asyncRedis)
-		const parts: string[] = forgotPasswordLink.split('/')
-		linkId = parts[parts.length - 1]
-		const redisStoreUserId = await asyncRedis('get', [forgotPasswordPrefix + linkId])
-		expect(redisStoreUserId).toEqual(userId)
-	})
-	it('check if logged out', async () => {
-		res = await client.me()
-		expect(res.data.data.me).toBeFalsy()
-	})
-	it('uses badNewPassword to change password', async () => {
-		res = await client.forgotPasswordChange(linkId, badNewPassword)
-		expect(res.data.data.forgotPasswordChange.success).toBeFalsy()
-		console.log('errors', res.data.data.forgotPasswordChange.error[0])
-		expect(res.data.data.forgotPasswordChange.error).toBeTruthy()
-	})
-	it('uses forgotPasswordLink to change password', async () => {
-		res = await client.forgotPasswordChange(linkId, newPassword)
-		expect(res.data.data.forgotPasswordChange.success).toBeTruthy()
-		expect(res.data.data.forgotPasswordChange.error).toBeFalsy()
-	})
-	it('logs in with newPassword', async () => {
-		await client.login(email, newPassword)
-		res = await client.me()
-		expect(res.data.data.me.email).toEqual(email)
-	})
+    res = await client.login(email, password)
+    expect(res.data.data.login.success).toBeTruthy()
+  })
+  it('requests forgotPasswordLink', async () => {
+    forgotPasswordLink = await createForgotPasswordLink(
+      req_url,
+      userId,
+      asyncRedis,
+    )
+    const parts: string[] = forgotPasswordLink.split('/')
+    linkId = parts[parts.length - 1]
+    const redisStoreUserId = await asyncRedis('get', [
+      forgotPasswordPrefix + linkId,
+    ])
+    expect(redisStoreUserId).toEqual(userId)
+  })
+  it('check if logged out', async () => {
+    res = await client.me()
+    expect(res.data.data.me).toBeFalsy()
+  })
+  it('uses badNewPassword to change password', async () => {
+    res = await client.forgotPasswordChange(linkId, badNewPassword)
+    expect(res.data.data.forgotPasswordChange.success).toBeFalsy()
+    console.log('errors', res.data.data.forgotPasswordChange.error[0])
+    expect(res.data.data.forgotPasswordChange.error).toBeTruthy()
+  })
+  it('uses forgotPasswordLink to change password', async () => {
+    res = await client.forgotPasswordChange(linkId, newPassword)
+    expect(res.data.data.forgotPasswordChange.success).toBeTruthy()
+    expect(res.data.data.forgotPasswordChange.error).toEqual([])
+  })
+  it('logs in with newPassword', async () => {
+    await client.login(email, newPassword)
+    res = await client.me()
+    expect(res.data.data.me.email).toEqual(email)
+  })
 })
