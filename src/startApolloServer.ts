@@ -1,3 +1,4 @@
+import { RateLimitRedisStore } from './redisServer'
 import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 // import cors from 'cors'
@@ -8,8 +9,17 @@ import { routes } from './routes/routes'
 import { Server, createServer } from 'http'
 import { prepareGQLDocuments } from './utils/prepareGQLDocuments'
 import { createTypeormConnection } from './utils/createConnection'
+import RateLimit from 'express-rate-limit'
 
 let httpServer: Server
+
+const limit = RateLimit({
+  store: new RateLimitRedisStore({
+    client: redis as any,
+  }),
+  windowMs: 1000 * 60 * 15, //15 min
+  max: 100, //100 req limit per interval
+})
 
 export const startApolloServer = (
   port: number = 0,
@@ -34,6 +44,7 @@ export const startApolloServer = (
         },
       })
       const app = express()
+      app.use(limit)
       app.use(
         session({
           store: new RedisStore({
