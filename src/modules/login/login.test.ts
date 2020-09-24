@@ -1,4 +1,4 @@
-import { startApolloServer } from '../../startApolloServer'
+import { startServer } from '../../startServer'
 import { Server } from 'http'
 import { Users } from '../../entity/Users'
 import request from 'graphql-request'
@@ -24,7 +24,7 @@ const mutation = (email: string, password: string) => `
 `
 
 beforeAll(async () => {
-  server = await startApolloServer()
+  server = await startServer()
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
   } else {

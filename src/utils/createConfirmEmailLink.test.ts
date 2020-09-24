@@ -2,8 +2,8 @@ import { createConfirmEmailLink } from './createLink'
 import { Users } from '../entity/Users'
 import fetch from 'node-fetch'
 import { Server } from 'http'
-import { startApolloServer } from '../startApolloServer';
-import { asyncRedis } from '../redisServer';
+import { startServer } from '../startServer'
+import { asyncRedis } from '../redisServer'
 
 let email = 'timmy@tim.com'
 let password = 'lajfjlkakjl'
@@ -13,8 +13,8 @@ let server: Server
 let host_url: string
 
 beforeAll(async () => {
-  server = await startApolloServer()
-  if(process.env.HOST_URL) host_url = process.env.HOST_URL
+  server = await startServer()
+  if (process.env.HOST_URL) host_url = process.env.HOST_URL
   const user = await Users.create({
     email,
     password,

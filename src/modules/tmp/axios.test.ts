@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import { startApolloServer } from '../../startApolloServer'
+import { startServer } from '../../startServer'
 import { Server } from 'http'
 import axiosCookieJarSupport from 'axios-cookiejar-support'
 import tough from 'tough-cookie'
@@ -36,9 +36,8 @@ const readSession = `
 `
 
 beforeAll(async () => {
-  server = await startApolloServer()
-  if (process.env.HOST_URL)
-    REQUEST_URL = process.env.HOST_URL + '/graphql'
+  server = await startServer()
+  if (process.env.HOST_URL) REQUEST_URL = process.env.HOST_URL + '/graphql'
 })
 
 afterAll(() => {
@@ -69,7 +68,7 @@ describe('axios tests', () => {
       .post(
         REQUEST_URL,
         { query: setSession },
-        { withCredentials, jar: cookieJar},
+        { withCredentials, jar: cookieJar },
       )
       .catch((e: any) => console.log(e))
 
@@ -87,19 +86,19 @@ describe('axios tests', () => {
     expect(readResponse.data.data.readSessionDummy1).toBe('true')
   })
 
-  it('axios instance call', async() => {
+  it('axios instance call', async () => {
     const instance = axios.create({
       baseURL: REQUEST_URL,
       withCredentials,
-      jar: cookieJar
+      jar: cookieJar,
     })
-    const helloResponse: AxiosResponse = await instance.post(
-      '/',
-      {
-        query: helloQuery
-      }
-    ).catch(e => {throw Error(e)})
+    const helloResponse: AxiosResponse = await instance
+      .post('/', {
+        query: helloQuery,
+      })
+      .catch((e) => {
+        throw Error(e)
+      })
     expect(helloResponse.data.data.hello).toEqual('Hello World')
-
   })
 })

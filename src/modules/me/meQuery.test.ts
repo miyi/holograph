@@ -1,6 +1,6 @@
 import { TestClient } from '../../utils/testClient'
 import { Users } from '../../entity/Users'
-import { startApolloServer } from '../../startApolloServer'
+import { startServer } from '../../startServer'
 import { Server } from 'http'
 
 let user: Users
@@ -12,7 +12,7 @@ const email = 'bob5@bob.com'
 const password = 'jlkajoioiqwe'
 
 beforeAll(async () => {
-  server = await startApolloServer()
+  server = await startServer()
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
     client = new TestClient(req_url)

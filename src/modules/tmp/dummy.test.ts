@@ -1,4 +1,4 @@
-import { startApolloServer } from '../../startApolloServer'
+import { startServer } from '../../startServer'
 import fetch from 'node-fetch'
 import { Server } from 'http'
 import { request } from 'graphql-request'
@@ -13,7 +13,7 @@ const hello = `
 `
 
 beforeAll(async () => {
-  server = await startApolloServer()
+  server = await startServer()
   if (process.env.HOST_URL) {
     url = process.env.HOST_URL
   } else {
@@ -35,13 +35,10 @@ describe('dummy server test', () => {
     const testURL = url + '/test'
     const response = await fetch(testURL).then((res) => res.text())
     expect(response).toEqual('fetch received')
-	})
-	
-	it('graphql-request hello query', async () => {
-		const response = await request(
-			url + '/graphql',
-			hello
-		)
-		expect((response as any).hello).toEqual('Hello World')
-	})
+  })
+
+  it('graphql-request hello query', async () => {
+    const response = await request(url + '/graphql', hello)
+    expect((response as any).hello).toEqual('Hello World')
+  })
 })
