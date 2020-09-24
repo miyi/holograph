@@ -3,4 +3,4 @@ import 'reflect-metadata'
 // import {User} from "./entity/User";
 require('dotenv').config()
 import { startApolloServer } from './startApolloServer'
-startApolloServer(3000)
+startApolloServer()

@@ -1,28 +1,14 @@
-import { RateLimitRedisStore } from './redisServer'
-import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
+import { app, httpServer } from './expressApp'
 // import cors from 'cors'
-import session from 'express-session'
-import { redis, asyncRedis, RedisStore } from './redisServer'
+import { asyncRedis } from './redisServer'
 import { ContextIntegration, AddressInfo } from './types/server-utils'
-import { routes } from './routes/routes'
-import { Server, createServer } from 'http'
+import { Server } from 'http'
 import { prepareGQLDocuments } from './utils/prepareGQLDocuments'
 import { createTypeormConnection } from './utils/createConnection'
-import RateLimit from 'express-rate-limit'
-
-let httpServer: Server
-
-const limit = RateLimit({
-  store: new RateLimitRedisStore({
-    client: redis as any,
-  }),
-  windowMs: 1000 * 60 * 15, //15 min
-  max: 100, //100 req limit per interval
-})
 
 export const startApolloServer = (
-  port: number = 0,
+  port: number = process.env.NODE_ENV === 'DEV' ? 4000 : 0,
   address: string = 'localhost',
 ): Promise<Server> =>
   new Promise<Server>(async (resolve) => {
@@ -43,35 +29,12 @@ export const startApolloServer = (
           },
         },
       })
-      const app = express()
-      app.use(limit)
-      app.use(
-        session({
-          store: new RedisStore({
-            client: redis as any,
-          }),
-          name: 'qid',
-          secret: process.env.SESSION_SECRET as string,
-          resave: false,
-          saveUninitialized: false,
-          cookie: {
-            httpOnly: false,
-            sameSite: false,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-          },
-        }),
-      )
-      app.use('/', routes)
-      //for axios
-      app.set('trust proxy', 1)
       const corsOptions = { credentials: true, origin: '*' }
       graphqlServer.applyMiddleware({
         app,
         cors: corsOptions,
         path: '/graphql',
       })
-      httpServer = createServer(app)
       httpServer.listen(port, address, () => {
         process.env.HOST_URL =
           'http://' +

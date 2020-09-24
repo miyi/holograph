@@ -13,6 +13,9 @@
     "@types/graphql": "^14.5.0",
     "@types/jest": "^26.0.14",
     "@types/node": "^14.11.2",
+    "@types/passport": "^1.0.4",
+    "@types/passport-google-oauth20": "^2.0.4",
+    "@types/passport-twitter": "^1.0.36",
     "@types/rate-limit-redis": "^1.7.1",
     "@types/redis": "^2.8.27",
     "@types/sparkpost": "^2.1.4",
@@ -46,6 +49,9 @@
     "graphql-tools": "^6.2.3",
     "http": "^0.0.1-security",
     "node-fetch": "^2.6.1",
+    "passport": "^0.4.1",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-twitter": "^1.0.4",
     "pg": "^8.3.3",
     "rate-limit-redis": "^2.0.0",
     "redis": "^3.0.2",
@@ -58,7 +64,7 @@
     "yup": "^0.29.3"
   },
   "scripts": {
-    "start": "NODE_ENV=development nodemon src/index.ts",
+    "start": "NODE_ENV=DEV nodemon src/index.ts",
     "generate": "graphql-codegen"
   },
   "prettier": {

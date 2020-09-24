@@ -13,7 +13,16 @@ export const resolver: ResolverMap = {
             id: session.userId,
           },
         })
-        return user
+        if (user) {
+          session.touch()
+          return {
+            id: user.id,
+            email: user.email
+          }
+        } else {
+          return null
+        }
+        
       } else {
         return null
       }
