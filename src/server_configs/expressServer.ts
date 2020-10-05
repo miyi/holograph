@@ -3,8 +3,10 @@ import RateLimit from 'express-rate-limit'
 import session from 'express-session'
 import { createServer } from 'http'
 import { Server } from 'http'
+import passport from 'passport'
 import { RateLimitRedisStore, RedisStore, redis } from './redisServer'
-import { routes } from './routes/routes'
+import { routes } from '../routes/routes'
+import { passportConfig } from '../socialAuth/passportAuth'
 
 const limit = RateLimit({
   store: new RateLimitRedisStore({
@@ -23,20 +25,21 @@ app.use(
     }),
     name: 'qid',
     secret: process.env.SESSION_SECRET as string,
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     cookie: {
       httpOnly: false,
-      sameSite: false,
+      sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     },
   }),
 )
+passportConfig(passport)
+app.use(passport.initialize())
 app.use('/', routes)
 //for axios
 app.set('trust proxy', 1)
-
 const httpServer: Server = createServer(app)
 
 export { app, httpServer }

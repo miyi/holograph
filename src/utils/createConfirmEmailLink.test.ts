@@ -3,7 +3,7 @@ import { Users } from '../entity/Users'
 import fetch from 'node-fetch'
 import { Server } from 'http'
 import { startServer } from '../startServer'
-import { asyncRedis } from '../redisServer'
+import { asyncRedis } from '../server_configs/redisServer'
 
 let email = 'timmy@tim.com'
 let password = 'lajfjlkakjl'

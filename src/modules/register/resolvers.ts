@@ -1,5 +1,5 @@
 import { ResolverMap } from '../../types/graphql-utils'
-import { MutationRegisterArgs, AuthError } from '../../types/graphql';
+import { MutationRegisterArgs, AuthResponse } from '../../types/graphql';
 import { Users } from '../../entity/Users'
 
 import { formatYupErr } from '../../utils/formatYupError'
@@ -11,18 +11,18 @@ import { emailPasswordSchema } from '../../utils/yupValidate'
 export const resolvers: ResolverMap = {
   Mutation: {
     register: async (_: any, args: MutationRegisterArgs, { redis, url }) => {
-      let success = false
-      let error: AuthError[] = []
+
+      let authResponse: AuthResponse = {
+        success: false,
+        error: []
+      }
 
       try {
         await emailPasswordSchema.validate(args, { abortEarly: false })
       } catch (err) {
          const yupError = formatYupErr(err)
-         yupError.forEach(err => error.push(err))
-         return {
-           success,
-           error
-         }
+         yupError.forEach(err => authResponse.error.push(err))
+         return authResponse
       }
       const { email, password } = args
       const userAlreadyExist = await Users.findOne({
@@ -30,19 +30,15 @@ export const resolvers: ResolverMap = {
         select: ['id'],
       })
       if (userAlreadyExist) {
-        error.push(duplicateEmail)
-        return {
-          success,
-          error
-        }
+        authResponse.error.push(duplicateEmail)
+        return authResponse
       }
-
       const user = await Users.create({
         email,
         password,
       }).save()
 
-      success = true
+      authResponse.success = true
 
       if (process.env.TEST_HOST) {
         await createConfirmEmailLink(url, user.id, redis)
@@ -50,10 +46,7 @@ export const resolvers: ResolverMap = {
         const link = await createConfirmEmailLink(url, user.id, redis)
         await sendConfirmationEmail(user.email, link)
       }
-      return {
-        success,
-        error
-      }
+      return authResponse
     },
   },
 }

@@ -1,7 +1,7 @@
 import { asyncRedis } from './redisServer'
-import { ContextIntegration } from './types/server-utils'
+import { ContextIntegration } from '../types/server-utils'
 import { ApolloServer } from 'apollo-server-express'
-import { prepareGQLDocuments } from './utils/prepareGQLDocuments'
+import { prepareGQLDocuments } from '../utils/prepareGQLDocuments'
 import { Express } from 'express'
 
 const initApolloServer = (app: Express) => {

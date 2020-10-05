@@ -1,7 +1,7 @@
-import { startServer } from '../../startServer'
 import { Server } from 'http'
 import { Users } from '../../entity/Users'
 import request from 'graphql-request'
+import { startServer } from '../../startServer'
 
 let server: Server
 let email = 'jim@jim.com'

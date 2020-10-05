@@ -1,5 +1,5 @@
-import { app, httpServer } from './expressServer'
-import { initApolloServer } from './apolloServer'
+import { app, httpServer } from './server_configs/expressServer'
+import { initApolloServer } from './server_configs/apolloServer'
 import { AddressInfo } from './types/server-utils'
 import { Server } from 'http'
 import { createTypeormConnection } from './utils/createTypeormConnection'

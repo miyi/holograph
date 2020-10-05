@@ -12,17 +12,23 @@ import {
     @PrimaryGeneratedColumn('uuid')
     id!: string
   
-    @Column('varchar', { length: 255 })
+    @Column('varchar', { length: 255, unique: true })
     email!: string
   
-    @Column('text')
-    password!: string
+    @Column('text', { nullable: true })
+    password: string | undefined
+
+    @Column('text', { nullable: true })
+    twitterId: string | null | undefined
+
+    @Column('text', { nullable: true })
+    googleId: string | null | undefined
   
     @Column('bool', { default: false })
     confirm!: boolean
   
     @BeforeInsert()
     hashPassword() {
-      this.password = hashSync(this.password, 12)
+      if (this.password) this.password = hashSync(this.password, 12)
     }
   }

@@ -1,11 +1,11 @@
 const redisSessionPrefix = 'sess:'
 const userSessionIdPrefix = 'userSIds:'
 const confirmUserPrefix = 'confirmUser:'
-const forgotPasswordPrefix = 'forgotPassword'
+const forgotPasswordPrefix = 'forgotPassword:'
 
-export { 
-	redisSessionPrefix,
-	userSessionIdPrefix,
-	confirmUserPrefix,
-	forgotPasswordPrefix,
+export {
+  redisSessionPrefix,
+  userSessionIdPrefix,
+  confirmUserPrefix,
+  forgotPasswordPrefix,
 }
