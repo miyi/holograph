@@ -4,16 +4,23 @@ import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
 import { Users } from '../../entity/Users'
-import { emailError, passwordError, confirmEmailError } from './loginErrors'
-// import { userSessionIdPrefix } from '../../utils/constants'
-import { alreadyLoggedIn } from '../../utils/authErrors'
+import {
+  alreadyLoggedIn,
+  confirmEmailError,
+  emailError,
+  passwordError,
+} from '../../utils/authErrors'
 import { loginUser } from '../../utils/auth-utils'
 
 let authResponse: AuthResponse
 
 export const resolvers: ResolverMap = {
   Mutation: {
-    login: async (_, args: MutationLoginArgs, { session, redis }): Promise<AuthResponse> => {
+    login: async (
+      _,
+      args: MutationLoginArgs,
+      { session, redis },
+    ): Promise<AuthResponse> => {
       authResponse = {
         success: false,
         error: [],
@@ -44,7 +51,7 @@ export const resolvers: ResolverMap = {
           authResponse.error.push(emailError)
         } else {
           //match email with password
-          authResponse.success = compareSync(password, (user.password) as string)
+          authResponse.success = compareSync(password, user.password as string)
           if (!authResponse.success) {
             authResponse.error.push(passwordError)
           } else {

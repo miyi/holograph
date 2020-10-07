@@ -1,7 +1,7 @@
 import { userSessionIdPrefix, redisSessionPrefix } from './constants'
 import { AsyncRedis } from '../types/server-utils'
-import { Users } from '../entity/Users'
-import { sendConfirmationEmail } from './sendEmail';
+// import { Users } from '../entity/Users'
+// import { sendConfirmationEmail } from './sendEmail';
 
 const removeAllUserSessions = async (
   userId: string,
