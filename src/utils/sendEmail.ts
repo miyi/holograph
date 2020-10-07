@@ -2,7 +2,7 @@ import SparkPost from 'sparkpost'
 
 const client = new SparkPost(process.env.SPARKPOST_API_KEY)
 
-export const sendConfirmationEmail = async (recipient: string, url: string) => {
+const sendConfirmationEmail = async (recipient: string, url: string) => {
   client.transmissions.send({
     options: {
       sandbox: true,
@@ -21,7 +21,7 @@ export const sendConfirmationEmail = async (recipient: string, url: string) => {
   })
 }
 
-export const sendForgotPasswordEmail = async (recipient: string, forgotPasswordLink: string) => {
+const sendForgotPasswordEmail = async (recipient: string, forgotPasswordLink: string) => {
   client.transmissions.send({
     options: {
       sandbox: true,
@@ -39,3 +39,5 @@ export const sendForgotPasswordEmail = async (recipient: string, forgotPasswordL
     recipients: [{ address: recipient }],
   })
 }
+export { sendConfirmationEmail, sendForgotPasswordEmail }
+

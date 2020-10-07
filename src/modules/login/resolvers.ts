@@ -41,7 +41,7 @@ export const resolvers: ResolverMap = {
           return badInputResponse
         }
         const { email, password } = args
-        //ensure a user with the email exist
+        //check user exist
         const user = await Users.findOne({
           where: {
             email,
