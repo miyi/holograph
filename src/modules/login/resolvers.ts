@@ -30,7 +30,7 @@ export const resolvers: ResolverMap = {
       if (!user) {
         error.push(emailError)
       } else {
-        success = await compareSync(password, user.password)
+        success = await compareSync(password, user.password as string)
         if (!success) {
           error.push(passwordError)
         } else {
@@ -39,7 +39,9 @@ export const resolvers: ResolverMap = {
           }
           if (session) {
             session.userId = user.id
-            await redis('lpush', [userSessionIdPrefix + user.id, session.id])
+            let lpushRes = await redis('lpush', [userSessionIdPrefix + user.id, session.id])
+            console.log('lpushing session: ', session.id)
+            console.log('lpushRes: ', lpushRes);
           }
         }
       }
