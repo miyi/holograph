@@ -4,7 +4,7 @@ import { startApolloServer } from '../../startApolloServer'
 import { Server } from 'http'
 import { AxiosResponse } from 'axios'
 import { createForgotPasswordLink } from '../../utils/createLink'
-import { asyncRedis } from '../../redisServer'
+import { asyncRedis } from '../../server_configs/redisServer'
 import { forgotPasswordPrefix } from '../../utils/constants'
 
 let user: Users

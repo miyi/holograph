@@ -1,5 +1,5 @@
 import { Router, Response } from 'express'
-import { redis } from '../redisServer'
+import { redis } from '../server_configs/redisServer'
 import { Users } from '../entity/Users'
 import { confirmUserPrefix } from '../utils/constants'
 
