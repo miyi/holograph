@@ -1,4 +1,4 @@
-import { Request,  Response } from 'express'
+import { Request, Response } from 'express'
 
 interface AddressInfo {
   address: string
@@ -12,7 +12,7 @@ interface ContextIntegration {
 }
 
 interface AsyncRedis {
-  (command: string, values: Array<number|string>): Promise<any>
+  (command: string, values: Array<number | string>): Promise<any>
 }
 
 export { ContextIntegration, AddressInfo, AsyncRedis }

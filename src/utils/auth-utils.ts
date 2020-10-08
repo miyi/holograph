@@ -1,7 +1,5 @@
 import { AsyncRedis } from '../types/server-utils'
 import { userSessionIdPrefix, redisSessionPrefix } from './constants'
-// import { Users } from '../entity/Users'
-// import { sendConfirmationEmail } from './sendEmail';
 
 const removeAllUserSessions = async (
   userId: string,
@@ -9,7 +7,7 @@ const removeAllUserSessions = async (
 ): Promise<boolean> => {
   let success = false
   let allUserSessionIds: string[]
-  console.log('removeAllUserSessions Called');
+  console.log('removeAllUserSessions Called')
   allUserSessionIds = await asyncRedis('lrange', [
     userSessionIdPrefix + userId,
     0,
@@ -33,20 +31,6 @@ const removeAllUserSessions = async (
   return success
 }
 
-// const registerUserAndSendConfirmationEmail = async (
-//   email: string,
-//   password?: string | undefined,
-//   twitterId?: string | undefined,
-//   googleId?: string | undefined,
-// ) => {
-//   return await Users.create({
-//     email,
-//     password,
-//     twitterId,
-//     googleId
-//   }).save()
-// }
-
 const loginUser = async (
   userId: string,
   session: Express.Session,
@@ -60,12 +44,12 @@ const loginUser = async (
     userSessionIdPrefix + userId,
     session.id,
   ])
-  console.log('lpush sessionId to user: ', session.id);
+  console.log('lpush sessionId to user: ', session.id)
   console.log('lpush sessionId to user success: ', res)
   if (res === 1) {
     session.userId = userId
     return true
-  } 
+  }
   return false
 }
 

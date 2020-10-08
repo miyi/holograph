@@ -8,24 +8,22 @@ import {
 import { removeAllUserSessions } from '../../utils/auth-utils'
 import { userSessionIdPrefix } from '../../utils/constants'
 
-let authResponse: AuthResponse
-
 export const resolvers: ResolverMap = {
   Mutation: {
     logout: async (_, __, { session, redis }) => {
-      authResponse = {
+      let authResponse: AuthResponse = {
         success: false,
         error: [],
       }
       if (session && !session.userId) {
-        authResponse.error.push(sessionUserError)
+        authResponse.error?.push(sessionUserError)
       } else {
         let reply: number = await redis('lrem', [
           userSessionIdPrefix + session.userId,
           -1,
           session.id,
         ])
-        if (reply < 1) authResponse.error.push(sessionLremError)
+        if (reply < 1) authResponse.error?.push(sessionLremError)
       }
       return new Promise((res) =>
         session.destroy(async (err: string) => {
@@ -33,14 +31,14 @@ export const resolvers: ResolverMap = {
             authResponse.success = true
           } else {
             const authError = createCustomSessionError(err)
-            authResponse.error.push(authError)
+            authResponse.error?.push(authError)
           }
           res(authResponse)
         }),
       )
     },
     logoutAll: async (_, __, { session, redis }) => {
-      authResponse = {
+      let authResponse: AuthResponse = {
         success: false,
         error: [],
       }
@@ -49,7 +47,6 @@ export const resolvers: ResolverMap = {
       if (session && session.userId) {
         userId = session.userId
         authResponse.success = await removeAllUserSessions(userId, redis)
-        console.log('resolver sessionId after removeAll', session.id);
       } else {
         authResponse.error.push(sessionUserError)
       }
@@ -57,3 +54,4 @@ export const resolvers: ResolverMap = {
     },
   },
 }
+
