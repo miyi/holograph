@@ -9,6 +9,7 @@ const removeAllUserSessions = async (
 ): Promise<boolean> => {
   let success = false
   let allUserSessionIds: string[]
+  console.log('removeAllUserSessions Called');
   allUserSessionIds = await asyncRedis('lrange', [
     userSessionIdPrefix + userId,
     0,
@@ -51,16 +52,21 @@ const loginUser = async (
   session: Express.Session,
   asyncRedis: AsyncRedis,
 ): Promise<boolean> => {
+  // await asyncRedis('lrem', [
+  //   userSessionIdPrefix + userId,
+  //   session.id,
+  // ])
   const res = await asyncRedis('lpush', [
     userSessionIdPrefix + userId,
     session.id,
   ])
+  console.log('lpush sessionId to user: ', session.id);
+  console.log('lpush sessionId to user success: ', res)
   if (res === 1) {
     session.userId = userId
     return true
-  } else {
-    return false
-  }
+  } 
+  return false
 }
 
 export { removeAllUserSessions, loginUser }
