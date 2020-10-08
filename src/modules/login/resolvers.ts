@@ -4,23 +4,30 @@ import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
 import { Users } from '../../entity/Users'
-import { emailError, passwordError, confirmEmailError } from './loginErrors'
-import { userSessionIdPrefix } from '../../utils/constants'
-import { alreadyLoggedIn } from '../../utils/authErrors'
-
-let authResponse: AuthResponse
+import { loginUser } from '../../utils/auth-utils'
+import {
+  alreadyLoggedIn,
+  confirmEmailError,
+  emailError,
+  passwordError,
+} from '../../utils/authErrors'
+// import { userSessionIdPrefix } from '../../utils/constants'
 
 export const resolvers: ResolverMap = {
   Mutation: {
-    login: async (_, args: MutationLoginArgs, { session, redis }) => {
-      authResponse = {
+    login: async (
+      _,
+      args: MutationLoginArgs,
+      { session, redis },
+    ): Promise<AuthResponse> => {
+      let authResponse: AuthResponse = {
         success: false,
         error: [],
       }
 
       if (session && session.userId) {
         //check if already logged in
-        authResponse.error.push(alreadyLoggedIn)
+        authResponse.error?.push(alreadyLoggedIn)
       } else {
         //validate email password formate
         try {
@@ -33,27 +40,26 @@ export const resolvers: ResolverMap = {
           return badInputResponse
         }
         const { email, password } = args
-        //ensure a user with the email exist
+        //check user exist
         const user = await Users.findOne({
           where: {
             email,
           },
         })
         if (!user) {
-          authResponse.error.push(emailError)
+          authResponse.error?.push(emailError)
         } else {
           //match email with password
-          authResponse.success = compareSync(password, user.password)
+          authResponse.success = compareSync(password, user.password as string)
           if (!authResponse.success) {
-            authResponse.error.push(passwordError)
+            authResponse.error?.push(passwordError)
           } else {
             //check if user if confirmed
             if (user.confirm === false) {
-              authResponse.error.push(confirmEmailError)
+              authResponse.error?.push(confirmEmailError)
             }
             //write userId into session, store sessionId under userSessionIdPrefix
-            session.userId = user.id
-            await redis('lpush', [userSessionIdPrefix + user.id, session.id])
+            authResponse.success = await loginUser(user.id, session, redis)
           }
         }
       }
