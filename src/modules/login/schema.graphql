@@ -5,7 +5,7 @@ type Mutation {
 
 type AuthResponse {
 	success: Boolean
-	error: [AuthError]
+	error: [AuthError]!
 }
 
 type AuthError {

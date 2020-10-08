@@ -1,5 +1,10 @@
 import { AuthError } from '../types/graphql'
 
+const alreadyLoggedIn: AuthError = {
+  path: 'session',
+  message: 'already logged in',
+}
+
 const duplicateEmail: AuthError = {
   path: 'email',
   message: 'email already registered',
@@ -43,6 +48,7 @@ const createCustomSessionError = (message: string): AuthError => {
 }
 
 export {
+  alreadyLoggedIn,
   confirmEmailError,
   emailError,
   passwordError,

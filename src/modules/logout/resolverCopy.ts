@@ -11,7 +11,7 @@ import { userSessionIdPrefix } from '../../utils/constants'
 export const resolvers: ResolverMap = {
   Mutation: {
     logout: async (_, __, { session, redis }) => {
-      let authResponse: AuthResponse = {
+      const authResponse: AuthResponse = {
         success: false,
         error: [],
       }
@@ -38,7 +38,7 @@ export const resolvers: ResolverMap = {
       )
     },
     logoutAll: async (_, __, { session, redis }) => {
-      let authResponse: AuthResponse = {
+      const authResponse: AuthResponse = {
         success: false,
         error: [],
       }
@@ -47,8 +47,9 @@ export const resolvers: ResolverMap = {
       if (session && session.userId) {
         userId = session.userId
         authResponse.success = await removeAllUserSessions(userId, redis)
+        console.log('resolver sessionId after removeAll', session.id)
       } else {
-        authResponse.error.push(sessionUserError)
+        authResponse.error?.push(sessionUserError)
       }
       return authResponse
     },

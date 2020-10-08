@@ -54,7 +54,7 @@ export type MutationSetRedisArgs = {
 export type AuthResponse = {
   __typename?: 'AuthResponse';
   success?: Maybe<Scalars['Boolean']>;
-  error?: Maybe<Array<Maybe<AuthError>>>;
+  error: Array<Maybe<AuthError>>;
 };
 
 export type AuthError = {
