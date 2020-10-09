@@ -6,7 +6,7 @@ import { redis, asyncRedis, RedisStore } from './server_configs/redisServer'
 import { ContextIntegration, AddressInfo } from './types/server-utils'
 import { routes } from './routes/routes'
 import { Server, createServer } from 'http'
-import { prepareGQLDocuments } from './utils/prepareGQLDocuments'
+import { prepareGQLDocuments } from './server_configs/prepareGQLDocs'
 import { createTypeormConnection } from './server_configs/createTypeOrmConnection'
 
 let httpServer: Server

@@ -2,7 +2,7 @@ import { asyncRedis } from './redisServer'
 import { ContextIntegration } from '../types/server-utils'
 import { ApolloServer } from 'apollo-server-express'
 import { Express } from 'express'
-import { prepareGQLDocuments } from '../utils/prepareGQLDocuments'
+import { prepareGQLDocuments } from './prepareGQLDocs'
 
 const initApolloServer = (app: Express) => {
   const { resolvers, typeDefs } = prepareGQLDocuments()
