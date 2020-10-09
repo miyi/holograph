@@ -1,11 +1,11 @@
 import { TestClient } from '../../utils/testClient'
 import { Users } from '../../entity/Users'
-import { startApolloServer } from '../../startApolloServer'
 import { Server } from 'http'
 import { AxiosResponse } from 'axios'
 import { createForgotPasswordLink } from '../../utils/createLink'
 import { asyncRedis } from '../../server_configs/redisServer'
 import { forgotPasswordPrefix } from '../../utils/constants'
+import { startServer } from '../../startServer'
 
 let user: Users
 let server: Server
@@ -21,7 +21,7 @@ const newPassword = 'asfdsagafbag'
 const badNewPassword = '1111'
 
 beforeAll(async () => {
-  server = await startApolloServer()
+  server = await startServer()
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
     client = new TestClient(req_url)
