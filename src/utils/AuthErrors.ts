@@ -47,6 +47,13 @@ const createCustomSessionError = (message: string): AuthError => {
   }
 }
 
+const socialLoginMissingEmail = (authServer: string): Error => {
+  return {
+    name: `${authServer} auth error`,
+    message: `we can't find an email associated with this ${authServer} account`,
+  }
+}
+
 export {
   alreadyLoggedIn,
   confirmEmailError,
@@ -57,4 +64,5 @@ export {
   sessionDestroyError,
   sessionLremError,
   createCustomSessionError,
+  socialLoginMissingEmail,
 }

@@ -23,7 +23,8 @@ const createExpressApp = () => {
         client: redis as any,
       }),
       name: 'qid',
-      secret: process.env.SESSION_SECRET as string,
+			secret: process.env.SESSION_SECRET as string,
+			//resave must be false for removeAllSession for actually remove session
       resave: false,
       saveUninitialized: false,
       cookie: {
