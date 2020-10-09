@@ -7,7 +7,7 @@ import { ContextIntegration, AddressInfo } from './types/server-utils'
 import { routes } from './routes/routes'
 import { Server, createServer } from 'http'
 import { prepareGQLDocuments } from './utils/prepareGQLDocuments'
-import { createTypeormConnection } from './utils/createConnection'
+import { createTypeormConnection } from './server_configs/createTypeOrmConnection'
 
 let httpServer: Server
 
