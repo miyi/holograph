@@ -10,7 +10,7 @@ import {
   Strategy as GoogleStrategy,
   StrategyOptions as GoogleStrategyOptions,
 } from 'passport-google-oauth20'
-import { Users } from '../../entity/Users';
+import { Users } from '../../entity/Users'
 
 const twitterCbUrl = 'http://127.0.0.1:4000/auth/twitter/callback'
 const googleCbUrl = 'http://127.0.0.1:4000/auth/google/callback'
@@ -32,7 +32,7 @@ const googleCallback = async (
     cb(error, null)
   } else {
     const email = emails[0].value
-    const user = await Users.findOne({ where: { email } })
+    let user = await Users.findOne({ where: { email } })
     if (user) {
       //user exists
       if (!user.googleId) {
@@ -42,7 +42,7 @@ const googleCallback = async (
       }
     } else {
       //register user
-      await Users.create({
+      user = await Users.create({
         email,
         googleId: id,
       }).save()
@@ -66,7 +66,7 @@ const twitterCallback = async (
 ) => {
   if (!emails) {
     const error = socialLoginMissingEmail('twitter')
-    console.log('twitter error');
+    console.log('twitter error')
     cb(error, null)
   } else {
     const email = emails[0].value
@@ -85,8 +85,8 @@ const twitterCallback = async (
         twitterId: id,
       }).save()
     }
-    console.log('twitter success');
-    cb(null, user)
+    console.log('twitter success')
+    cb(undefined, user)
   }
 }
 

@@ -41,21 +41,19 @@ routes.get(
     const session = req.session
     const userId = (req.user as any).id
 
-    if (userId && session) {
+    if (userId && session && !session.userId) {
       const success: boolean = await loginUser(userId, session, asyncRedis)
       if (success) {
         res.send('google login success')
       } else {
         res.send('google login failed')
       }
+    } else if ((session as Express.Session).userId) {
+      res.send('user already logged in')
+    } else if (!session) {
+      res.send('cannot connect to session')
     } else {
-      if (!session && !userId) {
-        res.send('no session or userId')
-      } else if (!session) {
-        res.send('no session')
-      } else {
-        res.send(req.user)
-      }
+      res.send('no user returned')
     }
   },
 )
@@ -90,7 +88,7 @@ routes.get(
   },
 )
 
-routes.get('/auth/twitter/failure', (_, res) => res.send('socialAuth failed') )
-routes.get('/auth/google/failure', (_, res) => res.send('socialAuth failed') )
+routes.get('/auth/twitter/failure', (_, res) => res.send('socialAuth failed'))
+routes.get('/auth/google/failure', (_, res) => res.send('socialAuth failed'))
 
 export { routes }
