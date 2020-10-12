@@ -4,6 +4,8 @@ import session from 'express-session'
 // import passport from 'passport'
 import { RateLimitRedisStore, RedisStore, redis } from './redisServer'
 import { routes } from '../routes/routes'
+import passport from 'passport'
+import { passportConfig } from '../utils/socialAuth/passportAuth'
 // import { passportConfig } from '../socialAuth/passportAuth'
 
 const limit = RateLimit({
@@ -23,8 +25,8 @@ const createExpressApp = () => {
         client: redis as any,
       }),
       name: 'qid',
-			secret: process.env.SESSION_SECRET as string,
-			//resave must be false for removeAllSession for actually remove session
+      secret: process.env.SESSION_SECRET as string,
+      //resave must be false for removeAllSession for actually remove session
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -35,8 +37,8 @@ const createExpressApp = () => {
       },
     }),
   )
-  // passportConfig(passport)
-  // app.use(passport.initialize())
+  passportConfig(passport)
+  app.use(passport.initialize())
   app.use('/', routes)
   //for axios
   app.set('trust proxy', 1)
