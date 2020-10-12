@@ -1,13 +1,8 @@
 import { asyncRedis } from './redisServer'
 import { ContextIntegration } from '../types/server-utils'
 import { ApolloServer } from 'apollo-server-express'
-<<<<<<< HEAD
-import { prepareGQLDocuments } from '../utils/prepareGQLDocuments'
-import { Express } from 'express'
-=======
 import { Express } from 'express'
 import { prepareGQLDocuments } from './prepareGQLDocs'
->>>>>>> socialauth
 
 const initApolloServer = (app: Express) => {
   const { resolvers, typeDefs } = prepareGQLDocuments()
@@ -33,8 +28,5 @@ const initApolloServer = (app: Express) => {
 	})
 }
 
-<<<<<<< HEAD
 export { initApolloServer }
-=======
-export { initApolloServer }
->>>>>>> socialauth
+
