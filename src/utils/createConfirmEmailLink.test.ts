@@ -35,7 +35,6 @@ describe('test fetch', () => {
   const fetchLink = '/test'
   it('fetches from server', async () => {
     const fetchServerLink = host_url + fetchLink
-    console.log(fetchServerLink)
     const res = await fetch(fetchServerLink).then((res) => res.text())
     expect(res).toEqual('fetch received')
   })

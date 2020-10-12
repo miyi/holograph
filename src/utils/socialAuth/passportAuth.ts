@@ -66,7 +66,6 @@ const twitterCallback = async (
 ) => {
   if (!emails) {
     const error = socialLoginMissingEmail('twitter')
-    console.log('twitter error')
     cb(error, null)
   } else {
     const email = emails[0].value
@@ -85,7 +84,6 @@ const twitterCallback = async (
         twitterId: id,
       }).save()
     }
-    console.log('twitter success')
     cb(undefined, user)
   }
 }
