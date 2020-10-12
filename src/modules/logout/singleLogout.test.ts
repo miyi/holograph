@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 import { startServer } from '../../startServer'
+=======
+>>>>>>> socialauth
 import { Server } from 'http'
 import { TestClient } from '../../utils/testClient'
 import { AxiosResponse } from 'axios'
 import { Users } from '../../entity/Users'
+import { startServer } from '../../startServer'
 
 let req_url: string
 let client: any

@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 require('dotenv').config()
-import { startServer } from './startServer'
+// import { startApolloServer } from './startApolloServer'
+import { startServer } from './startServer';
 
 startServer()

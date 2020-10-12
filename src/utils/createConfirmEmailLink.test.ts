@@ -2,8 +2,13 @@ import { createConfirmEmailLink } from './createLink'
 import { Users } from '../entity/Users'
 import fetch from 'node-fetch'
 import { Server } from 'http'
+<<<<<<< HEAD
 import { startServer } from '../startServer'
 import { asyncRedis } from '../server_configs/redisServer'
+=======
+import { startApolloServer } from '../startApolloServer';
+import { asyncRedis } from '../server_configs/redisServer';
+>>>>>>> socialauth
 
 let email = 'timmy@tim.com'
 let password = 'lajfjlkakjl'

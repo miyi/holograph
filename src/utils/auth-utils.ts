@@ -36,10 +36,7 @@ const loginUser = async (
   session: Express.Session,
   asyncRedis: AsyncRedis,
 ): Promise<boolean> => {
-  // await asyncRedis('lrem', [
-  //   userSessionIdPrefix + userId,
-  //   session.id,
-  // ])
+  await asyncRedis('lrem', [userSessionIdPrefix + userId, 0, session.id])
   const res = await asyncRedis('lpush', [
     userSessionIdPrefix + userId,
     session.id,
@@ -53,4 +50,29 @@ const loginUser = async (
   return false
 }
 
-export { removeAllUserSessions, loginUser }
+const isLoggedIn = (session: Express.Session): boolean => {
+  if (session.userId) {
+    return true
+  } else {
+    return false
+  }
+}
+
+const verifyLogin = async (
+  session: Express.Session,
+  asyncRedis: AsyncRedis,
+): Promise<boolean> => {
+  if (isLoggedIn(session)) {
+    let userId = session.userId
+    let sessionList = await asyncRedis('lrange', [
+      userSessionIdPrefix + userId,
+      0,
+      -1,
+    ])
+    return Boolean(sessionList.find((e: string) => e === session.id))
+  } else {
+    return false
+  }
+}
+
+export { removeAllUserSessions, loginUser, isLoggedIn, verifyLogin }
