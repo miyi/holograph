@@ -1,11 +1,11 @@
 import {
   Profile as GoogleProfile,
   VerifyCallback,
-} from './../../../node_modules/@types/passport-google-oauth20/index.d'
-import { Profile as TwitterProfile } from './../../../node_modules/@types/passport-twitter/index.d'
+} from 'passport-google-oauth20'
+import { Profile as TwitterProfile } from 'passport-twitter'
 import { PassportStatic } from 'passport'
 import { IStrategyOption, Strategy as TwitterStrategy } from 'passport-twitter'
-import { socialLoginMissingEmail } from '../authErrors'
+import { socialLoginMissingEmail } from './AuthErrors'
 import {
   Strategy as GoogleStrategy,
   StrategyOptions as GoogleStrategyOptions,

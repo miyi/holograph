@@ -2,7 +2,7 @@ import { Users } from '../../entity/Users'
 import { startServer } from '../../startServer'
 import { Server } from 'http'
 import { TestClient } from '../../utils/testClient'
-import { duplicateEmail } from '../../utils/authErrors'
+import { duplicateEmail } from '../../utils/auth/AuthErrors'
 
 let email = 'bob@bob.com'
 let password = 'asasdfasdfasdf'

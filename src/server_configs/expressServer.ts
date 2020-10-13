@@ -4,7 +4,7 @@ import session from 'express-session'
 import { RateLimitRedisStore, RedisStore, redis } from './redisServer'
 import { routes } from '../routes/routes'
 import passport from 'passport'
-import { passportConfig } from '../utils/socialAuth/passportAuth'
+import { passportConfig } from '../utils/auth/passportAuth'
 
 const limit = RateLimit({
   store: new RateLimitRedisStore({

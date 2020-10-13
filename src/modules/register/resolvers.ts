@@ -5,7 +5,7 @@ import { formatYupErr } from '../../utils/formatYupError'
 import { createConfirmEmailLink } from '../../utils/createLink'
 import { sendConfirmationEmail } from '../../utils/sendEmail'
 import { emailPasswordSchema } from '../../utils/yupValidate'
-import { duplicateEmail } from '../../utils/authErrors'
+import { duplicateEmail } from '../../utils/auth/AuthErrors'
 
 export const resolvers: ResolverMap = {
   Mutation: {

@@ -4,8 +4,8 @@ import {
   sessionUserError,
   sessionLremError,
   createCustomSessionError,
-} from '../../utils/AuthErrors'
-import { removeAllUserSessions } from '../../utils/auth-utils'
+} from '../../utils/auth/AuthErrors'
+import { removeAllUserSessions } from '../../utils/auth/auth-utils'
 import { userSessionIdPrefix } from '../../utils/constants'
 
 export const resolvers: ResolverMap = {

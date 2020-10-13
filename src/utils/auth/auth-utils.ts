@@ -1,5 +1,5 @@
-import { AsyncRedis } from '../types/server-utils'
-import { userSessionIdPrefix, redisSessionPrefix } from './constants'
+import { AsyncRedis } from '../../types/server-utils'
+import { userSessionIdPrefix, redisSessionPrefix } from '../constants'
 
 const removeAllUserSessions = async (
   userId: string,

@@ -1,4 +1,4 @@
-import { AuthError } from '../types/graphql'
+import { AuthError } from '../../types/graphql'
 
 const alreadyLoggedIn: AuthError = {
   path: 'session',
