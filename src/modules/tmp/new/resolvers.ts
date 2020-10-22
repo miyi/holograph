@@ -1,11 +1,11 @@
-import { GraphqlContext } from './../../types/graphql-utils'
-import { ResolverMap } from '../../types/graphql-utils'
+import { GraphqlContext } from '../../../types/graphql-utils'
+import { ResolverMap } from '../../../types/graphql-utils'
 import {
   QueryHelloArgs,
   QueryGetRedisArgs,
   MutationSetRedisArgs,
   MutationDelRedisArgs,
-} from '../../types/graphql'
+} from '../../../types/graphql'
 
 export const resolvers: ResolverMap = {
   Query: {

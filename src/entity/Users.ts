@@ -4,8 +4,10 @@ import {
   Column,
   BaseEntity,
   BeforeInsert,
+  OneToMany,
 } from 'typeorm'
 import { hashSync } from 'bcryptjs'
+import { Posts } from './posts';
 
 @Entity('users')
 export class Users extends BaseEntity {
@@ -26,6 +28,9 @@ export class Users extends BaseEntity {
 
   @Column('bool', { default: false })
   confirm!: boolean
+
+  @OneToMany(() => Posts, posts => posts.author)
+  posts!: Posts[];
 
   @BeforeInsert()
   hashPassword() {
