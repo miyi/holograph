@@ -1,5 +1,5 @@
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -86,6 +86,7 @@ export type Query = {
   __typename?: 'Query';
   getRedis?: Maybe<Scalars['String']>;
   hello: Scalars['String'];
+  libraries?: Maybe<Array<Maybe<Library>>>;
   me?: Maybe<User>;
   readSessionDummy1?: Maybe<Scalars['String']>;
   readSessionDummy2?: Maybe<Scalars['String']>;
@@ -100,4 +101,31 @@ export type QueryGetRedisArgs = {
 
 export type QueryHelloArgs = {
   name?: Maybe<Scalars['String']>;
+};
+
+export type Post = {
+  __typename?: 'Post';
+  id: Scalars['String'];
+  title: Scalars['String'];
+  body?: Maybe<Scalars['String']>;
+  author: User;
+  published?: Maybe<Scalars['Boolean']>;
+};
+
+export type Library = {
+  __typename?: 'Library';
+  branch: Scalars['String'];
+  books?: Maybe<Array<Book>>;
+};
+
+export type Book = {
+  __typename?: 'Book';
+  title: Scalars['String'];
+  author: Author;
+};
+
+export type Author = {
+  __typename?: 'Author';
+  name: Scalars['String'];
+  dob: Scalars['String'];
 };

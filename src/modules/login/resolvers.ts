@@ -19,7 +19,9 @@ export const resolvers: ResolverMap = {
       _,
       args: MutationLoginArgs,
       { session, redis },
+      info
     ): Promise<AuthResponse> => {
+      console.log(info);
       let authResponse: AuthResponse = {
         success: false,
         error: [],
