@@ -1,5 +1,5 @@
 import { Server } from 'http'
-import { TestClient } from '../../utils/testClient'
+import { TestClient } from '../../test/testClient'
 import { AxiosResponse } from 'axios'
 import { Users } from '../../entity/Users'
 import { startServer } from '../../startServer'

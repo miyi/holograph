@@ -1,6 +1,6 @@
 import { startServer } from '../../startServer'
 import { Server } from 'http'
-import { TestClient } from '../../utils/testClient'
+import { TmpTestClient } from '../../test/tmpTestClient'
 
 const foo = 'foo'
 const bar = 'bar'
@@ -12,7 +12,7 @@ beforeAll(async () => {
   server = await startServer()
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
-    client = new TestClient(req_url)
+    client = new TmpTestClient(req_url)
   } else {
     throw Error('no url')
   }

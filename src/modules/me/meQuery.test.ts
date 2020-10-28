@@ -1,4 +1,4 @@
-import { TestClient } from '../../utils/testClient'
+import { TestClient } from '../../test/testClient'
 import { Users } from '../../entity/Users'
 import { startServer } from '../../startServer'
 import { Server } from 'http'
