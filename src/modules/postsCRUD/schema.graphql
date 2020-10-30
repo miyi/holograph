@@ -5,3 +5,8 @@ type Post {
 	author: User!
 	published: Boolean
 }
+
+type Query {
+	getPostById(id: String!): Post
+	getPostByAuthor(author: String!): Post
+}

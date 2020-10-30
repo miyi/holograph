@@ -41,18 +41,14 @@ export const resolvers: ResolverMap = {
   },
   Library: {
     books: (parent) => {
-      console.log('lib:books resolver chain running');
       let res = books.filter(book => book.branch === parent.branch);
-      console.log('book res: ', res[0]);
-      return res[0]
+      return res
     }
   },
   Book: {
     author: (parent) => {
-      console.log('book:author resolver chain running');
-      let res = authors.filter(author => author.name === parent.author)
-      console.log('author res: ', res[0]);
-      return res[0]
+      let res = authors.find(author => author.name === parent.author)
+      return res
     }
 	},
 };

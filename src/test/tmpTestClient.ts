@@ -57,7 +57,6 @@ export class TmpTestClient {
 							title
 							author {
 								name
-								dob
 							}
 						}
 					}

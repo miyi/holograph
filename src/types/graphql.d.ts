@@ -76,15 +76,13 @@ export type AuthError = {
   message: Scalars['String'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  email: Scalars['String'];
-};
-
 export type Query = {
   __typename?: 'Query';
+  getPostByAuthor?: Maybe<Post>;
+  getPostById?: Maybe<Post>;
   getRedis?: Maybe<Scalars['String']>;
+  getUserByEmail?: Maybe<User>;
+  getUserById?: Maybe<User>;
   hello: Scalars['String'];
   libraries?: Maybe<Array<Maybe<Library>>>;
   me?: Maybe<User>;
@@ -94,8 +92,28 @@ export type Query = {
 };
 
 
+export type QueryGetPostByAuthorArgs = {
+  author: Scalars['String'];
+};
+
+
+export type QueryGetPostByIdArgs = {
+  id: Scalars['String'];
+};
+
+
 export type QueryGetRedisArgs = {
   key: Scalars['String'];
+};
+
+
+export type QueryGetUserByEmailArgs = {
+  email?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetUserByIdArgs = {
+  id?: Maybe<Scalars['String']>;
 };
 
 
@@ -122,10 +140,18 @@ export type Book = {
   __typename?: 'Book';
   title: Scalars['String'];
   author: Author;
+  branch: Scalars['String'];
 };
 
 export type Author = {
   __typename?: 'Author';
   name: Scalars['String'];
   dob: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  email: Scalars['String'];
+  posts?: Maybe<Array<Post>>;
 };

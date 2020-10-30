@@ -7,12 +7,13 @@ type Library {
 type Book {
   title: String!
   author: Author!
+  branch: String!
 }
 
 # An author has a name
 type Author {
   name: String!
-	dob: String!
+  dob: String!
 }
 
 # Queries can fetch a list of libraries

@@ -1,0 +1,10 @@
+type User {
+	id: ID!
+	email: String!
+	posts: [Post!]
+}
+
+type Query {
+	getUserById(id: String): User
+	getUserByEmail(email: String): User
+}
