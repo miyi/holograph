@@ -130,4 +130,30 @@ export class TestClient {
       `,
     })
   }
+
+  getUserById(id: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        query {
+          getUserById(id: "${id}") {
+            id
+            email
+          }
+        }
+      `
+    })
+  }
+
+  getUserByEmail(email: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        query {
+          getUserByEmail(email: "${email}") {
+            id
+            email
+          }
+        }
+      `
+    })
+  }
 }
