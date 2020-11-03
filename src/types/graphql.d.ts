@@ -11,17 +11,27 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createPost?: Maybe<Post>;
   delRedis?: Maybe<Scalars['String']>;
   dummyLogin?: Maybe<Scalars['Boolean']>;
   forgotPasswordChange: AuthResponse;
   login: AuthResponse;
   logout: AuthResponse;
   logoutAll: AuthResponse;
+  publishPost?: Maybe<Post>;
   register: AuthResponse;
+  saveEditPostBody?: Maybe<Post>;
   sendForgotPasswordEmail: AuthResponse;
   setRedis?: Maybe<Scalars['String']>;
   setSessionDummy1?: Maybe<Scalars['String']>;
   setSessionDummy2?: Maybe<Scalars['String']>;
+  unPublishPost?: Maybe<Post>;
+  updateUserEmail: Scalars['Boolean'];
+};
+
+
+export type MutationCreatePostArgs = {
+  title: Scalars['String'];
 };
 
 
@@ -48,9 +58,20 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationPublishPostArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationRegisterArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationSaveEditPostBodyArgs = {
+  id: Scalars['ID'];
+  body?: Maybe<Scalars['String']>;
 };
 
 
@@ -62,6 +83,16 @@ export type MutationSendForgotPasswordEmailArgs = {
 export type MutationSetRedisArgs = {
   key: Scalars['String'];
   value: Scalars['String'];
+};
+
+
+export type MutationUnPublishPostArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationUpdateUserEmailArgs = {
+  email: Scalars['String'];
 };
 
 export type AuthResponse = {
@@ -78,8 +109,9 @@ export type AuthError = {
 
 export type Query = {
   __typename?: 'Query';
-  getPostByAuthor?: Maybe<Post>;
+  getPostByAuthor?: Maybe<Array<Post>>;
   getPostById?: Maybe<Post>;
+  getPostsByTitle?: Maybe<Array<Post>>;
   getRedis?: Maybe<Scalars['String']>;
   getUserByEmail?: Maybe<User>;
   getUserById?: Maybe<User>;
@@ -98,7 +130,12 @@ export type QueryGetPostByAuthorArgs = {
 
 
 export type QueryGetPostByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetPostsByTitleArgs = {
+  title: Scalars['String'];
 };
 
 
@@ -108,12 +145,12 @@ export type QueryGetRedisArgs = {
 
 
 export type QueryGetUserByEmailArgs = {
-  email?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
 };
 
 
 export type QueryGetUserByIdArgs = {
-  id?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
 };
 
 
@@ -128,6 +165,8 @@ export type Post = {
   body?: Maybe<Scalars['String']>;
   author: User;
   published?: Maybe<Scalars['Boolean']>;
+  createdAt: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
 };
 
 export type Library = {

@@ -68,10 +68,8 @@ export class TestClient {
   }
 
   logoutAll() {
-    return this.axiosInstance.post(
-      '/',
-      {
-        query: `
+    return this.axiosInstance.post('/', {
+      query: `
           mutation {
             logoutAll {
               success
@@ -82,8 +80,7 @@ export class TestClient {
             }
           }
         `,
-      }
-    )
+    })
   }
 
   me() {
@@ -140,7 +137,7 @@ export class TestClient {
             email
           }
         }
-      `
+      `,
     })
   }
 
@@ -153,7 +150,17 @@ export class TestClient {
             email
           }
         }
-      `
+      `,
+    })
+  }
+
+  updateUserEmail(email: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          updateUserEmail(email: "${email}") 
+        }
+      `,
     })
   }
 }

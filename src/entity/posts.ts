@@ -1,10 +1,12 @@
-import { Users } from './Users';
+import { Users } from './Users'
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   BaseEntity,
   ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm'
 
 @Entity('posts')
@@ -18,11 +20,17 @@ export class Posts extends BaseEntity {
   @Column('varchar', { nullable: true })
   body: string | undefined
 
-  @ManyToOne(() => Users, users => users.posts )
+  @ManyToOne(() => Users, (users) => users.posts)
   author!: Users
 
   @Column('bool', { default: false })
   published!: boolean
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt!: Date
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt?: Date
 }
 
 // @Entity('postBody')

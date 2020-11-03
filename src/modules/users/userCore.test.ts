@@ -6,8 +6,9 @@ import { TestClient } from '../../test/testClient'
 
 let server: Server
 let client: TestClient
-let email = 'jim@jim.com'
-let password = 'password123'
+const email = 'jim@jim.com'
+const newEmail = 'ming@ming.ca'
+const password = 'password123'
 let req_url: string
 let user: any
 
@@ -41,12 +42,15 @@ describe('getUser tests', () => {
     expect(res.data.data.login.success).toBeTruthy()
   })
   it('getUserById', async () => {
-    console.log('jest id: ', user.id)
     res = await client.getUserById(user.id)
     expect(res.data.data.getUserById.email).toEqual(user.email)
   })
   it('getUserByEmail', async () => {
     res = await client.getUserByEmail(email)
     expect(res.data.data.getUserByEmail.id).toEqual(user.id)
+  })
+  it('changes user email', async () => {
+    res = await client.updateUserEmail(newEmail)
+    expect(res.data.data.updateUserEmail).toBeTruthy()
   })
 })

@@ -5,6 +5,7 @@ import {
   BaseEntity,
   BeforeInsert,
   OneToMany,
+  CreateDateColumn,
 } from 'typeorm'
 import { hashSync } from 'bcryptjs'
 import { Posts } from './posts';
@@ -16,6 +17,9 @@ export class Users extends BaseEntity {
 
   @Column('varchar', { length: 255, unique: true })
   email!: string
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt!: Date
 
   @Column('text', { nullable: true })
   password: string | undefined

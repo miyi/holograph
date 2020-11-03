@@ -1,0 +1,22 @@
+type Post {
+	id: String!
+	title: String!
+	body: String
+	author: User!
+	published: Boolean
+	createdAt: String!
+	updatedAt: String
+}
+
+type Query {
+	getPostById(id: ID!): Post
+	getPostsByTitle(title: String!): [Post!]
+	getPostByAuthor(author: String!): [Post!]
+}
+
+type Mutation {
+	createPost(title: String!): Post
+	publishPost(id: ID!): Post
+	unPublishPost(id: ID!): Post
+	saveEditPostBody(id: ID!, body: String): Post
+}
