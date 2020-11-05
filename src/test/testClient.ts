@@ -187,9 +187,6 @@ export class TestClient {
         {
           getPostById(id: "${id}") {
             title
-            author {
-              email
-            }
           }
         }
       `,

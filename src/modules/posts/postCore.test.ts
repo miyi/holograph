@@ -22,22 +22,25 @@ beforeAll(async () => {
 })
 
 describe('postCore tests', () => {
-	it('creates user', async () => {
+	it('creates user and post', async () => {
 		user = await Users.create({
 			email,
 			password,
 		}).save()
 		expect(user.id).not.toBeNull()
-	})
-	it('creates and retrieves posts directly from typeorm', async() => {
 		post = await Posts.create({
 			title: postTitle1,
 			author: user,
 		}).save()
 		expect(post.id).not.toBeNull()
 	})
+	it('typeorm getPostById', async () => {
+		let res = await Posts.findOne(post.id)
+		expect((res as Posts).title).toEqual(postTitle1)
+	})
 	it('getPostById test', async () => {
 		let res = await client.getPostById(post.id)
+		console.log(res.data.data);
 		expect(res.data.data.getPostById.title).toEqual(postTitle1)
 		expect(res.data.data.getPostById.author.email).toEqual(email)
 	})

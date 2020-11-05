@@ -1,5 +1,5 @@
 // import { Server } from 'http'
-import { createQueryBuilder } from 'typeorm'
+import { createQueryBuilder, LessThanOrEqual } from 'typeorm'
 import { Posts } from '../../../entity/posts'
 import { Users } from '../../../entity/Users'
 import { startServer } from '../../../startServer'
@@ -35,9 +35,9 @@ beforeAll(async () => {
 describe('test resolver chain  setup', () => {
   it('calls the library, book, author n+1 query', async () => {
     let reply = await client.libraries()
-    console.log(reply.data.data.libraries)
+    expect(reply.data.data.libraries.length).toBeGreaterThan(0)
   }),
-    it('gets user posts', async () => {
+    it('typeorm gets posts from user', async () => {
       await Posts.create({
         title: postTitle,
         author: user,
@@ -46,7 +46,7 @@ describe('test resolver chain  setup', () => {
       const directGetUsers = await createQueryBuilder('users').getOne()
       const directGetPosts = await createQueryBuilder('posts').getOne()
 
-      console.log(directGetUsers)
+      expect((directGetUsers as Users).id).toEqual(user.id)
       console.log(directGetPosts)
 
       const userPosts = await Users.findOne({
@@ -62,6 +62,6 @@ describe('test resolver chain  setup', () => {
           id: user.id,
         },
       })
-      console.log(postsFromUser)
+      expect(postsFromUser.length).toBeGreaterThan(0)
     })
 })
