@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 
-@Entity('posts')
+@Entity('post')
 export class Posts extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string

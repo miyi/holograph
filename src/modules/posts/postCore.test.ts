@@ -1,7 +1,7 @@
 import { Users } from '../../entity/Users'
 import { startServer } from '../../startServer'
 import { TestClient } from '../../test/testClient'
-import { Posts } from '../../entity/posts'
+import { Posts } from '../../entity/Posts'
 import { Server } from 'http'
 import { redis } from '../../server_configs/redisServer'
 
@@ -25,12 +25,12 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-	await server.close()
-	await new Promise((resolve) => {
-		redis.quit(() => {
-				resolve();
-		});
-});
+  await server.close()
+  await new Promise((resolve) => {
+    redis.quit(() => {
+      resolve()
+    })
+  })
 })
 
 describe('postCore tests', () => {
@@ -62,22 +62,18 @@ describe('postCore tests', () => {
   it('typeorm gets author from post using queryBuilder', async () => {
     let res = await Posts.createQueryBuilder('posts')
       .leftJoinAndSelect('posts.author', 'users')
-			.getMany()
-		expect(res.length).toBeGreaterThan(0)
-		expect(res[0].id).toEqual(post.id)
-		expect(res[0].author.id).toEqual(user.id)
+      .getMany()
+    expect(res.length).toBeGreaterThan(0)
+    expect(res[0].id).toEqual(post.id)
+    expect(res[0].author.id).toEqual(user.id)
+  })
+  it('queries getPostByTitle', async () => {
+    let res = await client.getPostsByTitle(postTitle1)
+		expect(res.data.data.getPostsByTitle.length).toBeGreaterThan(0)
+		expect(res.data.data.getPostsByTitle[0].title).toEqual(postTitle1)
 	})
-	it('get posts by id', async() => {
-		let res = await client.axiosInstance.post('/', {
-			query: `{
-				getPostById(id: "${post.id}") {
-					id
-					author {
-						email
-					}
-				}
-			}`
-		})
-		console.log(res.data.data);
+	it('queries getPostByAuthor', async () => {
+		let res = await client.getPostsByAuthor(user.id)
+		expect(res.data.data.getPostsByAuthor)
 	})
 })

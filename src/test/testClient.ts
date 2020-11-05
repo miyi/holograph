@@ -132,7 +132,7 @@ export class TestClient {
   getUserById(id: string) {
     return this.axiosInstance.post('/', {
       query: `
-        query {
+        {
           getUserById(id: "${id}") {
             id
             email
@@ -145,7 +145,7 @@ export class TestClient {
   getUserByEmail(email: string) {
     return this.axiosInstance.post('/', {
       query: `
-        query {
+        {
           getUserByEmail(email: "${email}") {
             id
             email
@@ -216,7 +216,7 @@ export class TestClient {
           getPostsByAuthor(authorId: "${authorId}") {
             id
             title
-            author: {
+            author {
               email
             }
           }

@@ -8,9 +8,9 @@ import {
   CreateDateColumn,
 } from 'typeorm'
 import { hashSync } from 'bcryptjs'
-import { Posts } from './posts';
+import { Posts } from './Posts'
 
-@Entity('users')
+@Entity('user')
 export class Users extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
@@ -33,8 +33,8 @@ export class Users extends BaseEntity {
   @Column('bool', { default: false })
   confirm!: boolean
 
-  @OneToMany(() => Posts, posts => posts.author)
-  posts!: Posts[];
+  @OneToMany(() => Posts, (posts) => posts.author)
+  posts!: Posts[]
 
   @BeforeInsert()
   hashPassword() {

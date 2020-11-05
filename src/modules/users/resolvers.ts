@@ -5,7 +5,7 @@ import {
 } from '../../types/graphql'
 import { Users } from '../../entity/Users'
 import { emailValidateSchema } from '../../utils/yupValidate'
-import { Posts } from '../../entity/posts'
+import { Posts } from '../../entity/Posts'
 
 export const resolvers: ResolverMap = {
   Query: {

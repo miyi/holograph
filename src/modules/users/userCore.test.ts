@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { Server } from 'http'
-import { Posts } from '../../entity/posts'
+import { Posts } from '../../entity/Posts'
 import { Users } from '../../entity/Users'
 import { redis } from '../../server_configs/redisServer'
 import { startServer } from '../../startServer'

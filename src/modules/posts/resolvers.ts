@@ -1,5 +1,5 @@
 import { ResolverMap, GraphqlContext } from '../../types/graphql-utils'
-import { Posts } from '../../entity/posts'
+import { Posts } from '../../entity/Posts'
 import {
   MutationCreatePostArgs,
   QueryGetPostByIdArgs,
@@ -17,16 +17,18 @@ export const resolvers: ResolverMap = {
     ): Promise<Posts | undefined> => {
       return await Posts.findOne(id as string)
     },
-    getPostsByTitle: async ({
-      title,
-    }: QueryGetPostsByTitleArgs): Promise<Posts[] | undefined> => {
+    getPostsByTitle: async (
+      _,
+      { title }: QueryGetPostsByTitleArgs,
+    ): Promise<Posts[] | undefined> => {
       return await Posts.find({
-        title,
+        title: title,
       })
     },
-    getPostsByAuthor: async ({
-      authorId,
-    }: QueryGetPostsByAuthorArgs): Promise<Posts[] | undefined> => {
+    getPostsByAuthor: async (
+      _,
+      { authorId }: QueryGetPostsByAuthorArgs,
+    ): Promise<Posts[] | undefined> => {
       return await Posts.find({
         author: {
           id: authorId,
@@ -62,7 +64,6 @@ export const resolvers: ResolverMap = {
   },
   Post: {
     author: async (parent) => {
-      console.log('parent: ', parent.id)
       let post = await Posts.findOne({
         relations: ['author'],
         where: {

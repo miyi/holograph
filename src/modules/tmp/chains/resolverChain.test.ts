@@ -1,6 +1,6 @@
 // import { Server } from 'http'
 import { createQueryBuilder } from 'typeorm'
-import { Posts } from '../../../entity/posts'
+import { Posts } from '../../../entity/Posts'
 import { Users } from '../../../entity/Users'
 import { startServer } from '../../../startServer'
 import { TmpTestClient } from '../../../test/tmpTestClient'
