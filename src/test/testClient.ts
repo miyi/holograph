@@ -172,6 +172,7 @@ export class TestClient {
          getUserById(id: "${id}") {
           email
           posts {
+            id
             title
           }
          }

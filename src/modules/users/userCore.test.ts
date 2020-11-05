@@ -63,8 +63,7 @@ describe('getUser tests', () => {
   })
   it('chain queries user and posts', async () => {
     res = await client.seeUserPostFromUserId(user.id)
-    console.log(res.data.data.getUserById.posts.length)
     expect(res.data.data.getUserById.posts.length).toBeGreaterThan(0)
-    expect(res.data.data.getUserById.posts[0].id).toBeTruthy()
+    expect(res.data.data.getUserById.posts[0].id).toEqual(post.id)
   })
 })
