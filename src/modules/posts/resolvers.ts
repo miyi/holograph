@@ -59,7 +59,7 @@ export const resolvers: ResolverMap = {
         let post = await Posts.findOne({
           relations: ['author'],
           where: {
-            id,
+            id: id,
           },
         })
         //check if post author is the current

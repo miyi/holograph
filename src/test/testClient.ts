@@ -257,7 +257,7 @@ export class TestClient {
   }
 
   publishPost(id: string) {
-    this.axiosInstance.post('/', {
+    return this.axiosInstance.post('/', {
       query: `
         mutation {
           publishPost(id: "${id}") {
