@@ -110,8 +110,8 @@ export type AuthError = {
 export type Query = {
   __typename?: 'Query';
   getPostById?: Maybe<Post>;
-  getPostsByAuthor?: Maybe<Array<Post>>;
-  getPostsByTitle?: Maybe<Array<Post>>;
+  getPostsByAuthor?: Maybe<Array<Maybe<Post>>>;
+  getPostsByTitle?: Maybe<Array<Maybe<Post>>>;
   getRedis?: Maybe<Scalars['String']>;
   getUserByEmail?: Maybe<User>;
   getUserById?: Maybe<User>;

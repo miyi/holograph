@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios'
 import { Server } from 'http'
 import { Posts } from '../../entity/posts'
 import { Users } from '../../entity/Users'
+import { redis } from '../../server_configs/redisServer'
 import { startServer } from '../../startServer'
 import { TestClient } from '../../test/testClient'
 
@@ -27,6 +28,11 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await server.close()
+  await new Promise((resolve) => {
+    redis.quit(() => {
+        resolve();
+    });
+});
 })
 
 describe('getUser tests', () => {

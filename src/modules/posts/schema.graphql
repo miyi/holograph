@@ -10,8 +10,8 @@ type Post {
 
 type Query {
 	getPostById(id: ID!): Post
-	getPostsByTitle(title: String!): [Post!]
-	getPostsByAuthor(authorId: ID!): [Post!]
+	getPostsByTitle(title: String!): [Post]
+	getPostsByAuthor(authorId: ID!): [Post]
 }
 
 type Mutation {

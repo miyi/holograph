@@ -62,8 +62,14 @@ export const resolvers: ResolverMap = {
   },
   Post: {
     author: async (parent) => {
-      const post = await Posts.findOne(parent.id)
-      return (post as Posts).author
+      console.log('parent: ', parent.id)
+      let post = await Posts.findOne({
+        relations: ['author'],
+        where: {
+          id: parent.id,
+        },
+      })
+      return post?.author
     },
   },
 }
