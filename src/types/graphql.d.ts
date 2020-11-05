@@ -109,8 +109,8 @@ export type AuthError = {
 
 export type Query = {
   __typename?: 'Query';
-  getPostByAuthor?: Maybe<Array<Post>>;
   getPostById?: Maybe<Post>;
+  getPostsByAuthor?: Maybe<Array<Post>>;
   getPostsByTitle?: Maybe<Array<Post>>;
   getRedis?: Maybe<Scalars['String']>;
   getUserByEmail?: Maybe<User>;
@@ -124,13 +124,13 @@ export type Query = {
 };
 
 
-export type QueryGetPostByAuthorArgs = {
-  author: Scalars['String'];
+export type QueryGetPostByIdArgs = {
+  id: Scalars['ID'];
 };
 
 
-export type QueryGetPostByIdArgs = {
-  id: Scalars['ID'];
+export type QueryGetPostsByAuthorArgs = {
+  authorId: Scalars['ID'];
 };
 
 

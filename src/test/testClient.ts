@@ -1,6 +1,7 @@
 import { CookieJar } from 'tough-cookie'
 import axios, { AxiosInstance } from 'axios'
 import axiosCookieJarSupport from 'axios-cookiejar-support'
+
 axiosCookieJarSupport(axios)
 const cookieJar = new CookieJar()
 
@@ -159,6 +160,84 @@ export class TestClient {
       query: `
         mutation {
           updateUserEmail(email: "${email}") 
+        }
+      `,
+    })
+  }
+
+  seeUserPostFromUserId(id: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+       {
+         getUserById(id: "${id}") {
+          email
+          posts {
+            title
+          }
+         }
+       }
+      `,
+    })
+  }
+
+  getPostById(id: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getPostById(id: "${id}") {
+            title
+            author {
+              email
+            }
+          }
+        }
+      `,
+    })
+  }
+
+  getPostsByTitle(title: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getPostsByTitle(title: "${title}") {
+            title,
+            id,
+            author {
+              email
+            }
+          }
+        }
+      `,
+    })
+  }
+
+  getPostsByAuthor(authorId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getPostsByAuthor(authorId: "${authorId}") {
+            id
+            title
+            author: {
+              email
+            }
+          }
+        }
+      `,
+    })
+  }
+
+  createPost(title: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          createPost(title: "${title}") {
+            id
+            title
+            author {
+              email
+            }
+          }
         }
       `,
     })

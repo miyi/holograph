@@ -5,6 +5,7 @@ import {
 } from '../../types/graphql'
 import { Users } from '../../entity/Users'
 import { emailValidateSchema } from '../../utils/yupValidate'
+import { Posts } from '../../entity/posts'
 
 export const resolvers: ResolverMap = {
   Query: {
@@ -25,7 +26,7 @@ export const resolvers: ResolverMap = {
     updateUserEmail: async (_, { email }, { session }): Promise<boolean> => {
       let success = false
       emailValidateSchema.validate(email).catch(() => {
-        console.log('bad email');
+        console.log('bad email')
         return success
       })
       if (session && session.userId) {
@@ -40,8 +41,12 @@ export const resolvers: ResolverMap = {
     },
   },
   User: {
-    posts: () => {
-      return null
+    posts: async (parent) => {
+      return await Posts.find({
+        author: {
+          id: parent.id
+        }
+      })
     },
   },
 }

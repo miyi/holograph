@@ -8,12 +8,12 @@ export const authMiddleware = async (
   context: GraphqlContext,
   info: any,
 ) => {
-	// middleware
+  // middleware
 	let result = null
-	const isLoggedIn = await verifyLogin(context.session, context.redis)
+  const isLoggedIn = await verifyLogin(context.session, context.redis)
 	if (isLoggedIn) {
 		result = await resolver(parent, args, context, info)
-	} 
+  }
   // afterware
   return result
 }

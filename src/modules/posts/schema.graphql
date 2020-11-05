@@ -11,7 +11,7 @@ type Post {
 type Query {
 	getPostById(id: ID!): Post
 	getPostsByTitle(title: String!): [Post!]
-	getPostByAuthor(author: String!): [Post!]
+	getPostsByAuthor(authorId: ID!): [Post!]
 }
 
 type Mutation {
@@ -20,3 +20,4 @@ type Mutation {
 	unPublishPost(id: ID!): Post
 	saveEditPostBody(id: ID!, body: String): Post
 }
+

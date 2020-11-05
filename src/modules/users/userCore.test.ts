@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { Server } from 'http'
+import { Posts } from '../../entity/posts'
 import { Users } from '../../entity/Users'
 import { startServer } from '../../startServer'
 import { TestClient } from '../../test/testClient'
@@ -9,8 +10,10 @@ let client: TestClient
 const email = 'jim@jim.com'
 const newEmail = 'ming@ming.ca'
 const password = 'password123'
+const postTitle = 'movie review'
 let req_url: string
-let user: any
+let user: Users
+let post: Posts
 
 beforeAll(async () => {
   server = await startServer()
@@ -28,14 +31,19 @@ afterAll(async () => {
 
 describe('getUser tests', () => {
   let res: AxiosResponse
-  it('creates new user', async () => {
+  it('creates new user and new post', async () => {
     user = await Users.create({
       email,
       password,
       confirm: true,
     }).save()
-    console.log(user)
+    post = await Posts.create({
+      title: postTitle,
+      author: user,
+    }).save()
+
     expect(user.id).toBeTruthy()
+    expect(post.id).toBeTruthy()
   })
   it('logging in', async () => {
     res = await client.login(email, password)
@@ -52,5 +60,11 @@ describe('getUser tests', () => {
   it('changes user email', async () => {
     res = await client.updateUserEmail(newEmail)
     expect(res.data.data.updateUserEmail).toBeTruthy()
+  })
+  it('chain queries user and posts', async () => {
+    res = await client.seeUserPostFromUserId(user.id)
+    console.log(res.data.data.getUserById.posts.length)
+    expect(res.data.data.getUserById.posts.length).toBeGreaterThan(0)
+    expect(res.data.data.getUserById.posts[0].id).toBeTruthy()
   })
 })

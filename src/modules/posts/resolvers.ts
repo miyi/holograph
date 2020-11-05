@@ -1,23 +1,32 @@
 import { ResolverMap, GraphqlContext } from '../../types/graphql-utils';
 import { Posts } from '../../entity/posts';
-import { MutationCreatePostArgs, QueryGetPostByIdArgs } from '../../types/graphql';
+import { MutationCreatePostArgs, QueryGetPostByIdArgs, QueryGetPostsByTitleArgs, QueryGetPostsByAuthorArgs } from '../../types/graphql';
 import { authMiddleware } from '../../utils/auth/authMiddleware';
 import { createMiddleware } from '../../utils/createMiddleware';
 import { Users } from '../../entity/Users';
 export const resolvers: ResolverMap = {
 	Query: {
 		getPostById: async (_, {id}: QueryGetPostByIdArgs) => {
+			console.log('running with id: ', id);
 			return await Posts.findOne(id)
 		},
-		getPostsByTitle: () => {
-			return null
+		getPostsByTitle: async ({title}: QueryGetPostsByTitleArgs) => {
+			return await Posts.find({
+				title,
+			})		
 		},
-		getPostByAuthor: () => {
-			return null
+		getPostsByAuthor: async ({authorId}: QueryGetPostsByAuthorArgs) => {
+			return await Posts.find({
+				where: {
+					author: {
+						id: authorId
+					}
+				}
+			})
 		},
 	},
 	Mutation: {
-		createPost: createMiddleware(authMiddleware , async(_, {title}: MutationCreatePostArgs, {session, redis}: GraphqlContext) => {
+		createPost: createMiddleware(authMiddleware , async(_, {title}: MutationCreatePostArgs, {session}: GraphqlContext) => {
 			const user = await Users.findOne(session.userId)
 			const post = await Posts.create({
 				title,
