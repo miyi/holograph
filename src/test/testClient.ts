@@ -193,6 +193,21 @@ export class TestClient {
     })
   }
 
+  getPostByIdPlusAuthor(id: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getPostById(id: "${id}") {
+            title
+            author {
+              email
+            }
+          }
+        }
+      `,
+    })
+  }
+
   getPostsByTitle(title: string) {
     return this.axiosInstance.post('/', {
       query: `
@@ -238,6 +253,21 @@ export class TestClient {
           }
         }
       `,
+    })
+  }
+
+  publishPost(id: string) {
+    this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          publishPost(id: "${id}") {
+            id
+            author {
+              email
+            }
+          }
+        }
+      `
     })
   }
 }

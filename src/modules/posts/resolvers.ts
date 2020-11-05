@@ -9,6 +9,7 @@ import {
 import { authMiddleware } from '../../utils/auth/authMiddleware'
 import { createMiddleware } from '../../utils/createMiddleware'
 import { Users } from '../../entity/Users'
+import { MutationPublishPostArgs } from '../../types/graphql'
 export const resolvers: ResolverMap = {
   Query: {
     getPostById: async (
@@ -52,9 +53,23 @@ export const resolvers: ResolverMap = {
         return post
       },
     ),
-    publishPost: () => {
-      return null
-    },
+    publishPost: createMiddleware(
+      authMiddleware,
+      async (_, { id }: MutationPublishPostArgs, { session }) => {
+        let post = await Posts.findOne({
+          relations: ['author'],
+          where: {
+            id,
+          },
+        })
+        //check if post author is the current
+        if (post && post.author.id === session.userId) {
+          post.published = true
+          await post.save()
+        }
+        return post
+      },
+    ),
     unPublishPost: () => {
       return null
     },
