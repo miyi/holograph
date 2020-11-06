@@ -262,6 +262,23 @@ export class TestClient {
         mutation {
           publishPost(id: "${id}") {
             id
+            published
+            author {
+              email
+            }
+          }
+        }
+      `
+    })
+  }
+
+  unPublishPost(id: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          unPublishPost(id: "${id}") {
+            title
+            published
             author {
               email
             }

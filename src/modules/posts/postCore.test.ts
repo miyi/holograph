@@ -96,6 +96,12 @@ describe('postCore tests', () => {
   })
   it('publishes an existing post', async () => {
     let res = await client.publishPost(post.id)
-    expect(res.data.data.publishPost.author.email).toEqual(email)
-  })
+		expect(res.data.data.publishPost.author.email).toEqual(email)
+		expect(res.data.data.publishPost.published).toBeTruthy()
+	})
+	it('unPublishes the previously published post', async () => {
+		let res = await client.unPublishPost(post.id)
+		expect(res.data.data.unPublishPost.published).toBeFalsy()
+		expect(res.data.data.unPublishPost.author.email).toEqual(email)
+	})
 })

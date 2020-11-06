@@ -28,16 +28,15 @@ export const isPostAuthorMiddleware = async (
 ) => {
   let result = null
   if (args?.id) {
-    let post = Posts.findOne({
+    let post = await Posts.findOne({
       relations: ['author'],
       where: {
         id: args.id,
       },
     })
-    let isPostAuthor = {
-      isPostAuthor: post,
+    if (post && post.author.id === context.session.userId) {
+      result = await resolver({ ...parent, post}, args, context, info)
     }
-    result = await resolver({ ...parent, isPostAuthor }, args, context, info)
   }
   return result
 }

@@ -6,7 +6,10 @@ import {
   QueryGetPostsByTitleArgs,
   QueryGetPostsByAuthorArgs,
 } from '../../types/graphql'
-import { authMiddleware } from '../../utils/auth/authMiddleware'
+import {
+  authMiddleware,
+  isPostAuthorMiddleware,
+} from '../../utils/auth/authMiddleware'
 import { createMiddleware } from '../../utils/createMiddleware'
 import { Users } from '../../entity/Users'
 import { MutationPublishPostArgs } from '../../types/graphql'
@@ -70,9 +73,15 @@ export const resolvers: ResolverMap = {
         return post
       },
     ),
-    unPublishPost: () => {
-      return null
-    },
+    unPublishPost: createMiddleware(
+      isPostAuthorMiddleware,
+      async (parent, _) => {
+        let { post } = parent
+        post.published = false
+        await post.save()
+        return post
+      },
+    ),
     saveEditPostBody: () => {
       return null
     },
