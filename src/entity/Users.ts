@@ -6,9 +6,13 @@ import {
   BeforeInsert,
   OneToMany,
   CreateDateColumn,
+  OneToOne,
+  JoinColumn,
+  UpdateDateColumn,
 } from 'typeorm'
 import { hashSync } from 'bcryptjs'
 import { Posts } from './Posts'
+import { Profiles } from './Profiles';
 
 @Entity('user')
 export class Users extends BaseEntity {
@@ -21,6 +25,9 @@ export class Users extends BaseEntity {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date
 
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt?: Date
+
   @Column('text', { nullable: true })
   password: string | undefined
 
@@ -32,6 +39,10 @@ export class Users extends BaseEntity {
 
   @Column('bool', { default: false })
   confirm!: boolean
+
+  @OneToOne(() => Profiles)
+  @JoinColumn()
+  profile: Profiles = new Profiles;
 
   @OneToMany(() => Posts, (posts) => posts.author)
   posts!: Posts[]

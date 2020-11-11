@@ -268,7 +268,7 @@ export class TestClient {
             }
           }
         }
-      `
+      `,
     })
   }
 
@@ -284,7 +284,22 @@ export class TestClient {
             }
           }
         }
-      `
+      `,
+    })
+  }
+
+  saveEditPostBody(id: string, body: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          saveEditPostBody(id: "${id}", body: "${body}") {
+            body
+            author {
+              email
+            }
+          }
+        }
+      `,
     })
   }
 }

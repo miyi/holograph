@@ -14,6 +14,7 @@ let user: any
 let post: Posts
 const postTitle1 = 'typeorm insert'
 const postTitle2 = 'create post'
+const postBody = 'bodybody'
 
 beforeAll(async () => {
   server = await startServer()
@@ -83,9 +84,13 @@ describe('postCore tests', () => {
     expect(res.data.data.getPostsByAuthor[0].title).toEqual(postTitle1)
     expect(res.data.data.getPostsByAuthor[0].author.email).toEqual(email)
   })
-  it('creates post while not logged in', async () => {
+  it('creates post before logging in', async () => {
     let res = await client.createPost(postTitle2)
     expect(res.data.data.createPost).toBeNull()
+  })
+  it('publish before logging in', async () => {
+    let res = await client.publishPost(post.id)
+    expect(res.data.data.publishPost).toBeNull()
   })
   it('creates post after logging in', async () => {
     let loginRes = await client.login(email, password)
@@ -96,12 +101,17 @@ describe('postCore tests', () => {
   })
   it('publishes an existing post', async () => {
     let res = await client.publishPost(post.id)
-		expect(res.data.data.publishPost.author.email).toEqual(email)
-		expect(res.data.data.publishPost.published).toBeTruthy()
-	})
-	it('unPublishes the previously published post', async () => {
-		let res = await client.unPublishPost(post.id)
-		expect(res.data.data.unPublishPost.published).toBeFalsy()
-		expect(res.data.data.unPublishPost.author.email).toEqual(email)
-	})
+    expect(res.data.data.publishPost.author.email).toEqual(email)
+    expect(res.data.data.publishPost.published).toBeTruthy()
+  })
+  it('unPublishes the previously published post', async () => {
+    let res = await client.unPublishPost(post.id)
+    expect(res.data.data.unPublishPost.published).toBeFalsy()
+    expect(res.data.data.unPublishPost.author.email).toEqual(email)
+  })
+  it('saveEditPostBody', async () => {
+    let res = await client.saveEditPostBody(post.id, postBody)
+    expect(res.data.data.saveEditPostBody.body).toEqual(postBody)
+    expect(res.data.data.saveEditPostBody.author.email).toEqual(email)
+  })
 })
