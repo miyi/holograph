@@ -20,7 +20,7 @@ export class Posts extends BaseEntity {
   @Column('varchar', { nullable: true })
   body: string | undefined
 
-  @ManyToOne(() => Users, (users) => users.posts)
+  @ManyToOne(() => Users, (user) => user.posts)
   author!: Users
 
   @Column('bool', { default: false })

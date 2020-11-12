@@ -9,10 +9,11 @@ import {
   OneToOne,
   JoinColumn,
   UpdateDateColumn,
+  AfterInsert,
 } from 'typeorm'
 import { hashSync } from 'bcryptjs'
 import { Posts } from './Posts'
-import { Profiles } from './Profiles';
+import { Profiles } from './Profiles'
 
 @Entity('user')
 export class Users extends BaseEntity {
@@ -40,9 +41,9 @@ export class Users extends BaseEntity {
   @Column('bool', { default: false })
   confirm!: boolean
 
-  @OneToOne(() => Profiles)
+  @OneToOne(() => Profiles, (profile) => profile.user)
   @JoinColumn()
-  profile: Profiles = new Profiles;
+  profile!: Profiles
 
   @OneToMany(() => Posts, (posts) => posts.author)
   posts!: Posts[]
@@ -50,5 +51,12 @@ export class Users extends BaseEntity {
   @BeforeInsert()
   hashPassword() {
     if (this.password) this.password = hashSync(this.password, 12)
+  }
+
+  @AfterInsert()
+  async createProfile() {
+    let profile = await Profiles.create().save()
+    this.profile = profile
+    this.save()
   }
 }

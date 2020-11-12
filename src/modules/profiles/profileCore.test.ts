@@ -47,4 +47,10 @@ describe('postCore tests', () => {
     }).save()
     expect(post.id).not.toBeNull()
   })
+  it('retrieves profile', async () => {
+    let res = await Users.findOne({
+      relations: ['profile']
+    })
+    console.log(res);
+  })
 })
