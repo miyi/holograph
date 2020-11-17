@@ -1,0 +1,19 @@
+type Profile {
+	id: ID!
+	owner: User!
+	description: String
+	collection: [Post]
+}
+
+type Query {
+	getMyProfile: Profile
+	getMyCollection: [Post]
+	getUserProfile(userId: ID!): Profile
+	getUserCollection(userId: ID!): [Post]
+}
+
+type Mutation {
+	savePostToMyCollection(postId: ID!): Boolean
+	editMyProfileDescription(description: String): Profile
+	removePostFromMyCollection(postId: ID!): Boolean
+}

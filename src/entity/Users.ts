@@ -41,11 +41,20 @@ export class Users extends BaseEntity {
   @Column('bool', { default: false })
   confirm!: boolean
 
-  @OneToOne(() => Profiles, (profile) => profile.user)
+  @Column('bool', { nullable: false, default: true })
+  deactivated!: boolean
+
+  @OneToOne(() => Profiles, (profile) => profile.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   profile!: Profiles
 
-  @OneToMany(() => Posts, (posts) => posts.author)
+  @OneToMany(() => Posts, (posts) => posts.author, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   posts!: Posts[]
 
   @BeforeInsert()
