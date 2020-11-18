@@ -78,11 +78,11 @@ describe('postCore tests', () => {
     expect(res.data.data.getPostsByTitle.length).toBeGreaterThan(0)
     expect(res.data.data.getPostsByTitle[0].title).toEqual(postTitle1)
   })
-  it('queries getPostByAuthor', async () => {
-    let res = await client.getPostsByAuthor(user.id)
-    expect(res.data.data.getPostsByAuthor.length).toBeGreaterThan(0)
-    expect(res.data.data.getPostsByAuthor[0].title).toEqual(postTitle1)
-    expect(res.data.data.getPostsByAuthor[0].author.email).toEqual(email)
+  it('queries getPostsByAuthor', async () => {
+    let res = await client.getPostsByAuthorId(user.id)
+    expect(res.data.data.getPostsByAuthorId.length).toBeGreaterThan(0)
+    expect(res.data.data.getPostsByAuthorId[0].title).toEqual(postTitle1)
+    expect(res.data.data.getPostsByAuthorId[0].author.email).toEqual(email)
   })
   it('creates post before logging in', async () => {
     let res = await client.createPost(postTitle2)

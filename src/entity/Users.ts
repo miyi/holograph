@@ -7,7 +7,6 @@ import {
   OneToMany,
   CreateDateColumn,
   OneToOne,
-  JoinColumn,
   UpdateDateColumn,
   AfterInsert,
 } from 'typeorm'
@@ -23,14 +22,14 @@ export class Users extends BaseEntity {
   @Column('varchar', { length: 255, unique: true })
   email!: string
 
+  @Column('varchar', { length: 255 })
+  password: string | undefined
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt?: Date
-
-  @Column('text', { nullable: true })
-  password: string | undefined
 
   @Column('text', { nullable: true })
   twitterId: string | null | undefined
@@ -48,7 +47,6 @@ export class Users extends BaseEntity {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
   profile!: Profiles
 
   @OneToMany(() => Posts, (posts) => posts.author, {

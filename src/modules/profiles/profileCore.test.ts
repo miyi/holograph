@@ -57,12 +57,28 @@ describe('postCore tests', () => {
     })
     expect(res?.profile.id).toBeTruthy()
   })
-  it('deletes user and watch what happens to profile', async () => {
+  it('find profile by user and insert post to collection', async () => {
+    let profile = await Profiles.findOne({
+      relations: ['user', 'collection'],
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
+    })
+    if (profile) profile.collection.push(post)
+    await profile?.save()
+    let collection = await Profiles.findOne({
+      relations: ['collection'],
+    })
+    console.log(collection)
+  })
+  it('deletes user and cascade delete posts and profile', async () => {
     let deleteThisUser = await Users.findOne()
     await Users.remove(deleteThisUser as Users)
     let profile = await Profiles.findOne()
-    console.log(profile);
+    expect(profile).toBeUndefined()
     let myPost = await Posts.findOne()
-    console.log(myPost);
+    expect(myPost).toBeUndefined()
   })
 })

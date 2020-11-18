@@ -130,12 +130,11 @@ export type Query = {
   getMyCollection?: Maybe<Array<Maybe<Post>>>;
   getMyProfile?: Maybe<Profile>;
   getPostById?: Maybe<Post>;
-  getPostsByAuthor?: Maybe<Array<Maybe<Post>>>;
+  getPostsByAuthorId?: Maybe<Array<Maybe<Post>>>;
   getPostsByTitle?: Maybe<Array<Maybe<Post>>>;
   getRedis?: Maybe<Scalars['String']>;
   getUserByEmail?: Maybe<User>;
   getUserById?: Maybe<User>;
-  getUserCollection?: Maybe<Array<Maybe<Post>>>;
   getUserProfile?: Maybe<Profile>;
   hello: Scalars['String'];
   libraries?: Maybe<Array<Maybe<Library>>>;
@@ -151,7 +150,7 @@ export type QueryGetPostByIdArgs = {
 };
 
 
-export type QueryGetPostsByAuthorArgs = {
+export type QueryGetPostsByAuthorIdArgs = {
   authorId: Scalars['ID'];
 };
 
@@ -173,11 +172,6 @@ export type QueryGetUserByEmailArgs = {
 
 export type QueryGetUserByIdArgs = {
   id: Scalars['String'];
-};
-
-
-export type QueryGetUserCollectionArgs = {
-  userId: Scalars['ID'];
 };
 
 
@@ -204,7 +198,7 @@ export type Post = {
 export type Profile = {
   __typename?: 'Profile';
   id: Scalars['ID'];
-  owner: User;
+  user: User;
   description?: Maybe<Scalars['String']>;
   collection?: Maybe<Array<Maybe<Post>>>;
 };

@@ -224,11 +224,11 @@ export class TestClient {
     })
   }
 
-  getPostsByAuthor(authorId: string) {
+  getPostsByAuthorId(authorId: string) {
     return this.axiosInstance.post('/', {
       query: `
         {
-          getPostsByAuthor(authorId: "${authorId}") {
+          getPostsByAuthorId(authorId: "${authorId}") {
             id
             title
             author {

@@ -1,6 +1,6 @@
 type Profile {
 	id: ID!
-	owner: User!
+	user: User!
 	description: String
 	collection: [Post]
 }
@@ -9,7 +9,6 @@ type Query {
 	getMyProfile: Profile
 	getMyCollection: [Post]
 	getUserProfile(userId: ID!): Profile
-	getUserCollection(userId: ID!): [Post]
 }
 
 type Mutation {

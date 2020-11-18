@@ -1,18 +1,19 @@
-import { ResolverMap, GraphqlContext } from '../../types/graphql-utils'
 import { Posts } from '../../entity/Posts'
+import { Users } from '../../entity/Users'
 import {
   MutationCreatePostArgs,
+  MutationSaveEditPostBodyArgs,
   QueryGetPostByIdArgs,
+  QueryGetPostsByAuthorIdArgs,
   QueryGetPostsByTitleArgs,
-  QueryGetPostsByAuthorArgs,
 } from '../../types/graphql'
+import { GraphqlContext, ResolverMap } from '../../types/graphql-utils'
 import {
   isLoggedInMiddleware,
   isPostAuthorMiddleware,
 } from '../../utils/auth/authMiddleware'
 import { createMiddleware } from '../../utils/createMiddleware'
-import { Users } from '../../entity/Users'
-import { MutationSaveEditPostBodyArgs } from '../../types/graphql';
+
 export const resolvers: ResolverMap = {
   Query: {
     getPostById: async (
@@ -29,9 +30,9 @@ export const resolvers: ResolverMap = {
         title: title,
       })
     },
-    getPostsByAuthor: async (
+    getPostsByAuthorId: async (
       _,
-      { authorId }: QueryGetPostsByAuthorArgs,
+      { authorId }: QueryGetPostsByAuthorIdArgs,
     ): Promise<Posts[] | undefined> => {
       return await Posts.find({
         author: {
