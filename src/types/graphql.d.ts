@@ -135,7 +135,7 @@ export type Query = {
   getRedis?: Maybe<Scalars['String']>;
   getUserByEmail?: Maybe<User>;
   getUserById?: Maybe<User>;
-  getUserProfile?: Maybe<Profile>;
+  getUserProfileByUserId?: Maybe<Profile>;
   hello: Scalars['String'];
   libraries?: Maybe<Array<Maybe<Library>>>;
   me?: Maybe<User>;
@@ -175,7 +175,7 @@ export type QueryGetUserByIdArgs = {
 };
 
 
-export type QueryGetUserProfileArgs = {
+export type QueryGetUserProfileByUserIdArgs = {
   userId: Scalars['ID'];
 };
 

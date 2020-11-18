@@ -68,10 +68,10 @@ describe('postCore tests', () => {
     })
     if (profile) profile.collection.push(post)
     await profile?.save()
-    let collection = await Profiles.findOne({
+    let profileCollection = await Profiles.findOne({
       relations: ['collection'],
     })
-    console.log(collection)
+    expect(profileCollection?.collection.length).toBeGreaterThan(0)
   })
   it('deletes user and cascade delete posts and profile', async () => {
     let deleteThisUser = await Users.findOne()

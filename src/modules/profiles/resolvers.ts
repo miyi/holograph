@@ -2,18 +2,21 @@ import { ResolverMap } from '../../types/graphql-utils'
 import { Profiles } from '../../entity/Profiles';
 import { createMiddleware } from '../../utils/createMiddleware'
 import { isLoggedInMiddleware } from '../../utils/auth/authMiddleware'
-import { Users } from '../../entity/Users';
-import { QueryGetUserProfileArgs } from '../../types/graphql';
+import { QueryGetUserProfileByUserIdArgs } from '../../types/graphql';
 export const resolvers: ResolverMap = {
   Mutation: {},
   Query: {
     getMyProfile: createMiddleware(
       isLoggedInMiddleware,
       async (_, __, { session }) => {
-				let user = await Users.findOne(session.userId, {
-					relations: ['profile']
+				return await Profiles.findOne({
+					relations: ['users'],
+					where: {
+						user: {
+							id: session.userId
+						}
+					}
 				})
-				return user?.profile
 			},
 		),
 		getMyCollection: createMiddleware(
@@ -30,15 +33,15 @@ export const resolvers: ResolverMap = {
 				if (profile?.collection) {return profile.collection} else {return null}
 			}
 		),
-		getUserProfile: async (_, { userId } : QueryGetUserProfileArgs ) => {
-			let res = await Users.findOne(userId, {
-				relations: ['profile']
+		getUserProfileByUserId: async (_, { userId } : QueryGetUserProfileByUserIdArgs ) => {
+			return await Profiles.findOne({
+				relations: ['users'],
+				where: {
+					user: {
+						id: userId
+					}
+				}
 			})
-			if (res?.profile) {
-				return res.profile
-			} else {
-				return null
-			}
 		},
   },
   Profile: {

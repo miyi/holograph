@@ -8,7 +8,7 @@ type Profile {
 type Query {
 	getMyProfile: Profile
 	getMyCollection: [Post]
-	getUserProfile(userId: ID!): Profile
+	getUserProfileByUserId(userId: ID!): Profile
 }
 
 type Mutation {
