@@ -27,8 +27,8 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await server.close()
-  await new Promise((resolve) => {
+  server.close()
+  new Promise((resolve) => {
     redis.quit(() => {
       resolve()
     })
