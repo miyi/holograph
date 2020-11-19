@@ -2,24 +2,98 @@ import { ResolverMap } from '../../types/graphql-utils'
 import { Profiles } from '../../entity/Profiles'
 import { createMiddleware } from '../../utils/createMiddleware'
 import { isLoggedInMiddleware } from '../../utils/auth/authMiddleware'
-import { QueryGetProfileByUserIdArgs } from '../../types/graphql'
+import {
+  QueryGetProfileByUserIdArgs,
+  MutationAddPostToMyCollectionArgs,
+} from '../../types/graphql'
+import { Posts } from '../../entity/posts'
+import {
+  MutationRemovePostFromMyCollectionArgs,
+  MutationUpdateMyProfileDescriptionArgs,
+} from '../../types/graphql'
 export const resolvers: ResolverMap = {
   Mutation: {
-    addPostToMyCollection: () => {
-      return null
-    },
-    removePostFromMyCollection: () => {
-      return null
-    },
-    editMyProfileDescription: () => {
-      return null
-    },
+    addPostToMyCollection: createMiddleware(
+      isLoggedInMiddleware,
+      async (_, { postId }: MutationAddPostToMyCollectionArgs, { session }) => {
+        let success = false
+        let profile = await Profiles.findOne({
+          relations: ['user', 'collection'],
+          where: {
+            user: {
+              id: session.userId,
+            },
+          },
+        })
+        let post = await Posts.findOne(postId)
+        if (profile && post) {
+          profile.collection.push(post)
+          success = true
+          await profile.save().catch((err) => {
+            console.log(err.code);
+            success = false
+          })
+        }
+        return success
+      },
+    ),
+    removePostFromMyCollection: createMiddleware(
+      isLoggedInMiddleware,
+      async (
+        _,
+        { postId }: MutationRemovePostFromMyCollectionArgs,
+        { session },
+      ) => {
+        let success = false
+        let profile = await Profiles.findOne({
+          relations: ['user', 'collection'],
+          where: {
+            user: {
+              id: session.userId,
+            },
+          },
+        })
+        if (profile) {
+          profile.collection = profile.collection.filter((post) => {
+            post.id === postId
+          })
+          success = true
+          await profile.save().catch(() => {
+            success = false
+          })
+        }
+        return success
+      },
+    ),
+    updateMyProfileDescription: createMiddleware(
+      isLoggedInMiddleware,
+      async (
+        _,
+        { description }: MutationUpdateMyProfileDescriptionArgs,
+        { session },
+      ) => {
+        let profile = await Profiles.findOne({
+          relations: ['user'],
+          where: {
+            user: {
+              id: session.userId,
+            },
+          },
+        })
+        if (profile) {
+          profile.description = description
+          await profile.save().catch(() => {
+            return null
+          })
+        }
+        return profile
+      },
+    ),
   },
   Query: {
     getMyProfile: createMiddleware(
       isLoggedInMiddleware,
       async (_, __, { session }) => {
-				console.log('resolver running');
         return await Profiles.findOne({
           relations: ['user'],
           where: {

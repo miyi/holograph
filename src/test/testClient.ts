@@ -335,4 +335,37 @@ export class TestClient {
       `,
     })
   }
+
+  addPostToMyCollection(postId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          addPostToMyCollection(postId: "${postId}")
+        }
+      `,
+    })
+  }
+
+  removePostFromMyCollection(postId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          removePostFromMyCollection(postId: "${postId}")
+        }
+      `,
+    })
+  }
+
+  updateMyProfileDescription(description: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          updateMyProfileDescription(description: "${description}") {
+            id
+            description
+          }
+        }
+      `,
+    })
+  }
 }

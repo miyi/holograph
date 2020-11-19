@@ -11,10 +11,10 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addPostToMyCollection?: Maybe<Scalars['Boolean']>;
   createPost?: Maybe<Post>;
   delRedis?: Maybe<Scalars['String']>;
   dummyLogin?: Maybe<Scalars['Boolean']>;
-  editMyProfileDescription?: Maybe<Profile>;
   forgotPasswordChange: AuthResponse;
   login: AuthResponse;
   logout: AuthResponse;
@@ -23,13 +23,18 @@ export type Mutation = {
   register: AuthResponse;
   removePostFromMyCollection?: Maybe<Scalars['Boolean']>;
   saveEditPostBody?: Maybe<Post>;
-  savePostToMyCollection?: Maybe<Scalars['Boolean']>;
   sendForgotPasswordEmail: AuthResponse;
   setRedis?: Maybe<Scalars['String']>;
   setSessionDummy1?: Maybe<Scalars['String']>;
   setSessionDummy2?: Maybe<Scalars['String']>;
   unPublishPost?: Maybe<Post>;
+  updateMyProfileDescription?: Maybe<Profile>;
   updateUserEmail: Scalars['Boolean'];
+};
+
+
+export type MutationAddPostToMyCollectionArgs = {
+  postId: Scalars['ID'];
 };
 
 
@@ -46,11 +51,6 @@ export type MutationDelRedisArgs = {
 export type MutationDummyLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
-};
-
-
-export type MutationEditMyProfileDescriptionArgs = {
-  description?: Maybe<Scalars['String']>;
 };
 
 
@@ -88,11 +88,6 @@ export type MutationSaveEditPostBodyArgs = {
 };
 
 
-export type MutationSavePostToMyCollectionArgs = {
-  postId: Scalars['ID'];
-};
-
-
 export type MutationSendForgotPasswordEmailArgs = {
   email: Scalars['String'];
 };
@@ -106,6 +101,11 @@ export type MutationSetRedisArgs = {
 
 export type MutationUnPublishPostArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationUpdateMyProfileDescriptionArgs = {
+  description?: Maybe<Scalars['String']>;
 };
 
 

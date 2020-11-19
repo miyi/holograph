@@ -18,10 +18,10 @@ export class Posts extends BaseEntity {
   title!: string
 
   @Column('varchar', { nullable: true })
-  body: string | undefined
+  body: string | null | undefined
 
   @ManyToOne(() => Users, (user) => user.posts, {
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   author!: Users
 

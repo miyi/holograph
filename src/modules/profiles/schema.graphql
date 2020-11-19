@@ -13,6 +13,6 @@ type Query {
 
 type Mutation {
 	addPostToMyCollection(postId: ID!): Boolean
-	editMyProfileDescription(description: String): Profile
+	updateMyProfileDescription(description: String): Profile
 	removePostFromMyCollection(postId: ID!): Boolean
 }

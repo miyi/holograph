@@ -16,7 +16,7 @@ export class Profiles extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
   @Column('varchar', { length: 255, nullable: true })
-  description: string | undefined
+  description: string | null | undefined
   @ManyToMany(() => Posts)
   @JoinTable()
   collection!: Posts[]

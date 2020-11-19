@@ -14,7 +14,10 @@ const email = 'jim@jim.com'
 const password = 'password123'
 let user: any
 let post: any
+let post2: any
 const postTitle1 = 'typeorm insert'
+const postTitle2 = 'collection test'
+const profileDescription = 'I am a fun guy'
 
 beforeAll(async () => {
   server = await startServer()
@@ -66,26 +69,75 @@ describe('postCore tests', () => {
         },
       },
     })
-    if (profile) profile.collection.push(post)
-    await profile?.save()
+    if (profile) {
+      profile.collection.push(post)
+    }
+    await profile?.save().catch(() => {
+      console.log('save error')
+    })
+
     let profileCollection = await Profiles.findOne({
       relations: ['collection'],
     })
     expect(profileCollection?.collection.length).toBeGreaterThan(0)
   })
-  it('getProfileByUserId chained with collection post title and user email', async() => {
+  it('getProfileByUserId chained with collection post title and user email', async () => {
     let res = await client.getProfileByUserId(user.id)
     expect(res.data.data.getProfileByUserId.id).toBeTruthy()
-    expect(res.data.data.getProfileByUserId.collection.length).toBeGreaterThan(0)
+    expect(res.data.data.getProfileByUserId.collection.length).toBeGreaterThan(
+      0,
+    )
     expect(res.data.data.getProfileByUserId.user.email).toEqual(email)
   })
   it('getMyProfile not logged out and logged in', async () => {
-    let res =  await client.getMyProfile()
+    let res = await client.getMyProfile()
     expect(res.data.data.getMyProfile).toBeNull()
     await client.login(email, password)
     res = await client.getMyProfile()
     expect(res.data.data.getMyProfile?.id).toBeTruthy()
     expect(res.data.data.getMyProfile.user.email).toEqual(email)
+  })
+  it('creates 2nd post, add to collection', async () => {
+    post2 = await Posts.create({
+      title: postTitle2,
+      author: user,
+    }).save()
+    expect(post2.id).toBeTruthy()
+    let res = await client.addPostToMyCollection(post2.id)
+    expect(res.data.data.addPostToMyCollection).toBeTruthy()
+    let profile = await Profiles.findOne({
+      relations: ['collection'],
+    })
+    expect(profile?.collection.length).toBeGreaterThan(1)
+  })
+  it('adds a duplicate post', async () => {
+    await client.addPostToMyCollection(post2.id)
+    let profile = await Profiles.findOne({
+      relations: ['collection'],
+    })
+    expect(profile?.collection.length).toBeLessThanOrEqual(2)
+  })
+  it('removes post from my collection', async () => {
+    let res = await client.removePostFromMyCollection(post.id)
+    expect(res.data.data.removePostFromMyCollection).toBeTruthy()
+    let profile = await Profiles.findOne({
+      relations: ['collection'],
+    })
+    expect(profile?.collection.length).toBeLessThan(2)
+  })
+  it('removes a post no in my collection', async () => {
+    let res = await client.removePostFromMyCollection(post.id)
+    expect(res.data.data.removePostFromMyCollection).toBeTruthy()
+    let profile = await Profiles.findOne({
+      relations: ['collection'],
+    })
+    expect(profile?.collection.length).toBeLessThanOrEqual(1)
+  })
+  it('updates profile description', async () => {
+    let res = await client.updateMyProfileDescription(profileDescription)
+    expect(res.data.data.updateMyProfileDescription.description).toEqual(
+      profileDescription,
+    )
   })
   it('deletes user and cascade delete posts and profile', async () => {
     let deleteThisUser = await Users.findOne()
