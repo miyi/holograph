@@ -2,7 +2,7 @@ import { Posts } from '../../entity/Posts'
 import { Resolver, GraphqlContext } from '../../types/graphql-utils'
 import { verifyLogin } from './auth-utils'
 
-export const authMiddleware = async (
+export const isLoggedInMiddleware = async (
   resolver: Resolver,
   parent: any,
   args: any,
@@ -35,7 +35,7 @@ export const isPostAuthorMiddleware = async (
       },
     })
     if (post && post.author.id === context.session.userId) {
-      result = await resolver({ ...parent, post}, args, context, info)
+      result = await resolver({ ...parent, post }, args, context, info)
     }
   }
   return result

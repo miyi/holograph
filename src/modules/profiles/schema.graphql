@@ -1,0 +1,18 @@
+type Profile {
+	id: ID!
+	user: User!
+	description: String
+	collection: [Post]
+}
+
+type Query {
+	getMyProfile: Profile
+	getMyCollection: [Post]
+	getProfileByUserId(userId: ID!): Profile
+}
+
+type Mutation {
+	addPostToMyCollection(postId: ID!): Boolean
+	updateMyProfileDescription(description: String): Profile
+	removePostFromMyCollection(postId: ID!): Boolean
+}

@@ -1,18 +1,19 @@
-import { ResolverMap, GraphqlContext } from '../../types/graphql-utils'
 import { Posts } from '../../entity/Posts'
+import { Users } from '../../entity/Users'
 import {
   MutationCreatePostArgs,
+  MutationSaveEditPostBodyArgs,
   QueryGetPostByIdArgs,
+  QueryGetPostsByAuthorIdArgs,
   QueryGetPostsByTitleArgs,
-  QueryGetPostsByAuthorArgs,
 } from '../../types/graphql'
+import { GraphqlContext, ResolverMap } from '../../types/graphql-utils'
 import {
-  authMiddleware,
+  isLoggedInMiddleware,
   isPostAuthorMiddleware,
 } from '../../utils/auth/authMiddleware'
 import { createMiddleware } from '../../utils/createMiddleware'
-import { Users } from '../../entity/Users'
-import { MutationPublishPostArgs } from '../../types/graphql'
+
 export const resolvers: ResolverMap = {
   Query: {
     getPostById: async (
@@ -29,9 +30,9 @@ export const resolvers: ResolverMap = {
         title: title,
       })
     },
-    getPostsByAuthor: async (
+    getPostsByAuthorId: async (
       _,
-      { authorId }: QueryGetPostsByAuthorArgs,
+      { authorId }: QueryGetPostsByAuthorIdArgs,
     ): Promise<Posts[] | undefined> => {
       return await Posts.find({
         author: {
@@ -42,7 +43,7 @@ export const resolvers: ResolverMap = {
   },
   Mutation: {
     createPost: createMiddleware(
-      authMiddleware,
+      isLoggedInMiddleware,
       async (
         _,
         { title }: MutationCreatePostArgs,
@@ -56,23 +57,12 @@ export const resolvers: ResolverMap = {
         return post
       },
     ),
-    publishPost: createMiddleware(
-      authMiddleware,
-      async (_, { id }: MutationPublishPostArgs, { session }) => {
-        let post = await Posts.findOne({
-          relations: ['author'],
-          where: {
-            id: id,
-          },
-        })
-        //check if post author is the current
-        if (post && post.author.id === session.userId) {
-          post.published = true
-          await post.save()
-        }
-        return post
-      },
-    ),
+    publishPost: createMiddleware(isPostAuthorMiddleware, async (parent, _) => {
+      let { post } = parent
+      post.published = true
+      await post.save()
+      return post
+    }),
     unPublishPost: createMiddleware(
       isPostAuthorMiddleware,
       async (parent, _) => {
@@ -82,9 +72,15 @@ export const resolvers: ResolverMap = {
         return post
       },
     ),
-    saveEditPostBody: () => {
-      return null
-    },
+    saveEditPostBody: createMiddleware(
+      isPostAuthorMiddleware,
+      async (parent, { body }: MutationSaveEditPostBodyArgs) => {
+        let { post } = parent
+        post.body = body
+        await post.save()
+        return post
+      },
+    ),
   },
   Post: {
     author: async (parent) => {
