@@ -302,4 +302,37 @@ export class TestClient {
       `,
     })
   }
+
+  getProfileByUserId(userId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getProfileByUserId(userId: "${userId}") {
+            id
+            collection {
+              title
+            }
+            user {
+              email
+            }
+          }
+        }
+      `,
+    })
+  }
+
+  getMyProfile() {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getMyProfile {
+            id
+            user {
+              email
+            }
+          }
+        }
+      `,
+    })
+  }
 }

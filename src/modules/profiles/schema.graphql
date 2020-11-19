@@ -8,11 +8,11 @@ type Profile {
 type Query {
 	getMyProfile: Profile
 	getMyCollection: [Post]
-	getUserProfileByUserId(userId: ID!): Profile
+	getProfileByUserId(userId: ID!): Profile
 }
 
 type Mutation {
-	savePostToMyCollection(postId: ID!): Boolean
+	addPostToMyCollection(postId: ID!): Boolean
 	editMyProfileDescription(description: String): Profile
 	removePostFromMyCollection(postId: ID!): Boolean
 }
