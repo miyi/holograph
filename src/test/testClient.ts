@@ -302,4 +302,70 @@ export class TestClient {
       `,
     })
   }
+
+  getProfileByUserId(userId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getProfileByUserId(userId: "${userId}") {
+            id
+            collection {
+              title
+            }
+            user {
+              email
+            }
+          }
+        }
+      `,
+    })
+  }
+
+  getMyProfile() {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getMyProfile {
+            id
+            user {
+              email
+            }
+          }
+        }
+      `,
+    })
+  }
+
+  addPostToMyCollection(postId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          addPostToMyCollection(postId: "${postId}")
+        }
+      `,
+    })
+  }
+
+  removePostFromMyCollection(postId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          removePostFromMyCollection(postId: "${postId}")
+        }
+      `,
+    })
+  }
+
+  updateMyProfileDescription(description: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          updateMyProfileDescription(description: "${description}") {
+            id
+            description
+          }
+        }
+      `,
+    })
+  }
 }
