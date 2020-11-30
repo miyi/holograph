@@ -39,7 +39,11 @@ export class TestClient {
       query: `
 				mutation {
 					login(email: "${email}", password: "${password}") {
-						success
+            success
+            error {
+              path
+              message
+            }
 					}
 				}
 			`,

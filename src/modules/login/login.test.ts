@@ -70,7 +70,6 @@ describe('login in user', () => {
   })
   it('bad input', async () => {
     let res = await client.login(badinput, mockPassword)
-    console.log(res.data.data.login);
     expect(res.data.data.login.success).toBeFalsy()
     expect(res.data.data.login.error.length).toBeGreaterThan(0)
   })
