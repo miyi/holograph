@@ -16,16 +16,10 @@ import { createMiddleware } from '../../utils/createMiddleware'
 
 export const resolvers: ResolverMap = {
   Query: {
-    getPostById: async (
-      _,
-      { id }: QueryGetPostByIdArgs,
-    ): Promise<Posts | undefined> => {
+    getPostById: async (_, { id }: QueryGetPostByIdArgs) => {
       return await Posts.findOne(id as string)
     },
-    getPostsByTitle: async (
-      _,
-      { title }: QueryGetPostsByTitleArgs,
-    ): Promise<Posts[] | undefined> => {
+    getPostsByTitle: async (_, { title }: QueryGetPostsByTitleArgs) => {
       return await Posts.find({
         title: title,
       })
@@ -33,7 +27,7 @@ export const resolvers: ResolverMap = {
     getPostsByAuthorId: async (
       _,
       { authorId }: QueryGetPostsByAuthorIdArgs,
-    ): Promise<Posts[] | undefined> => {
+    ) => {
       return await Posts.find({
         author: {
           id: authorId,

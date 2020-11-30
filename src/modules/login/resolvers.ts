@@ -33,11 +33,8 @@ export const resolvers: ResolverMap = {
         try {
           await emailPasswordSchema.validate(args, { abortEarly: false })
         } catch (err) {
-          const badInputResponse = {
-            success: false,
-            error: formatYupErr(err),
-          }
-          return badInputResponse
+          authResponse.error = formatYupErr(err)
+          return authResponse
         }
         const { email, password } = args
         //check user exist
