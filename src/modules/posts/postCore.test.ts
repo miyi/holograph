@@ -30,7 +30,7 @@ afterAll(async () => {
   await server.close()
   await new Promise((resolve) => {
     redis.quit(() => {
-      resolve()
+      resolve(true)
     })
   })
 })
