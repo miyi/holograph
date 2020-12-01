@@ -14,7 +14,7 @@ export class Posts extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('varchar', { length: 255, unique: true })
+  @Column('varchar', { length: 255 })
   title!: string
 
   @Column('varchar', { nullable: true })
@@ -34,21 +34,3 @@ export class Posts extends BaseEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt?: Date
 }
-
-// @Entity('postBody')
-// export class PostBody extends BaseEntity {
-//   @PrimaryGeneratedColumn('uuid')
-//   id!: string
-
-//   @Column('varchar', { length: 255, unique: true })
-//   title!: string
-
-//   @Column('varchar', { nullable: true })
-//   body: string | undefined
-
-//   @Column('text', { nullable: true })
-//   points: string | null | undefined
-
-//   @ManyToOne(() => Users, users => users.posts )
-//   author!: Users
-// }

@@ -13,18 +13,6 @@ let req_url: string
 let user: Users
 let client: TestClient
 
-// const mutation = (email: string, password: string) => `
-// 	mutation {
-// 		login(email: "${email}", password: "${password}") {
-// 			success
-//       error {
-// 				path
-// 				message
-// 			}
-//     }
-// 	}
-// `
-
 beforeAll(async () => {
   server = await startServer()
   if (process.env.HOST_URL) {
@@ -46,18 +34,6 @@ afterAll(async () => {
 
 describe('login in user', () => {
   it('registers a user via typeorm', async () => {
-    // await Users.create({
-    //   email,
-    //   password,
-    // }).save()
-    // const user: any = await Users.findOne({
-    //   where: {
-    //     email,
-    //   },
-    // })
-    // user.confirm = true
-    // Users.save(user)
-    // expect(user).not.toBeNull()
     user = await createMockUser()
     expect(user).toBeTruthy()
   })
@@ -84,5 +60,13 @@ describe('login in user', () => {
     expect(res.data.data.login.success).toBeFalsy()
     expect(res.data.data.login.error[0].path).toEqual('password')
     expect(res.data.data.login.error[0].message).toEqual('incorrect password')
+  })
+
+  it('log in again while already logged in', async () => {
+    let res = await client.login(user.email, mockPassword)
+    expect(res.data.data.login.success).toBeTruthy()
+    let user2 = await createMockUser()
+    res = await client.login(user2.email, mockPassword)
+    console.log(res.data.data.login.error[0])
   })
 })

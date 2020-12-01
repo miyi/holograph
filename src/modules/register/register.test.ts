@@ -3,9 +3,13 @@ import { startServer } from '../../startServer'
 import { Server } from 'http'
 import { TestClient } from '../../test/testClient'
 import { duplicateEmail } from '../../utils/auth/AuthErrors'
+import { redis } from '../../server_configs/redisServer'
+import faker from 'faker'
+import { mockPassword } from '../../test/mockData'
 
-let email = 'bob@bob.com'
-let password = 'asasdfasdfasdf'
+let email1 = faker.internet.email()
+let email2 = faker.internet.email()
+let email3 = faker.internet.email()
 let badEmail = 'asa@a'
 let badPassword = 'aaaaa'
 let server: Server
@@ -24,23 +28,43 @@ beforeAll(async () => {
 
 afterAll(async () => {
   server.close()
+  await new Promise((resolve) => {
+    redis.quit(() => {
+      resolve(true)
+    })
+  })
 })
 
 describe('register user activity', () => {
-  it('register new user', async () => {
-    const response = await client.register(email, password)
+  it('register new user1', async () => {
+    const response = await client.register(email1, mockPassword)
     expect(response.data.data.register.success).toBeTruthy()
-    const users = await Users.find({
-      where: { email },
+    const user = await Users.findOne({
+      where: { email: email1 },
     })
-    expect(users).toHaveLength(1)
-    const user = users[0]
-    expect(user.email).toBe(email)
-    expect(user.password).not.toBe(password)
+    expect(user?.email).toBe(email1)
+  })
+
+  it('register new user2', async () => {
+    const response = await client.register(email2, mockPassword)
+    expect(response.data.data.register.success).toBeTruthy()
+    const user = await Users.findOne({
+      where: { email: email2 },
+    })
+    expect(user?.email).toBe(email2)
+  })
+
+  it('register new user3', async () => {
+    const response = await client.register(email3, mockPassword)
+    expect(response.data.data.register.success).toBeTruthy()
+    const user = await Users.findOne({
+      where: { email: email3 },
+    })
+    expect(user?.email).toBe(email3)
   })
 
   it('register existing email', async () => {
-    const response = await client.register(email, password)
+    const response = await client.register(email1, mockPassword)
     expect(response.data.data.register.error[0]).toEqual(duplicateEmail)
   })
 
