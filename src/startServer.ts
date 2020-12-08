@@ -7,7 +7,7 @@ import { AddressInfo } from './types/server-utils'
 export const startServer = (
   port: number = process.env.NODE_ENV === 'DEV' ? 4000 : 0,
   address: string = 'localhost',
-): Promise<Server> =>
+) =>
   new Promise<Server>(async (resolve) => {
     await createTypeormConnection()
     const app = createExpressApp()

@@ -1,16 +1,16 @@
+import { hashSync } from 'bcryptjs'
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
+  AfterInsert,
   BaseEntity,
   BeforeInsert,
-  OneToMany,
+  Column,
   CreateDateColumn,
+  Entity,
+  OneToMany,
   OneToOne,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
-  AfterInsert,
 } from 'typeorm'
-import { hashSync } from 'bcryptjs'
 import { Posts } from './Posts'
 import { Profiles } from './Profiles'
 
@@ -43,10 +43,7 @@ export class Users extends BaseEntity {
   @Column('bool', { nullable: false, default: true })
   deactivated!: boolean
 
-  @OneToOne(() => Profiles, (profile) => profile.user, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToOne(() => Profiles, (profile) => profile.user, )
   profile!: Profiles
 
   @OneToMany(() => Posts, (posts) => posts.author, {
@@ -62,8 +59,6 @@ export class Users extends BaseEntity {
 
   @AfterInsert()
   async createProfile() {
-    let profile = await Profiles.create().save()
-    this.profile = profile
-    this.save()
+    this.profile = await Profiles.create().save()
   }
 }
