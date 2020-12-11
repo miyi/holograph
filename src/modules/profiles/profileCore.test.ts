@@ -3,54 +3,32 @@ import { Posts } from '../../entity/Posts'
 import { Profiles } from '../../entity/Profiles'
 import { TestClient } from '../../test/testClient'
 import { Users } from '../../entity/Users'
-import { redis } from '../../server_configs/redisServer'
-import { startServer } from '../../startServer'
+import { testSetup, testTeardown } from '../../test/testSetup'
+import { createMockPostByUser, createMockUser } from '../../test/mockData'
 
 let server: Server
-let req_url: string
 let client: TestClient
 
 const email = 'jim@jim.com'
 const password = 'password123'
 let user: any
-let post: any
+let post1: any
 let post2: any
-const postTitle1 = 'typeorm insert'
-const postTitle2 = 'collection test'
 const profileDescription = 'I am a fun guy'
 
 beforeAll(async () => {
-  server = await startServer()
-  if (process.env.HOST_URL) {
-    req_url = process.env.HOST_URL + '/graphql'
-    client = new TestClient(req_url)
-  } else {
-    throw Error('no url')
-  }
+  server = await testSetup()
+  client = new TestClient()
+  user = await createMockUser()
+  post1 = await createMockPostByUser(user)
+  post2 = await createMockPostByUser(user)
 })
 
-afterAll(async () => {
-  server.close()
-  new Promise((resolve) => {
-    redis.quit(() => {
-      resolve(true)
-    })
-  })
+afterAll(() => {
+  testTeardown(server)
 })
 
-describe('postCore tests', () => {
-  it('creates user and post', async () => {
-    user = await Users.create({
-      email,
-      password,
-    }).save()
-    expect(user.id).not.toBeNull()
-    post = await Posts.create({
-      title: postTitle1,
-      author: user,
-    }).save()
-    expect(post.id).not.toBeNull()
-  })
+describe('profileCore tests', async () => {
   it('retrieves profile', async () => {
     let res = await Users.findOne({
       relations: ['profile'],
@@ -70,7 +48,7 @@ describe('postCore tests', () => {
       },
     })
     if (profile) {
-      profile.collection.push(post)
+      profile.collection.push(post1)
     }
     await profile?.save().catch(() => {
       console.log('save error')
@@ -98,10 +76,6 @@ describe('postCore tests', () => {
     expect(res.data.data.getMyProfile.user.email).toEqual(email)
   })
   it('creates 2nd post, add to collection', async () => {
-    post2 = await Posts.create({
-      title: postTitle2,
-      author: user,
-    }).save()
     expect(post2.id).toBeTruthy()
     let res = await client.addPostToMyCollection(post2.id)
     expect(res.data.data.addPostToMyCollection).toBeTruthy()
@@ -118,7 +92,7 @@ describe('postCore tests', () => {
     expect(profile?.collection.length).toBeLessThanOrEqual(2)
   })
   it('removes post from my collection', async () => {
-    let res = await client.removePostFromMyCollection(post.id)
+    let res = await client.removePostFromMyCollection(post1.id)
     expect(res.data.data.removePostFromMyCollection).toBeTruthy()
     let profile = await Profiles.findOne({
       relations: ['collection'],
@@ -126,7 +100,7 @@ describe('postCore tests', () => {
     expect(profile?.collection.length).toBeLessThan(2)
   })
   it('removes a post no in my collection', async () => {
-    let res = await client.removePostFromMyCollection(post.id)
+    let res = await client.removePostFromMyCollection(post1.id)
     expect(res.data.data.removePostFromMyCollection).toBeTruthy()
     let profile = await Profiles.findOne({
       relations: ['collection'],

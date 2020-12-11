@@ -1,5 +1,6 @@
 import { Server } from 'http'
 import { Posts } from '../entity/Posts'
+import { Profiles } from '../entity/Profiles'
 import { Users } from '../entity/Users'
 import { createMockPostByUser, createMockUser } from './mockData'
 import { testSetup, testTeardown } from './testSetup'
@@ -30,6 +31,13 @@ describe('check if mockdata works', () => {
     expect(user2.id).toBeTruthy()
     expect(user3.id).toBeTruthy()
   })
+  it('find 3 profiles created by Users', async () => {
+    let res = await Profiles.find({
+      relations: ['user'],
+    })
+    expect(res.length).toEqual(3)
+  })
+  it('checks if profiles are linked to ')
   it('creates 3 posts for each of the 3 users', async () => {
     post1 = await createMockPostByUser(user1)
     post2 = await createMockPostByUser(user2)
@@ -37,7 +45,6 @@ describe('check if mockdata works', () => {
     expect(post1.id).toBeTruthy()
     expect(post2.id).toBeTruthy()
     expect(post3.id).toBeTruthy()
-    expect(user1.profile.id).toBeTruthy()
   })
   it('finds user by email', async () => {
     let user1res = await Users.findOne({

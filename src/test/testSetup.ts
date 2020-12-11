@@ -5,7 +5,6 @@ const testSetup = async () => {
   const server = await startServer().catch(() => {
     throw Error('no url')
   })
-
   return server
 }
 

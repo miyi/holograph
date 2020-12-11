@@ -1,6 +1,5 @@
 import { hashSync } from 'bcryptjs'
 import {
-  AfterInsert,
   BaseEntity,
   BeforeInsert,
   Column,
@@ -43,12 +42,13 @@ export class Users extends BaseEntity {
   @Column('bool', { nullable: false, default: true })
   deactivated!: boolean
 
-  @OneToOne(() => Profiles, (profile) => profile.user, )
+  @OneToOne(() => Profiles, (profile) => profile.user, {
+    cascade: true,
+  })
   profile!: Profiles
 
   @OneToMany(() => Posts, (posts) => posts.author, {
     cascade: true,
-    onDelete: 'CASCADE',
   })
   posts!: Posts[]
 
@@ -56,9 +56,13 @@ export class Users extends BaseEntity {
   hashPassword() {
     if (this.password) this.password = hashSync(this.password, 12)
   }
-
-  @AfterInsert()
+  @BeforeInsert()
   async createProfile() {
     this.profile = await Profiles.create().save()
   }
+
+  // @BeforeRemove()
+  // async removeProfile() {
+  //   await Profiles.remove(this.profile)
+  // }
 }
