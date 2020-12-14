@@ -9,6 +9,7 @@ import {
   OneToOne,
   UpdateDateColumn,
   AfterInsert,
+  JoinColumn,
 } from 'typeorm'
 import { hashSync } from 'bcryptjs'
 import { Posts } from './Posts'
@@ -47,6 +48,7 @@ export class Users extends BaseEntity {
     cascade: true,
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   profile!: Profiles
 
   @OneToMany(() => Posts, (posts) => posts.author, {
@@ -59,11 +61,9 @@ export class Users extends BaseEntity {
   hashPassword() {
     if (this.password) this.password = hashSync(this.password, 12)
   }
-
-  @AfterInsert()
+  @BeforeInsert()
   async createProfile() {
-    let profile = await Profiles.create().save()
-    this.profile = profile
-    this.save()
+    this.profile = await Profiles.create().save();
   }
+
 }

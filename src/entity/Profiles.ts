@@ -25,6 +25,5 @@ export class Profiles extends BaseEntity {
   @OneToOne(() => Users, (user) => user.profile, {
     onDelete: 'CASCADE',
   }) // specify inverse side as a second parameter
-  @JoinColumn()
   user!: Users
 }
