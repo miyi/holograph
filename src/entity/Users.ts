@@ -41,7 +41,7 @@ export class Users extends BaseEntity {
   @Column('bool', { default: false })
   confirm!: boolean
 
-  @Column('bool', { nullable: false, default: true })
+  @Column('bool', { nullable: false, default: false })
   deactivated!: boolean
 
   @OneToOne(() => Profiles, (profile) => profile.user, {
@@ -63,7 +63,6 @@ export class Users extends BaseEntity {
   }
   @BeforeInsert()
   async createProfile() {
-    this.profile = await Profiles.create().save();
+    this.profile = await Profiles.create().save()
   }
-
 }
