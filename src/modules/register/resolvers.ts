@@ -1,6 +1,6 @@
 import { ResolverMap } from '../../types/graphql-utils'
 import { MutationRegisterArgs, AuthResponse } from '../../types/graphql'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { formatYupErr } from '../../utils/formatYupError'
 import { createConfirmEmailLink } from '../../utils/createLink'
 import { sendConfirmationEmail } from '../../utils/sendEmail'

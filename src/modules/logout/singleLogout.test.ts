@@ -1,7 +1,7 @@
 import { Server } from 'http'
 import { TestClient } from '../../test/testClient'
 import { AxiosResponse } from 'axios'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { startServer } from '../../startServer'
 
 let req_url: string

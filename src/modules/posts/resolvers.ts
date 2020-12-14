@@ -1,5 +1,5 @@
-import { Posts } from '../../entity/Posts'
-import { Users } from '../../entity/Users'
+import { Post } from '../../entity/Post'
+import { Users } from '../../entity/User'
 import {
   MutationCreatePostArgs,
   MutationSaveEditPostBodyArgs,
@@ -17,10 +17,10 @@ import { createMiddleware } from '../../utils/createMiddleware'
 export const resolvers: ResolverMap = {
   Query: {
     getPostById: async (_, { id }: QueryGetPostByIdArgs) => {
-      return await Posts.findOne(id as string)
+      return await Post.findOne(id as string)
     },
     getPostsByTitle: async (_, { title }: QueryGetPostsByTitleArgs) => {
-      return await Posts.find({
+      return await Post.find({
         title: title,
       })
     },
@@ -28,7 +28,7 @@ export const resolvers: ResolverMap = {
       _,
       { authorId }: QueryGetPostsByAuthorIdArgs,
     ) => {
-      return await Posts.find({
+      return await Post.find({
         author: {
           id: authorId,
         },
@@ -44,7 +44,7 @@ export const resolvers: ResolverMap = {
         { session }: GraphqlContext,
       ) => {
         const user = await Users.findOne(session.userId)
-        const post = await Posts.create({
+        const post = await Post.create({
           title,
           author: user,
         }).save()
@@ -78,7 +78,7 @@ export const resolvers: ResolverMap = {
   },
   Post: {
     author: async (parent) => {
-      let post = await Posts.findOne({
+      let post = await Post.findOne({
         relations: ['author'],
         where: {
           id: parent.id,

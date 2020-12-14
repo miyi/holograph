@@ -3,7 +3,7 @@ import { MutationLoginArgs, AuthResponse } from '../../types/graphql'
 import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { loginUser } from '../../utils/auth/auth-utils'
 
 import {

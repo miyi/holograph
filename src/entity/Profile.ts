@@ -7,19 +7,19 @@ import {
   JoinTable,
   OneToOne,
 } from 'typeorm'
-import { Posts } from './Posts'
-import { Users } from './Users'
+import { Post } from './Post'
+import { Users } from './User'
 
 @Entity('profile')
-export class Profiles extends BaseEntity {
+export class Profile extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
   @Column('varchar', { length: 255, nullable: true })
   description: string | null | undefined
 
-  @ManyToMany(() => Posts)
+  @ManyToMany(() => Post)
   @JoinTable()
-  collection!: Posts[]
+  collection!: Post[]
   @OneToOne(() => Users, (user) => user.profile, {
     onDelete: 'CASCADE',
   }) // specify inverse side as a second parameter

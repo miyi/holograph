@@ -6,7 +6,7 @@ import {
   MutationSendForgotPasswordEmailArgs,
 } from '../../types/graphql'
 import { ResolverMap } from '../../types/graphql-utils'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { sessionUserError } from '../../utils/auth/AuthErrors'
 import {
   passwordValidateSchema,

@@ -1,4 +1,4 @@
-import { Users } from './Users'
+import { Users } from './User'
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -10,7 +10,7 @@ import {
 } from 'typeorm'
 
 @Entity('post')
-export class Posts extends BaseEntity {
+export class Post extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 

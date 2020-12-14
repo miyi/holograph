@@ -1,7 +1,7 @@
 import { Server } from 'http'
-import { Posts } from '../entity/Posts'
-import { Profiles } from '../entity/Profiles'
-import { Users } from '../entity/Users'
+import { Post } from '../entity/Post'
+import { Profile } from '../entity/Profile'
+import { Users } from '../entity/User'
 import { createMockPostByUser, createMockUser } from './mockData'
 import { testSetup, testTeardown } from './testSetup'
 
@@ -19,9 +19,9 @@ describe('check if mockdata works', () => {
   let user1: Users
   let user2: Users
   let user3: Users
-  let post1: Posts
-  let post2: Posts
-  let post3: Posts
+  let post1: Post
+  let post2: Post
+  let post3: Post
 
   it('creates 3 users', async () => {
     user1 = await createMockUser()
@@ -32,7 +32,7 @@ describe('check if mockdata works', () => {
     expect(user3.id).toBeTruthy()
   })
   it('find 3 profiles created by Users', async () => {
-    let res = await Profiles.find({
+    let res = await Profile.find({
       relations: ['user'],
     })
     expect(res.length).toEqual(3)
@@ -69,11 +69,11 @@ describe('check if mockdata works', () => {
     expect(user3res?.email).toEqual(user3.email)
   })
   it('finds post1 by id', async () => {
-    let post1res = await Posts.findOne(post1.id)
+    let post1res = await Post.findOne(post1.id)
     expect(post1res?.title).toEqual(post1.title)
-    let post2res = await Posts.findOne(post2.id)
+    let post2res = await Post.findOne(post2.id)
     expect(post2res?.title).toEqual(post2.title)
-    let post3res = await Posts.findOne(post3.id)
+    let post3res = await Post.findOne(post3.id)
     expect(post3res?.title).toEqual(post3.title)
   })
 

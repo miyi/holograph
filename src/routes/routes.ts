@@ -1,6 +1,6 @@
 import { Router, Response } from 'express'
 import { asyncRedis, redis } from '../server_configs/redisServer'
-import { Users } from '../entity/Users'
+import { Users } from '../entity/User'
 import { confirmUserPrefix } from '../utils/constants'
 import passport from 'passport'
 import { loginUser } from '../utils/auth/auth-utils'

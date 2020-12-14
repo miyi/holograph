@@ -1,12 +1,12 @@
 import { ResolverMap } from '../../types/graphql-utils'
-import { Profiles } from '../../entity/Profiles'
+import { Profile } from '../../entity/Profile'
 import { createMiddleware } from '../../utils/createMiddleware'
 import { isLoggedInMiddleware } from '../../utils/auth/authMiddleware'
 import {
   QueryGetProfileByUserIdArgs,
   MutationAddPostToMyCollectionArgs,
 } from '../../types/graphql'
-import { Posts } from '../../entity/posts'
+import { Post } from '../../entity/Post'
 import {
   MutationRemovePostFromMyCollectionArgs,
   MutationUpdateMyProfileDescriptionArgs,
@@ -17,7 +17,7 @@ export const resolvers: ResolverMap = {
       isLoggedInMiddleware,
       async (_, { postId }: MutationAddPostToMyCollectionArgs, { session }) => {
         let success = false
-        let profile = await Profiles.findOne({
+        let profile = await Profile.findOne({
           relations: ['user', 'collection'],
           where: {
             user: {
@@ -25,12 +25,12 @@ export const resolvers: ResolverMap = {
             },
           },
         })
-        let post = await Posts.findOne(postId)
+        let post = await Post.findOne(postId)
         if (profile && post) {
           profile.collection.push(post)
           success = true
           await profile.save().catch((err) => {
-            console.log(err.code);
+            console.log(err.code)
             success = false
           })
         }
@@ -45,7 +45,7 @@ export const resolvers: ResolverMap = {
         { session },
       ) => {
         let success = false
-        let profile = await Profiles.findOne({
+        let profile = await Profile.findOne({
           relations: ['user', 'collection'],
           where: {
             user: {
@@ -72,7 +72,7 @@ export const resolvers: ResolverMap = {
         { description }: MutationUpdateMyProfileDescriptionArgs,
         { session },
       ) => {
-        let profile = await Profiles.findOne({
+        let profile = await Profile.findOne({
           relations: ['user'],
           where: {
             user: {
@@ -94,7 +94,7 @@ export const resolvers: ResolverMap = {
     getMyProfile: createMiddleware(
       isLoggedInMiddleware,
       async (_, __, { session }) => {
-        return await Profiles.findOne({
+        return await Profile.findOne({
           relations: ['user'],
           where: {
             user: {
@@ -107,7 +107,7 @@ export const resolvers: ResolverMap = {
     getMyCollection: createMiddleware(
       isLoggedInMiddleware,
       async (_, __, { session }) => {
-        let profile = await Profiles.findOne({
+        let profile = await Profile.findOne({
           relations: ['user', 'collection'],
           where: {
             user: {
@@ -123,7 +123,7 @@ export const resolvers: ResolverMap = {
       },
     ),
     getProfileByUserId: async (_, { userId }: QueryGetProfileByUserIdArgs) => {
-      return await Profiles.findOne({
+      return await Profile.findOne({
         relations: ['user'],
         where: {
           user: {
@@ -135,7 +135,7 @@ export const resolvers: ResolverMap = {
   },
   Profile: {
     user: async (parent) => {
-      let profile = await Profiles.findOne(parent.id, {
+      let profile = await Profile.findOne(parent.id, {
         relations: ['user'],
       })
       if (profile) {
@@ -145,7 +145,7 @@ export const resolvers: ResolverMap = {
       }
     },
     collection: async (parent) => {
-      let profile = await Profiles.findOne(parent.id, {
+      let profile = await Profile.findOne(parent.id, {
         relations: ['collection'],
       })
       if (profile) {

@@ -1,7 +1,7 @@
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { startServer } from '../../startServer'
 import { TestClient } from '../../test/testClient'
-import { Posts } from '../../entity/Posts'
+import { Post } from '../../entity/Post'
 import { Server } from 'http'
 import { redis } from '../../server_configs/redisServer'
 
@@ -11,7 +11,7 @@ const email = 'jim@jim.com'
 const password = 'password123'
 let req_url: string
 let user: any
-let post: Posts
+let post: Post
 const postTitle1 = 'typeorm insert'
 const postTitle2 = 'create post'
 const postBody = 'bodybody'
@@ -42,7 +42,7 @@ describe('postCore tests', () => {
       password,
     }).save()
     expect(user.id).not.toBeNull()
-    post = await Posts.create({
+    post = await Post.create({
       title: postTitle1,
       author: user,
     }).save()
@@ -57,7 +57,7 @@ describe('postCore tests', () => {
     expect(res.data.data.getPostById.author.email).toEqual(email)
   })
   it('typeorm gets author from post', async () => {
-    let res = await Posts.findOne({
+    let res = await Post.findOne({
       relations: ['author'],
       where: {
         id: post.id,
@@ -66,7 +66,7 @@ describe('postCore tests', () => {
     expect(res?.author.id).toEqual(user.id)
   })
   it('typeorm gets author from post using queryBuilder', async () => {
-    let res = await Posts.createQueryBuilder('posts')
+    let res = await Post.createQueryBuilder('posts')
       .leftJoinAndSelect('posts.author', 'users')
       .getMany()
     expect(res.length).toBeGreaterThan(0)

@@ -1,7 +1,7 @@
 // import { Server } from 'http'
 import { createQueryBuilder } from 'typeorm'
-import { Posts } from '../../../entity/Posts'
-import { Users } from '../../../entity/Users'
+import { Post } from '../../../entity/Post'
+import { Users } from '../../../entity/User'
 import { startServer } from '../../../startServer'
 import { TmpTestClient } from '../../../test/tmpTestClient'
 
@@ -38,7 +38,7 @@ describe('test resolver chain  setup', () => {
     expect(reply.data.data.libraries.length).toBeGreaterThan(0)
   }),
     it('typeorm gets posts from user', async () => {
-      await Posts.create({
+      await Post.create({
         title: postTitle,
         author: user,
       }).save()
@@ -57,7 +57,7 @@ describe('test resolver chain  setup', () => {
       })
       console.log(userPosts?.posts)
 
-      const postsFromUser = await Posts.find({
+      const postsFromUser = await Post.find({
         author: {
           id: user.id,
         },

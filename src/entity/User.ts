@@ -11,8 +11,8 @@ import {
   UpdateDateColumn,
   JoinColumn,
 } from 'typeorm'
-import { Posts } from './Posts'
-import { Profiles } from './Profiles'
+import { Post } from './Post'
+import { Profile } from './Profile'
 
 @Entity('user')
 export class Users extends BaseEntity {
@@ -43,16 +43,16 @@ export class Users extends BaseEntity {
   @Column('bool', { nullable: false, default: false })
   deactivated!: boolean
 
-  @OneToOne(() => Profiles, (profile) => profile.user, {
+  @OneToOne(() => Profile, (profile) => profile.user, {
     cascade: true,
   })
   @JoinColumn()
-  profile!: Profiles
+  profile!: Profile
 
-  @OneToMany(() => Posts, (posts) => posts.author, {
+  @OneToMany(() => Post, (posts) => posts.author, {
     cascade: true,
   })
-  posts!: Posts[]
+  posts!: Post[]
 
   @BeforeInsert()
   hashPassword() {
@@ -60,11 +60,11 @@ export class Users extends BaseEntity {
   }
   @BeforeInsert()
   async createProfile() {
-    this.profile = await Profiles.create().save()
+    this.profile = await Profile.create().save()
   }
 
   // @BeforeRemove()
   // async removeProfile() {
-  //   await Profiles.remove(this.profile)
+  //   await Profile.remove(this.profile)
   // }
 }

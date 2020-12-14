@@ -2,7 +2,7 @@ import { startApolloServer } from './../../startApolloServer';
 import { Server } from 'http'
 import { TestClient } from '../../test/testClient'
 import { AxiosResponse } from 'axios'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { sessionUserError } from '../../utils/auth/AuthErrors'
 
 let req_url: string

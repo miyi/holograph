@@ -1,5 +1,5 @@
 import { Server } from 'http'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { redis } from '../../server_configs/redisServer'
 import { startServer } from '../../startServer'
 import { createMockUser, mockPassword } from '../../test/mockData'

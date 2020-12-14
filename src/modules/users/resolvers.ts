@@ -3,9 +3,9 @@ import {
   QueryGetUserByIdArgs,
   QueryGetUserByEmailArgs,
 } from '../../types/graphql'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { emailValidateSchema } from '../../utils/yupValidate'
-import { Posts } from '../../entity/Posts'
+import { Post } from '../../entity/Post'
 
 export const resolvers: ResolverMap = {
   Query: {
@@ -42,10 +42,10 @@ export const resolvers: ResolverMap = {
   },
   User: {
     posts: async (parent) => {
-      return await Posts.find({
+      return await Post.find({
         author: {
-          id: parent.id
-        }
+          id: parent.id,
+        },
       })
     },
   },

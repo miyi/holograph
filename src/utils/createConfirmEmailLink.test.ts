@@ -1,5 +1,5 @@
 import { createConfirmEmailLink } from './createLink'
-import { Users } from '../entity/Users'
+import { Users } from '../entity/User'
 import fetch from 'node-fetch'
 import { Server } from 'http'
 import { asyncRedis } from '../server_configs/redisServer';

@@ -1,6 +1,6 @@
 import faker from 'faker'
-import { Posts } from '../entity/posts'
-import { Users } from '../entity/Users'
+import { Post } from '../entity/Post'
+import { Users } from '../entity/User'
 
 const mockPassword = 'password1234'
 const createMockUser = async (confirm = true) => {
@@ -12,7 +12,7 @@ const createMockUser = async (confirm = true) => {
 }
 
 const createMockPostByUser = async (user: Users) => {
-  return await Posts.create({
+  return await Post.create({
     title: faker.random.words(4),
     author: user,
   }).save()

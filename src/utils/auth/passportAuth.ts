@@ -10,7 +10,7 @@ import {
   Strategy as GoogleStrategy,
   StrategyOptions as GoogleStrategyOptions,
 } from 'passport-google-oauth20'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 
 const twitterCbUrl = 'http://127.0.0.1:4000/auth/twitter/callback'
 const googleCbUrl = 'http://127.0.0.1:4000/auth/google/callback'

@@ -1,5 +1,5 @@
 import { TestClient } from '../../test/testClient'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { Server } from 'http'
 import { AxiosResponse } from 'axios'
 import { createForgotPasswordLink } from '../../utils/createLink'

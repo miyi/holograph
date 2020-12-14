@@ -1,6 +1,6 @@
 import { Server } from 'http'
 import { TestClient } from '../../test/testClient'
-import { Users } from '../../entity/Users'
+import { Users } from '../../entity/User'
 import { sessionUserError } from '../../utils/auth/AuthErrors'
 import { startServer } from '../../startServer'
 import { redis } from '../../server_configs/redisServer'
