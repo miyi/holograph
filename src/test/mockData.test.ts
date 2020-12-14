@@ -36,8 +36,10 @@ describe('check if mockdata works', () => {
       relations: ['user'],
     })
     expect(res.length).toEqual(3)
+    res.forEach((profile) => {
+      expect(profile.user.id).toBeTruthy()
+    })
   })
-  it('checks if profiles are linked to ')
   it('creates 3 posts for each of the 3 users', async () => {
     post1 = await createMockPostByUser(user1)
     post2 = await createMockPostByUser(user2)

@@ -9,6 +9,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm'
 import { Posts } from './Posts'
 import { Profiles } from './Profiles'
@@ -39,12 +40,13 @@ export class Users extends BaseEntity {
   @Column('bool', { default: false })
   confirm!: boolean
 
-  @Column('bool', { nullable: false, default: true })
+  @Column('bool', { nullable: false, default: false })
   deactivated!: boolean
 
   @OneToOne(() => Profiles, (profile) => profile.user, {
     cascade: true,
   })
+  @JoinColumn()
   profile!: Profiles
 
   @OneToMany(() => Posts, (posts) => posts.author, {
