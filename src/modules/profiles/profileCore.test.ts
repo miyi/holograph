@@ -39,18 +39,27 @@ describe('profileCore tests', () => {
     let res = await Post.find({
       relations: ['author'],
     })
-    console.log(res)
+    expect(res.length).toEqual(2)    
   })
   it('find profile by user and insert post to collection', async () => {
-    let profile = await Profile.findOne({
-      relations: ['user', 'collection'],
+    let profiles = await Profile.find({
+      relations: ['user'],
       where: {
         user: {
-          id: user.id,
-        },
-      },
+          id: user.id
+        }
+      }
     })
-    console.log('profile: ', profile)
+    console.log(profiles);
+    let profile = await Profile.findOne({
+      relations: ['user'],
+      where: {
+        user: {
+          id: user.id
+        }
+      }
+    })
+    console.log(profile)
   })
 
   // it('getMyProfile not logged out and logged in', async () => {
