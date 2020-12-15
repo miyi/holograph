@@ -1,4 +1,4 @@
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { startServer } from '../../startServer'
 import { TestClient } from '../../test/testClient'
 import { Post } from '../../entity/Post'
@@ -37,7 +37,7 @@ afterAll(async () => {
 
 describe('postCore tests', () => {
   it('creates user and post', async () => {
-    user = await Users.create({
+    user = await User.create({
       email,
       password,
     }).save()

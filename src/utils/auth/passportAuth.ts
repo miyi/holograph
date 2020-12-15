@@ -10,7 +10,7 @@ import {
   Strategy as GoogleStrategy,
   StrategyOptions as GoogleStrategyOptions,
 } from 'passport-google-oauth20'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 
 const twitterCbUrl = 'http://127.0.0.1:4000/auth/twitter/callback'
 const googleCbUrl = 'http://127.0.0.1:4000/auth/google/callback'
@@ -32,7 +32,7 @@ const googleCallback = async (
     cb(error, null)
   } else {
     const email = emails[0].value
-    let user = await Users.findOne({ where: { email } })
+    let user = await User.findOne({ where: { email } })
     if (user) {
       //user exists
       if (!user.googleId) {
@@ -42,7 +42,7 @@ const googleCallback = async (
       }
     } else {
       //register user
-      user = await Users.create({
+      user = await User.create({
         email,
         googleId: id,
       }).save()
@@ -69,7 +69,7 @@ const twitterCallback = async (
     cb(error, null)
   } else {
     const email = emails[0].value
-    let user: Users | undefined = await Users.findOne({ where: { email } })
+    let user: User | undefined = await User.findOne({ where: { email } })
     if (user) {
       //user exists
       if (!user.twitterId) {
@@ -79,7 +79,7 @@ const twitterCallback = async (
       }
     } else {
       //register user
-      user = await Users.create({
+      user = await User.create({
         email,
         twitterId: id,
       }).save()

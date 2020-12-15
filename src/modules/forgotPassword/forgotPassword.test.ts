@@ -1,5 +1,5 @@
 import { TestClient } from '../../test/testClient'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { Server } from 'http'
 import { AxiosResponse } from 'axios'
 import { createForgotPasswordLink } from '../../utils/createLink'
@@ -7,7 +7,7 @@ import { asyncRedis } from '../../server_configs/redisServer'
 import { forgotPasswordPrefix } from '../../utils/constants'
 import { startServer } from '../../startServer'
 
-let user: Users
+let user: User
 let server: Server
 let userId: string
 let req_url: string
@@ -36,7 +36,7 @@ afterAll(() => {
 
 describe('forgotPassword test suite', () => {
   it('create user via typeorm', async () => {
-    user = await Users.create({
+    user = await User.create({
       email,
       password,
     })

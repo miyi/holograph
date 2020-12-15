@@ -1,6 +1,6 @@
 import { ResolverMap } from '../../types/graphql-utils'
 import { MutationRegisterArgs, AuthResponse } from '../../types/graphql'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { formatYupErr } from '../../utils/formatYupError'
 import { createConfirmEmailLink } from '../../utils/createLink'
 import { sendConfirmationEmail } from '../../utils/sendEmail'
@@ -23,7 +23,7 @@ export const resolvers: ResolverMap = {
         return authResponse
       }
       const { email, password } = args
-      const userAlreadyExist = await Users.findOne({
+      const userAlreadyExist = await User.findOne({
         where: { email },
         select: ['id'],
       })
@@ -31,7 +31,7 @@ export const resolvers: ResolverMap = {
         authResponse.error.push(duplicateEmail)
         return authResponse
       }
-      const user = await Users.create({
+      const user = await User.create({
         email,
         password,
       }).save()

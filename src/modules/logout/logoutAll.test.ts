@@ -1,6 +1,6 @@
 import { Server } from 'http'
 import { TestClient } from '../../test/testClient'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { sessionUserError } from '../../utils/auth/AuthErrors'
 import { startServer } from '../../startServer'
 import { redis } from '../../server_configs/redisServer'
@@ -9,8 +9,7 @@ import { createMockUser, mockPassword } from '../../test/mockData'
 let req_url: string
 let client: any
 let server: Server
-let user1: Users
-
+let user1: User
 
 beforeAll(async () => {
   server = await startServer()
@@ -22,7 +21,7 @@ beforeAll(async () => {
   }
 })
 
-afterAll( async () => {
+afterAll(async () => {
   await server.close()
   await new Promise((resolve) => {
     redis.quit(() => {

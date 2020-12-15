@@ -3,7 +3,7 @@ import {
   QueryGetUserByIdArgs,
   QueryGetUserByEmailArgs,
 } from '../../types/graphql'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { emailValidateSchema } from '../../utils/yupValidate'
 import { Post } from '../../entity/Post'
 
@@ -12,14 +12,14 @@ export const resolvers: ResolverMap = {
     getUserById: async (
       _,
       { id }: QueryGetUserByIdArgs,
-    ): Promise<Users | undefined> => {
-      return await Users.findOne(id as string)
+    ): Promise<User | undefined> => {
+      return await User.findOne(id as string)
     },
     getUserByEmail: async (
       _,
       { email }: QueryGetUserByEmailArgs,
-    ): Promise<Users | undefined> => {
-      return await Users.findOne({ email: email as string })
+    ): Promise<User | undefined> => {
+      return await User.findOne({ email: email as string })
     },
   },
   Mutation: {
@@ -30,10 +30,10 @@ export const resolvers: ResolverMap = {
         return success
       })
       if (session && session.userId) {
-        let user = await Users.findOne(session.userId)
+        let user = await User.findOne(session.userId)
         if (user) {
           user.email = email
-          await Users.save(user)
+          await User.save(user)
           success = true
         }
       }

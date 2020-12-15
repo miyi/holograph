@@ -1,4 +1,4 @@
-import { Users } from './User'
+import { User } from './User'
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -20,10 +20,10 @@ export class Post extends BaseEntity {
   @Column('varchar', { nullable: true })
   body: string | null | undefined
 
-  @ManyToOne(() => Users, (user) => user.posts, {
+  @ManyToOne(() => User, (user) => user.posts, {
     onDelete: 'CASCADE',
   })
-  author!: Users
+  author!: User
 
   @Column('bool', { default: false })
   published!: boolean

@@ -1,14 +1,14 @@
 // import { Server } from 'http'
 import { createQueryBuilder } from 'typeorm'
 import { Post } from '../../../entity/Post'
-import { Users } from '../../../entity/User'
+import { User } from '../../../entity/User'
 import { startServer } from '../../../startServer'
 import { TmpTestClient } from '../../../test/tmpTestClient'
 
 // let server: Server
 let req_url: string
 let client: any
-let user: Users
+let user: User
 const postTitle = 'fake title'
 const email = 'jim@jim.com'
 const password = 'password123'
@@ -18,7 +18,7 @@ beforeAll(async () => {
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
     client = new TmpTestClient(req_url)
-    user = await Users.create({
+    user = await User.create({
       email,
       password,
       confirm: true,
@@ -49,7 +49,7 @@ describe('test resolver chain  setup', () => {
       expect((directGetUsers as Users).id).toEqual(user.id)
       console.log(directGetPosts)
 
-      const userPosts = await Users.findOne({
+      const userPosts = await User.findOne({
         relations: ['posts'],
         where: {
           id: user.id,

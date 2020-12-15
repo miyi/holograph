@@ -1,9 +1,9 @@
 import { TestClient } from '../../test/testClient'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { startServer } from '../../startServer'
 import { Server } from 'http'
 
-let user: Users
+let user: User
 let server: Server
 let userId: string
 let req_url: string
@@ -27,7 +27,7 @@ afterAll(() => {
 
 describe('me', () => {
   it('create user via typeorm', async () => {
-    user = await Users.create({
+    user = await User.create({
       email,
       password,
     })

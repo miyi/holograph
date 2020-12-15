@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { Server } from 'http'
 import { Post } from '../../entity/Post'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { redis } from '../../server_configs/redisServer'
 import { startServer } from '../../startServer'
 import { TestClient } from '../../test/testClient'
@@ -13,7 +13,7 @@ const newEmail = 'ming@ming.ca'
 const password = 'password123'
 const postTitle = 'movie review'
 let req_url: string
-let user: Users
+let user: User
 let post: Post
 
 beforeAll(async () => {
@@ -38,7 +38,7 @@ afterAll(async () => {
 describe('getUser tests', () => {
   let res: AxiosResponse
   it('creates new user and new post', async () => {
-    user = await Users.create({
+    user = await User.create({
       email,
       password,
       confirm: true,

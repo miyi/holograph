@@ -1,5 +1,5 @@
 import { Post } from '../../entity/Post'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import {
   MutationCreatePostArgs,
   MutationSaveEditPostBodyArgs,
@@ -43,7 +43,7 @@ export const resolvers: ResolverMap = {
         { title }: MutationCreatePostArgs,
         { session }: GraphqlContext,
       ) => {
-        const user = await Users.findOne(session.userId)
+        const user = await User.findOne(session.userId)
         const post = await Post.create({
           title,
           author: user,

@@ -6,7 +6,7 @@ import {
   MutationSendForgotPasswordEmailArgs,
 } from '../../types/graphql'
 import { ResolverMap } from '../../types/graphql-utils'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { sessionUserError } from '../../utils/auth/AuthErrors'
 import {
   passwordValidateSchema,
@@ -31,7 +31,7 @@ export const resolvers: ResolverMap = {
         success: false,
         error: [],
       }
-      let user: Users | undefined
+      let user: User | undefined
       let forgotPasswordLink: string
       let linkId: string
       //1. validate email to check if user exist
@@ -44,7 +44,7 @@ export const resolvers: ResolverMap = {
         })
         return authResponse
       }
-      user = await Users.findOne({ where: { email } })
+      user = await User.findOne({ where: { email } })
       if (user) {
         //2. send email with link to change Password with a linkId
         forgotPasswordLink = await createForgotPasswordLink(url, user.id, redis)
@@ -74,7 +74,7 @@ export const resolvers: ResolverMap = {
       }
       //1. find userId from linkId under forgotPasswordPrefix
       const userId = await redis('get', [forgotPasswordPrefix + linkId])
-      const userBeforePasswordChange: Users | undefined = await Users.findOne(
+      const userBeforePasswordChange: User | undefined = await User.findOne(
         userId,
       )
       //2. validate password + use Bcryptjs to update the password

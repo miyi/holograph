@@ -1,4 +1,4 @@
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { startServer } from '../../startServer'
 import { Server } from 'http'
 import { TestClient } from '../../test/testClient'
@@ -39,7 +39,7 @@ describe('register user activity', () => {
   it('register new user1', async () => {
     const response = await client.register(email1, mockPassword)
     expect(response.data.data.register.success).toBeTruthy()
-    const user = await Users.findOne({
+    const user = await User.findOne({
       where: { email: email1 },
     })
     expect(user?.email).toBe(email1)
@@ -48,7 +48,7 @@ describe('register user activity', () => {
   it('register new user2', async () => {
     const response = await client.register(email2, mockPassword)
     expect(response.data.data.register.success).toBeTruthy()
-    const user = await Users.findOne({
+    const user = await User.findOne({
       where: { email: email2 },
     })
     expect(user?.email).toBe(email2)
@@ -57,7 +57,7 @@ describe('register user activity', () => {
   it('register new user3', async () => {
     const response = await client.register(email3, mockPassword)
     expect(response.data.data.register.success).toBeTruthy()
-    const user = await Users.findOne({
+    const user = await User.findOne({
       where: { email: email3 },
     })
     expect(user?.email).toBe(email3)

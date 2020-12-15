@@ -1,7 +1,7 @@
 import { Server } from 'http'
 import { Post } from '../entity/Post'
 import { Profile } from '../entity/Profile'
-import { Users } from '../entity/User'
+import { User } from '../entity/User'
 import { createMockPostByUser, createMockUser } from './mockData'
 import { testSetup, testTeardown } from './testSetup'
 
@@ -16,9 +16,9 @@ afterAll(async () => {
 })
 
 describe('check if mockdata works', () => {
-  let user1: Users
-  let user2: Users
-  let user3: Users
+  let user1: User
+  let user2: User
+  let user3: User
   let post1: Post
   let post2: Post
   let post3: Post
@@ -31,7 +31,7 @@ describe('check if mockdata works', () => {
     expect(user2.id).toBeTruthy()
     expect(user3.id).toBeTruthy()
   })
-  it('find 3 profiles created by Users', async () => {
+  it('find 3 profiles created by User', async () => {
     let res = await Profile.find({
       relations: ['user'],
     })
@@ -49,19 +49,19 @@ describe('check if mockdata works', () => {
     expect(post3.id).toBeTruthy()
   })
   it('finds user by email', async () => {
-    let user1res = await Users.findOne({
+    let user1res = await User.findOne({
       where: {
         email: user1.email,
       },
     })
     expect(user1res?.email).toEqual(user1.email)
-    let user2res = await Users.findOne({
+    let user2res = await User.findOne({
       where: {
         email: user2.email,
       },
     })
     expect(user2res?.email).toEqual(user2.email)
-    let user3res = await Users.findOne({
+    let user3res = await User.findOne({
       where: {
         email: user3.email,
       },
@@ -89,7 +89,7 @@ describe('check if mockdata works', () => {
     await createMockPostByUser(user1)
     await createMockPostByUser(user1)
     await createMockPostByUser(user1)
-    let res = await Users.findOne({
+    let res = await User.findOne({
       relations: ['posts'],
       where: {
         id: user1.id,

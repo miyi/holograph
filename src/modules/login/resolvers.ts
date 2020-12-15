@@ -3,7 +3,7 @@ import { MutationLoginArgs, AuthResponse } from '../../types/graphql'
 import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { loginUser } from '../../utils/auth/auth-utils'
 
 import {
@@ -38,7 +38,7 @@ export const resolvers: ResolverMap = {
         }
         const { email, password } = args
         //check user exist
-        const user = await Users.findOne({
+        const user = await User.findOne({
           where: {
             email,
           },

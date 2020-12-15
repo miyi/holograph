@@ -1,14 +1,14 @@
 import { ResolverMap } from '../../types/graphql-utils'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import middleware from './middleware'
-import { createMiddleware } from '../../utils/createMiddleware';
+import { createMiddleware } from '../../utils/createMiddleware'
 
 export const resolver: ResolverMap = {
   //query returns null when session.userId not found
   Query: {
     me: createMiddleware(middleware, async (_, __, { session }, ___) => {
       if (session && session.userId) {
-        const user = await Users.findOne({
+        const user = await User.findOne({
           where: {
             id: session.userId,
           },
@@ -17,12 +17,11 @@ export const resolver: ResolverMap = {
           session.touch()
           return {
             id: user.id,
-            email: user.email
+            email: user.email,
           }
         } else {
           return null
         }
-        
       } else {
         return null
       }

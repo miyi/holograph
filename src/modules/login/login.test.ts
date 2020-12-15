@@ -1,5 +1,5 @@
 import { Server } from 'http'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { redis } from '../../server_configs/redisServer'
 import { startServer } from '../../startServer'
 import { createMockUser, mockPassword } from '../../test/mockData'
@@ -10,7 +10,7 @@ let bademail = 'bob@bob.com'
 let badpassword = 'notrealpassword'
 let badinput = 'aaa'
 let req_url: string
-let user: Users
+let user: User
 let client: TestClient
 
 beforeAll(async () => {

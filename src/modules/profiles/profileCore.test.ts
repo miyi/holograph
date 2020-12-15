@@ -1,7 +1,7 @@
 import { Server } from 'http'
 import { Post } from '../../entity/Post'
 import { Profile } from '../../entity/Profile'
-import { Users } from '../../entity/User'
+import { User } from '../../entity/User'
 import { createMockPostByUser, createMockUser } from '../../test/mockData'
 import { testSetup, testTeardown } from '../../test/testSetup'
 
@@ -25,7 +25,7 @@ afterAll(() => {
 
 describe('profileCore tests', () => {
   it('retrieves profile', async () => {
-    let res = await Users.findOne({
+    let res = await User.findOne({
       relations: ['profile'],
       where: {
         id: user.id,
@@ -100,8 +100,8 @@ describe('profileCore tests', () => {
   //   )
   // })
   // it('deletes user and cascade delete posts and profile', async () => {
-  //   let deleteThisUser = await Users.findOne()
-  //   await Users.remove(deleteThisUser as Users)
+  //   let deleteThisUser = await User.findOne()
+  //   await User.remove(deleteThisUser as User)
   //   let profile = await Profile.findOne()
   //   expect(profile).toBeUndefined()
   //   let myPost = await Post.findOne()

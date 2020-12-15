@@ -8,7 +8,7 @@ import {
   OneToOne,
 } from 'typeorm'
 import { Post } from './Post'
-import { Users } from './User'
+import { User } from './User'
 
 @Entity('profile')
 export class Profile extends BaseEntity {
@@ -20,8 +20,8 @@ export class Profile extends BaseEntity {
   @ManyToMany(() => Post)
   @JoinTable()
   collection!: Post[]
-  @OneToOne(() => Users, (user) => user.profile, {
+  @OneToOne(() => User, (user) => user.profile, {
     onDelete: 'CASCADE',
   }) // specify inverse side as a second parameter
-  user!: Users
+  user!: User
 }
