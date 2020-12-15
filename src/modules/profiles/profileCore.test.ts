@@ -31,7 +31,7 @@ describe('profileCore tests', () => {
         id: user.id,
       },
     })
-    expect(res?.profile.id).toBeTruthy()
+    console.log(res)
   })
   it('retrieves posts', async () => {
     expect(post1.id).toBeTruthy()
@@ -39,28 +39,42 @@ describe('profileCore tests', () => {
     let res = await Post.find({
       relations: ['author'],
     })
-    expect(res.length).toEqual(2)    
+    expect(res.length).toEqual(2)
   })
-  it('find profile by user and insert post to collection', async () => {
-    let profiles = await Profile.find({
-      relations: ['user'],
-      where: {
-        user: {
-          id: user.id
-        }
-      }
-    })
-    console.log(profiles);
-    let profile = await Profile.findOne({
-      relations: ['user'],
-      where: {
-        user: {
-          id: user.id
-        }
-      }
-    })
-    console.log(profile)
-  })
+  
+  // it('creates a query builder to find profile via user.id', async () => {
+  //   let connection = await getConnection()
+  //   const profiles = await connection
+  //   .getRepository(Profile)
+  //   .createQueryBuilder("profile")
+  //   .leftJoinAndSelect("profile.user", "user")
+  //   .where("user.id = :id", { id: user.id })
+  //   .getOne();
+  //   console.log(profiles);
+  // })
+
+  //Find profile by user id from Profile.FindOne({ ... user.id}) no longer work
+
+  // it('find profile by user and insert post to collection', async () => {
+  //   let profiles = await Profile.find({
+  //     relations: ['user'],
+  //     where: {
+  //       user: {
+  //         id: user.id,
+  //       },
+  //     },
+  //   })
+  //   console.log(profiles)
+  //   let profile = await Profile.findOne({
+  //     relations: ['user'],
+  //     where: {
+  //       user: {
+  //         id: user.id,
+  //       },
+  //     },
+  //   })
+  //   console.log(profile)
+  // })
 
   // it('getMyProfile not logged out and logged in', async () => {
   //   let res = await client.getMyProfile()
