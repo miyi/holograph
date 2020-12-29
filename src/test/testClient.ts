@@ -11,7 +11,7 @@ export class TestClient {
 
   constructor(url: string = process.env.HOST_URL + '/graphql') {
     this.url = url
-    console.log(url);
+    console.log(url)
     this.axiosInstance = axios.create({
       jar: cookieJar,
       withCredentials: true,
@@ -192,18 +192,6 @@ export class TestClient {
         {
           getPostById(id: "${id}") {
             title
-          }
-        }
-      `,
-    })
-  }
-
-  getPostByIdPlusAuthor(id: string) {
-    return this.axiosInstance.post('/', {
-      query: `
-        {
-          getPostById(id: "${id}") {
-            title
             author {
               email
             }
@@ -336,26 +324,6 @@ export class TestClient {
               email
             }
           }
-        }
-      `,
-    })
-  }
-
-  addPostToMyCollection(postId: string) {
-    return this.axiosInstance.post('/', {
-      query: `
-        mutation {
-          addPostToMyCollection(postId: "${postId}")
-        }
-      `,
-    })
-  }
-
-  removePostFromMyCollection(postId: string) {
-    return this.axiosInstance.post('/', {
-      query: `
-        mutation {
-          removePostFromMyCollection(postId: "${postId}")
         }
       `,
     })

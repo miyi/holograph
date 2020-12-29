@@ -2,13 +2,17 @@ type User {
   id: ID!
   email: String!
   posts: [Post!]
+  collection: [Post]
 }
 
 type Query {
   getUserById(id: String!): User
   getUserByEmail(email: String!): User
+  getMyCollection: [Post]
 }
 
 type Mutation {
   updateUserEmail(email: String!): Boolean!
+  addPostToMyCollection(postId: String!): Boolean!
+  removePostFromMyCollection(postId: String!): Boolean!
 }

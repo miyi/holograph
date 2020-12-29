@@ -1,7 +1,7 @@
 import { Server } from 'http'
 import { redis } from '../server_configs/redisServer'
 import { startServer } from '../startServer'
-const testSetup = async () => {
+const testServerSetup = async () => {
   const server = await startServer().catch(() => {
     throw Error('no url')
   })
@@ -17,4 +17,4 @@ const testTeardown = async (server: Server) => {
   })
 }
 
-export { testSetup, testTeardown }
+export { testServerSetup, testTeardown }

@@ -1,20 +1,25 @@
 import { Server } from 'http'
+import { getConnection } from 'typeorm'
 import { Post } from '../../entity/Post'
 import { Profile } from '../../entity/Profile'
 import { User } from '../../entity/User'
-import { createMockPostByUser, createMockUser } from '../../test/mockData'
-import { testSetup, testTeardown } from '../../test/testSetup'
+import { createMockPostByUser, createMockUser, mockPassword } from '../../test/mockData'
+import { TestClient } from '../../test/testClient'
+import { testServerSetup, testTeardown } from '../../test/testSetup'
 
 let server: Server
-// let client: TestClient
+let client: TestClient
 let user: any
+let profile: any
 let post1: any
 let post2: any
+let profileDescription = 'once upon a time'
 
 beforeAll(async () => {
-  server = await testSetup()
-  // client = new TestClient()
+  server = await testServerSetup()
+  client = new TestClient()
   user = await createMockUser()
+  profile = user.profile
   post1 = await createMockPostByUser(user)
   post2 = await createMockPostByUser(user)
 })
@@ -31,7 +36,7 @@ describe('profileCore tests', () => {
         id: user.id,
       },
     })
-    console.log(res)
+    expect(res?.profile.id).toEqual(profile.id)
   })
   it('retrieves posts', async () => {
     expect(post1.id).toBeTruthy()
@@ -41,87 +46,49 @@ describe('profileCore tests', () => {
     })
     expect(res.length).toEqual(2)
   })
-  
-  // it('creates a query builder to find profile via user.id', async () => {
-  //   let connection = await getConnection()
-  //   const profiles = await connection
-  //   .getRepository(Profile)
-  //   .createQueryBuilder("profile")
-  //   .leftJoinAndSelect("profile.user", "user")
-  //   .where("user.id = :id", { id: user.id })
-  //   .getOne();
-  //   console.log(profiles);
-  // })
+
+  it('creates a query builder to find profile via user.id', async () => {
+    let connection = await getConnection()
+    const res = await connection
+      .getRepository(Profile)
+      .createQueryBuilder('profile')
+      .leftJoinAndSelect('profile.user', 'user')
+      .where('user.id = :id', { id: user.id })
+      .getOne()
+    expect(res?.id).toEqual(profile.id)
+  })
+
+  it('direct finds profile via user foreign key', async () => {
+    let res = await User.findOne(user.id, {
+      relations: ['profile'],
+    })
+    expect(res?.profile.id).toEqual(profile.id)
+  })
+
+  it('direct find user via profile primary key', async () => {
+    let res = await Profile.findOne(profile.id, {
+      relations: ['user'],
+    })
+    expect(res?.user.id).toEqual(user.id)
+  })
 
   //Find profile by user id from Profile.FindOne({ ... user.id}) no longer work
 
-  // it('find profile by user and insert post to collection', async () => {
-  //   let profiles = await Profile.find({
-  //     relations: ['user'],
-  //     where: {
-  //       user: {
-  //         id: user.id,
-  //       },
-  //     },
-  //   })
-  //   console.log(profiles)
-  //   let profile = await Profile.findOne({
-  //     relations: ['user'],
-  //     where: {
-  //       user: {
-  //         id: user.id,
-  //       },
-  //     },
-  //   })
-  //   console.log(profile)
-  // })
-
-  // it('getMyProfile not logged out and logged in', async () => {
-  //   let res = await client.getMyProfile()
-  //   expect(res.data.data.getMyProfile).toBeNull()
-  //   await client.login(email, password)
-  //   res = await client.getMyProfile()
-  //   expect(res.data.data.getMyProfile?.id).toBeTruthy()
-  //   expect(res.data.data.getMyProfile.user.email).toEqual(email)
-  // })
-  // it('creates 2nd post, add to collection', async () => {
-  //   expect(post2.id).toBeTruthy()
-  //   let res = await client.addPostToMyCollection(post2.id)
-  //   expect(res.data.data.addPostToMyCollection).toBeTruthy()
-  //   let profile = await Profile.findOne({
-  //     relations: ['collection'],
-  //   })
-  //   expect(profile?.collection.length).toBeGreaterThan(1)
-  // })
-  // it('adds a duplicate post', async () => {
-  //   await client.addPostToMyCollection(post2.id)
-  //   let profile = await Profile.findOne({
-  //     relations: ['collection'],
-  //   })
-  //   expect(profile?.collection.length).toBeLessThanOrEqual(2)
-  // })
-  // it('removes post from my collection', async () => {
-  //   let res = await client.removePostFromMyCollection(post1.id)
-  //   expect(res.data.data.removePostFromMyCollection).toBeTruthy()
-  //   let profile = await Profile.findOne({
-  //     relations: ['collection'],
-  //   })
-  //   expect(profile?.collection.length).toBeLessThan(2)
-  // })
-  // it('removes a post no in my collection', async () => {
-  //   let res = await client.removePostFromMyCollection(post1.id)
-  //   expect(res.data.data.removePostFromMyCollection).toBeTruthy()
-  //   let profile = await Profile.findOne({
-  //     relations: ['collection'],
-  //   })
-  //   expect(profile?.collection.length).toBeLessThanOrEqual(1)
-  // })
-  // it('updates profile description', async () => {
-  //   let res = await client.updateMyProfileDescription(profileDescription)
-  //   expect(res.data.data.updateMyProfileDescription.description).toEqual(
-  //     profileDescription,
-  //   )
-  // })
+  it('getMyProfile not logged out and logged in', async () => {
+    let res = await client.getMyProfile()
+    expect(res.data.data.getMyProfile).toBeNull()
+    await client.login(user.email, mockPassword)
+    res = await client.getMyProfile()
+    expect(res.data.data.getMyProfile?.id).toBeTruthy()
+    expect(res.data.data.getMyProfile.user.email).toEqual(user.email)
+  })
+  
+  it('updates profile description', async () => {
+    let res = await client.updateMyProfileDescription(profileDescription)
+    expect(res.data.data.updateMyProfileDescription.description).toEqual(
+      profileDescription,
+    )
+  })
   // it('deletes user and cascade delete posts and profile', async () => {
   //   let deleteThisUser = await User.findOne()
   //   await User.remove(deleteThisUser as User)

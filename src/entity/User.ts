@@ -10,6 +10,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
 } from 'typeorm'
 import { Post } from './Post'
 import { Profile } from './Profile'
@@ -48,6 +50,10 @@ export class User extends BaseEntity {
   })
   @JoinColumn()
   profile!: Profile
+
+  @ManyToMany(() => Post)
+  @JoinTable()
+  collection!: Post[]
 
   @OneToMany(() => Post, (posts) => posts.author, {
     cascade: true,
