@@ -2,10 +2,14 @@ import { ResolverMap } from '../../types/graphql-utils'
 import {
   QueryGetUserByIdArgs,
   QueryGetUserByEmailArgs,
+  MutationAddPostToMyCollectionArgs,
 } from '../../types/graphql'
 import { User } from '../../entity/User'
 import { emailValidateSchema } from '../../utils/yupValidate'
 import { Post } from '../../entity/Post'
+import { createMiddleware } from '../../utils/createMiddleware'
+import { isLoggedInMiddleware } from '../../utils/auth/authMiddleware'
+import { QueryGetCollectionFromUserArgs } from '../../types/graphql'
 
 export const resolvers: ResolverMap = {
   Query: {
@@ -21,6 +25,38 @@ export const resolvers: ResolverMap = {
     ): Promise<User | undefined> => {
       return await User.findOne({ email: email as string })
     },
+    getMyCollection: createMiddleware(
+      isLoggedInMiddleware,
+      async (_, __, { session }) => {
+        let userWithCollection = await User.findOne({
+          relations: ['collection'],
+          where: {
+            id: session.userId,
+          },
+        })
+        if (userWithCollection) {
+          return userWithCollection.collection
+        } else {
+          return null
+        }
+      },
+    ),
+    getCollectionFromUser: createMiddleware(
+      isLoggedInMiddleware,
+      async (_, { userId }: QueryGetCollectionFromUserArgs) => {
+        let userWithCollection = await User.findOne({
+          relations: ['collection'],
+          where: {
+            id: userId,
+          },
+        })
+        if (userWithCollection) {
+          return userWithCollection.collection
+        } else {
+          return null
+        }
+      },
+    ),
   },
   Mutation: {
     updateUserEmail: async (_, { email }, { session }): Promise<boolean> => {
@@ -39,6 +75,49 @@ export const resolvers: ResolverMap = {
       }
       return success
     },
+    addPostToMyCollection: createMiddleware(
+      isLoggedInMiddleware,
+      async (_, { postId }: MutationAddPostToMyCollectionArgs, { session }) => {
+        let success = false
+        let post = await Post.findOne(postId)
+        let userWithCollection = await User.findOne({
+          relations: ['collection'],
+          where: {
+            id: session.userId,
+          },
+        })
+        if (post && userWithCollection) {
+          // userWithCollection.collection = userWithCollection.collection.filter((post) => {
+          //   post.id !== postId
+          // })
+          userWithCollection.collection.push(post)
+          await userWithCollection.save()
+          success = true
+        }
+        return success
+      },
+    ),
+    removePostFromMyCollection: createMiddleware(
+      isLoggedInMiddleware,
+      async (_, { postId }: MutationAddPostToMyCollectionArgs, { session }) => {
+        let success = false
+        let post = await Post.findOne(postId)
+        let userWithCollection = await User.findOne({
+          relations: ['collection'],
+          where: {
+            id: session.userId,
+          },
+        })
+        if (post && userWithCollection) {
+          userWithCollection.collection = userWithCollection.collection.filter(
+            (post) => post.id !== postId,
+          )
+          await userWithCollection.save()
+          success = true
+        }
+        return success
+      },
+    ),
   },
   User: {
     posts: async (parent) => {
@@ -47,6 +126,16 @@ export const resolvers: ResolverMap = {
           id: parent.id,
         },
       })
+    },
+    collection: async (parent) => {
+      let userWithCollection = await User.findOne({
+        relations: ['collection'],
+        where: {
+          id: parent.id,
+        },
+      })
+      if (userWithCollection) return userWithCollection.collection
+      return null
     },
   },
 }

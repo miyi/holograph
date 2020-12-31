@@ -341,4 +341,48 @@ export class TestClient {
       `,
     })
   }
+
+  getMyCollection() {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getMyCollection {
+            title
+          }
+        }
+      `
+    })
+  }
+
+  getCollectionFromUser(userId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getCollectionFromUser(userId: "${userId}") {
+            title
+          }
+        }
+      `
+    })
+  }
+
+  addPostToMyCollection(postId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          addPostToMyCollection(postId: "${postId}") 
+        }
+      `
+    })
+  }
+
+  removePostFromMyCollection(postId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          removePostFromMyCollection(postId: "${postId}")
+        }
+      `
+    })
+  }
 }

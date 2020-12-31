@@ -9,6 +9,7 @@ type Query {
   getUserById(id: String!): User
   getUserByEmail(email: String!): User
   getMyCollection: [Post]
+  getCollectionFromUser(userId: String!): [Post]
 }
 
 type Mutation {

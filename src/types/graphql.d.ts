@@ -1,5 +1,7 @@
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -11,7 +13,7 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addPostToMyCollection?: Maybe<Scalars['Boolean']>;
+  addPostToMyCollection: Scalars['Boolean'];
   createPost?: Maybe<Post>;
   delRedis?: Maybe<Scalars['String']>;
   dummyLogin?: Maybe<Scalars['Boolean']>;
@@ -21,7 +23,7 @@ export type Mutation = {
   logoutAll: AuthResponse;
   publishPost?: Maybe<Post>;
   register: AuthResponse;
-  removePostFromMyCollection?: Maybe<Scalars['Boolean']>;
+  removePostFromMyCollection: Scalars['Boolean'];
   saveEditPostBody?: Maybe<Post>;
   sendForgotPasswordEmail: AuthResponse;
   setRedis?: Maybe<Scalars['String']>;
@@ -34,7 +36,7 @@ export type Mutation = {
 
 
 export type MutationAddPostToMyCollectionArgs = {
-  postId: Scalars['ID'];
+  postId: Scalars['String'];
 };
 
 
@@ -78,7 +80,7 @@ export type MutationRegisterArgs = {
 
 
 export type MutationRemovePostFromMyCollectionArgs = {
-  postId: Scalars['ID'];
+  postId: Scalars['String'];
 };
 
 
@@ -127,6 +129,7 @@ export type AuthError = {
 
 export type Query = {
   __typename?: 'Query';
+  getCollectionFromUser?: Maybe<Array<Maybe<Post>>>;
   getMyCollection?: Maybe<Array<Maybe<Post>>>;
   getMyProfile?: Maybe<Profile>;
   getPostById?: Maybe<Post>;
@@ -142,6 +145,11 @@ export type Query = {
   readSessionDummy1?: Maybe<Scalars['String']>;
   readSessionDummy2?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetCollectionFromUserArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -200,7 +208,6 @@ export type Profile = {
   id: Scalars['ID'];
   user: User;
   description?: Maybe<Scalars['String']>;
-  collection?: Maybe<Array<Maybe<Post>>>;
 };
 
 export type Library = {
@@ -227,4 +234,5 @@ export type User = {
   id: Scalars['ID'];
   email: Scalars['String'];
   posts?: Maybe<Array<Post>>;
+  collection?: Maybe<Array<Maybe<Post>>>;
 };

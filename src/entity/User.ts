@@ -51,7 +51,9 @@ export class User extends BaseEntity {
   @JoinColumn()
   profile!: Profile
 
-  @ManyToMany(() => Post)
+  @ManyToMany(() => Post, {
+    cascade: true
+  })
   @JoinTable()
   collection!: Post[]
 
