@@ -24,8 +24,8 @@ beforeAll(async () => {
   post2 = await createMockPostByUser(user)
 })
 
-afterAll(() => {
-  testTeardown(server)
+afterAll(async () => {
+  await testTeardown(server)
 })
 
 describe('profileCore tests', () => {

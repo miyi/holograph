@@ -50,10 +50,8 @@ describe('postCore tests', () => {
   })
   it('getPostById test', async () => {
     let res = await client.getPostById(post.id)
+    expect(res.data.data.getPostById.isInMyCollection).toBeFalsy()
     expect(res.data.data.getPostById.title).toEqual(postTitle1)
-  })
-  it('getPostFromId plus author email chain', async () => {
-    let res = await client.getPostByIdPlusAuthor(post.id)
     expect(res.data.data.getPostById.author.email).toEqual(email)
   })
   it('typeorm gets author from post', async () => {
@@ -113,5 +111,12 @@ describe('postCore tests', () => {
     let res = await client.saveEditPostBody(post.id, postBody)
     expect(res.data.data.saveEditPostBody.body).toEqual(postBody)
     expect(res.data.data.saveEditPostBody.author.email).toEqual(email)
+  })
+  it('gets post then checks isInMyCollection', async () => {
+    let res = await client.getPostById(post.id)
+    expect(res.data.data.getPostById.isInMyCollection).toEqual(false)
+    await client.addPostToMyCollection(post.id)
+    res = await client.getPostById(post.id)
+    expect(res.data.data.getPostById.isInMyCollection).toEqual(true)
   })
 })

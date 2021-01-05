@@ -10,7 +10,7 @@ const testServerSetup = async () => {
 
 const testTeardown = async (server: Server) => {
   server.close()
-  await new Promise((resolve) => {
+  return await new Promise((resolve) => {
     redis.quit(() => {
       resolve(true)
     })

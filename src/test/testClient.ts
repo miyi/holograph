@@ -195,6 +195,7 @@ export class TestClient {
             author {
               email
             }
+            isInMyCollection
           }
         }
       `,

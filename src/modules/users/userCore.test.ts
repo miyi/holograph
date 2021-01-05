@@ -1,7 +1,11 @@
 import { Server } from 'http'
 import { Post } from '../../entity/Post'
 import { User } from '../../entity/User'
-import { createMockPostByUser, createMockUser, mockPassword } from '../../test/mockData'
+import {
+  createMockPostByUser,
+  createMockUser,
+  mockPassword,
+} from '../../test/mockData'
 import { TestClient } from '../../test/testClient'
 import { testServerSetup, testTeardown } from '../../test/testSetup'
 
@@ -22,7 +26,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  testTeardown(server)
+  await testTeardown(server)
 })
 
 describe('getUser tests', () => {

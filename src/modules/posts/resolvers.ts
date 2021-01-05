@@ -86,5 +86,26 @@ export const resolvers: ResolverMap = {
       })
       return post?.author
     },
+    isInMyCollection: createMiddleware(
+      isLoggedInMiddleware,
+      async (parent, _, { session }) => {
+        let response = false
+        console.log('triggered');
+        let userWithCollection = await User.findOne({
+          relations: ['collection'],
+          where: {
+            id: session.userId,
+          },
+        })
+        if (userWithCollection) {
+          userWithCollection.collection.forEach((post) => {
+            if (post.id === parent.id) {
+              response = true
+            }
+          })
+        }
+        return response
+      },
+    ),
   },
 }

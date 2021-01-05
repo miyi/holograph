@@ -6,6 +6,7 @@ type Post {
   published: Boolean
   createdAt: String!
   updatedAt: String
+  isInMyCollection: Boolean
 }
 
 type Query {
