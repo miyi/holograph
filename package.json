@@ -35,7 +35,7 @@
     "@graphql-toolkit/file-loading": "^0.10.7",
     "@graphql-toolkit/schema-merging": "^0.10.7",
     "apollo-server-express": "^2.19.0",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "axios-cookiejar-support": "^1.0.1",
     "bcryptjs": "^2.4.3",
     "connect-redis": "^5.0.0",
