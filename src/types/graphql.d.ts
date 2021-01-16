@@ -129,6 +129,7 @@ export type AuthError = {
 
 export type Query = {
   __typename?: 'Query';
+  findPostsWithTag?: Maybe<Array<Maybe<Post>>>;
   getCollectionFromUser?: Maybe<Array<Maybe<Post>>>;
   getMyCollection?: Maybe<Array<Maybe<Post>>>;
   getMyProfile?: Maybe<Profile>;
@@ -141,10 +142,16 @@ export type Query = {
   getUserById?: Maybe<User>;
   hello: Scalars['String'];
   libraries?: Maybe<Array<Maybe<Library>>>;
+  lookUpTag?: Maybe<Array<Maybe<Tag>>>;
   me?: Maybe<User>;
   readSessionDummy1?: Maybe<Scalars['String']>;
   readSessionDummy2?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryFindPostsWithTagArgs = {
+  name: Scalars['String'];
 };
 
 
@@ -192,6 +199,11 @@ export type QueryHelloArgs = {
   name?: Maybe<Scalars['String']>;
 };
 
+
+export type QueryLookUpTagArgs = {
+  input: Scalars['String'];
+};
+
 export type Post = {
   __typename?: 'Post';
   id: Scalars['String'];
@@ -201,6 +213,7 @@ export type Post = {
   published?: Maybe<Scalars['Boolean']>;
   createdAt: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
+  isInMyCollection?: Maybe<Scalars['Boolean']>;
 };
 
 export type Profile = {
@@ -208,6 +221,13 @@ export type Profile = {
   id: Scalars['ID'];
   user: User;
   description?: Maybe<Scalars['String']>;
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  name: Scalars['String'];
+  posts?: Maybe<Array<Maybe<Post>>>;
+  count?: Maybe<Scalars['Int']>;
 };
 
 export type Library = {

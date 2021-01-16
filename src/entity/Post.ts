@@ -1,4 +1,5 @@
 import { User } from './User'
+import { Tag } from './Tag'
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,6 +8,8 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm'
 
 @Entity('post')
@@ -24,6 +27,12 @@ export class Post extends BaseEntity {
     onDelete: 'CASCADE',
   })
   author!: User
+
+  @ManyToMany(() => Tag, (tag) => tag.posts, {
+    cascade: true,
+  })
+  @JoinTable()
+  tags: Tag[] | undefined
 
   @Column('bool', { default: false })
   published!: boolean

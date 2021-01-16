@@ -1,0 +1,10 @@
+type Tag {
+	name: String!,
+	posts: [Post],
+	count: Int
+}
+
+type Query {
+	lookUpTag(input: String!): [Tag]
+	findPostsWithTag(name: String!): [Post]
+}
