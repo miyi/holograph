@@ -1,6 +1,7 @@
 import { CookieJar } from 'tough-cookie'
 import axios, { AxiosInstance } from 'axios'
 import axiosCookieJarSupport from 'axios-cookiejar-support'
+import { TagInput, PostObject } from '../types/graphql';
 
 axiosCookieJarSupport(axios)
 const cookieJar = new CookieJar()
@@ -196,6 +197,7 @@ export class TestClient {
               email
             }
             isInMyCollection
+            tags
           }
         }
       `,
@@ -207,11 +209,12 @@ export class TestClient {
       query: `
         {
           getPostsByTitle(title: "${title}") {
-            title,
-            id,
+            title
+            id
             author {
               email
             }
+            tags
           }
         }
       `,
@@ -228,17 +231,18 @@ export class TestClient {
             author {
               email
             }
+            tags
           }
         }
       `,
     })
   }
 
-  createPost(title: string) {
+  createPost(postObject: PostObject) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          createPost(title: "${title}") {
+          createPost(postObject: "${postObject}") {
             id
             title
             author {
@@ -250,47 +254,36 @@ export class TestClient {
     })
   }
 
-  publishPost(id: string) {
+  publishPost(id: string, tags: TagInput[] | undefined = undefined) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          publishPost(id: "${id}") {
-            id
-            published
-            author {
-              email
-            }
-          }
+          publishPost(id: "${id}", tags: "${tags}")
         }
       `,
     })
   }
 
-  unPublishPost(id: string) {
+  removePost(id: string) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          unPublishPost(id: "${id}") {
-            title
-            published
-            author {
-              email
-            }
-          }
+          removePost(id: "${id}")
         }
       `,
     })
   }
 
-  saveEditPostBody(id: string, body: string) {
+  saveEditPost(id: string, postObject: PostObject) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          saveEditPostBody(id: "${id}", body: "${body}") {
+          saveEditPost(id: "${id}", postObject: "${postObject}") {
             body
             author {
               email
             }
+            tags
           }
         }
       `,
@@ -351,7 +344,7 @@ export class TestClient {
             title
           }
         }
-      `
+      `,
     })
   }
 
@@ -363,7 +356,7 @@ export class TestClient {
             title
           }
         }
-      `
+      `,
     })
   }
 
@@ -373,7 +366,7 @@ export class TestClient {
         mutation {
           addPostToMyCollection(postId: "${postId}") 
         }
-      `
+      `,
     })
   }
 
@@ -383,7 +376,7 @@ export class TestClient {
         mutation {
           removePostFromMyCollection(postId: "${postId}")
         }
-      `
+      `,
     })
   }
 }

@@ -2,13 +2,13 @@ import { Server } from 'http'
 import { Post } from '../entity/Post'
 import { Profile } from '../entity/Profile'
 import { User } from '../entity/User'
-import { createMockPostByUser, createMockUser } from './mockData'
-import { testSetup, testTeardown } from './testSetup'
+import { createMockPostByUser, createMockUser, mockPostObject } from './mockData'
+import { testServerSetup, testTeardown } from './testSetup'
 
 let server: Server
 
 beforeAll(async () => {
-  server = await testSetup()
+  server = await testServerSetup()
 })
 
 afterAll(async () => {
@@ -96,5 +96,11 @@ describe('check if mockdata works', () => {
       },
     })
     expect(res?.posts.length).toBeGreaterThanOrEqual(10)
+  })
+  it('creates 3 mockPostObjects', () => {
+    const postObject1 = mockPostObject()
+    console.log(postObject1);
+    const postObject2 = mockPostObject()
+    console.log(postObject2);
   })
 })

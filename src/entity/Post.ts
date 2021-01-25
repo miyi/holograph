@@ -37,6 +37,9 @@ export class Post extends BaseEntity {
   @Column('bool', { default: false })
   published!: boolean
 
+  @Column('bool', { default: false})
+  removed!: boolean
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date
 

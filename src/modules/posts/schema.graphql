@@ -7,6 +7,7 @@ type Post {
   createdAt: String!
   updatedAt: String
   isInMyCollection: Boolean
+  tags: [Tag]
 }
 
 type Query {
@@ -16,8 +17,13 @@ type Query {
 }
 
 type Mutation {
-  createPost(title: String!): Post
-  publishPost(id: ID!): Post
-  unPublishPost(id: ID!): Post
-  saveEditPostBody(id: ID!, body: String): Post
+  createPost(postObject: PostObject!): Post
+  tagAndPublishPost(id: ID!, tags: [tagInput!]): ID
+  removePost(id: ID!): Boolean
+  saveEditPost(id: ID!, postObject: PostObject!): Post
+}
+
+input PostObject {
+  title: String!
+  body: String!
 }

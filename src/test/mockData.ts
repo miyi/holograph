@@ -12,10 +12,21 @@ const createMockUser = async (confirm = true) => {
 }
 
 const createMockPostByUser = async (user: User) => {
+  let { title, body } = mockPostObject()
   return await Post.create({
-    title: faker.random.words(4),
+    title,
+    body,
     author: user,
   }).save()
 }
 
-export { mockPassword, createMockUser, createMockPostByUser }
+const mockPostObject = () => {
+  const title = faker.random.words(4)
+  const body = faker.random.words(10)
+  return {
+    title,
+    body,
+  }
+}
+
+export { mockPassword, createMockUser, createMockPostByUser, mockPostObject }

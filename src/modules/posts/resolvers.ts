@@ -2,7 +2,7 @@ import { Post } from '../../entity/Post'
 import { User } from '../../entity/User'
 import {
   MutationCreatePostArgs,
-  MutationSaveEditPostBodyArgs,
+  MutationSaveEditPostArgs,
   QueryGetPostByIdArgs,
   QueryGetPostsByAuthorIdArgs,
   QueryGetPostsByTitleArgs,
@@ -13,15 +13,20 @@ import {
   isPostAuthorMiddleware,
 } from '../../utils/auth/authMiddleware'
 import { createMiddleware } from '../../utils/createMiddleware'
+import { MutationTagAndPublishPostArgs } from '../../types/graphql'
+import { mockValidateTagInputArray } from '../../utils/tagUtils'
 
 export const resolvers: ResolverMap = {
   Query: {
     getPostById: async (_, { id }: QueryGetPostByIdArgs) => {
-      return await Post.findOne(id as string)
+      return await Post.findOne(id, {
+        where: { removed: false },
+      })
     },
     getPostsByTitle: async (_, { title }: QueryGetPostsByTitleArgs) => {
       return await Post.find({
         title: title,
+        removed: false,
       })
     },
     getPostsByAuthorId: async (
@@ -29,6 +34,7 @@ export const resolvers: ResolverMap = {
       { authorId }: QueryGetPostsByAuthorIdArgs,
     ) => {
       return await Post.find({
+        removed: false,
         author: {
           id: authorId,
         },
@@ -40,39 +46,50 @@ export const resolvers: ResolverMap = {
       isLoggedInMiddleware,
       async (
         _,
-        { title }: MutationCreatePostArgs,
+        { postObject }: MutationCreatePostArgs,
         { session }: GraphqlContext,
       ) => {
         const user = await User.findOne(session.userId)
         const post = await Post.create({
-          title,
+          title: postObject.title,
+          body: postObject.body,
           author: user,
         }).save()
         return post
       },
     ),
-    publishPost: createMiddleware(isPostAuthorMiddleware, async (parent, _) => {
-      let { post } = parent
-      post.published = true
-      await post.save()
-      return post
-    }),
-    unPublishPost: createMiddleware(
+    tagAndPublishPost: createMiddleware(
       isPostAuthorMiddleware,
-      async (parent, _) => {
-        let { post } = parent
-        post.published = false
+      async (parent, { tags }: MutationTagAndPublishPostArgs) => {
+        if (parent.post.publish) return null
+        let { post } = parent.post
+        if (tags) {
+          const post = await Post.findOne(parent.post.id, {
+            relations: ['tags'],
+          })
+          let validatedTags = await mockValidateTagInputArray(tags)
+          post?.tags?.concat(validatedTags)
+        }
+        post.published = true
         await post.save()
-        return post
+        return post.id
       },
     ),
-    saveEditPostBody: createMiddleware(
+    removePost: createMiddleware(isPostAuthorMiddleware, async (parent, _) => {
+      let { post } = parent
+      post.removed = true
+      await post.save()
+      return true
+    }),
+    saveEditPost: createMiddleware(
       isPostAuthorMiddleware,
-      async (parent, { body }: MutationSaveEditPostBodyArgs) => {
+      async (parent, args: MutationSaveEditPostArgs) => {
         let { post } = parent
-        post.body = body
-        await post.save()
-        return post
+        if (!post.published) {
+          if (args.postObject.title) post.title = args.postObject.title
+        }
+        if (args.postObject.body) post.body = args.postObject.body
+        return await post.save()
       },
     ),
   },
@@ -90,7 +107,7 @@ export const resolvers: ResolverMap = {
       isLoggedInMiddleware,
       async (parent, _, { session }) => {
         let response = false
-        console.log('triggered');
+        console.log('triggered')
         let userWithCollection = await User.findOne({
           relations: ['collection'],
           where: {
@@ -107,5 +124,11 @@ export const resolvers: ResolverMap = {
         return response
       },
     ),
+    tags: async (parent) => {
+      const postWithTags = await Post.findOne(parent.id, {
+        relations: ['tags'],
+      })
+      return postWithTags?.tags
+    },
   },
 }

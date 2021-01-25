@@ -1,10 +1,15 @@
 type Tag {
-	name: String!,
-	posts: [Post],
-	count: Int
+  name: String!
+  posts: [Post]
+  count: Int
 }
 
 type Query {
-	lookUpTag(input: String!): [Tag]
-	findPostsWithTag(name: String!): [Post]
+  lookUpTag(input: String!): [Tag]
+  findPostsByTagId(tagId: String!): [Post]
+}
+
+input tagInput {
+  id: String
+  name: String!
 }

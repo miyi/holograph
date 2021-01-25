@@ -21,15 +21,15 @@ export type Mutation = {
   login: AuthResponse;
   logout: AuthResponse;
   logoutAll: AuthResponse;
-  publishPost?: Maybe<Post>;
   register: AuthResponse;
+  removePost?: Maybe<Scalars['Boolean']>;
   removePostFromMyCollection: Scalars['Boolean'];
-  saveEditPostBody?: Maybe<Post>;
+  saveEditPost?: Maybe<Post>;
   sendForgotPasswordEmail: AuthResponse;
   setRedis?: Maybe<Scalars['String']>;
   setSessionDummy1?: Maybe<Scalars['String']>;
   setSessionDummy2?: Maybe<Scalars['String']>;
-  unPublishPost?: Maybe<Post>;
+  tagAndPublishPost?: Maybe<Scalars['ID']>;
   updateMyProfileDescription?: Maybe<Profile>;
   updateUserEmail: Scalars['Boolean'];
 };
@@ -41,7 +41,7 @@ export type MutationAddPostToMyCollectionArgs = {
 
 
 export type MutationCreatePostArgs = {
-  title: Scalars['String'];
+  postObject: PostObject;
 };
 
 
@@ -68,14 +68,14 @@ export type MutationLoginArgs = {
 };
 
 
-export type MutationPublishPostArgs = {
-  id: Scalars['ID'];
-};
-
-
 export type MutationRegisterArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationRemovePostArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -84,9 +84,9 @@ export type MutationRemovePostFromMyCollectionArgs = {
 };
 
 
-export type MutationSaveEditPostBodyArgs = {
+export type MutationSaveEditPostArgs = {
   id: Scalars['ID'];
-  body?: Maybe<Scalars['String']>;
+  postObject: PostObject;
 };
 
 
@@ -101,8 +101,9 @@ export type MutationSetRedisArgs = {
 };
 
 
-export type MutationUnPublishPostArgs = {
+export type MutationTagAndPublishPostArgs = {
   id: Scalars['ID'];
+  tags?: Maybe<Array<TagInput>>;
 };
 
 
@@ -129,7 +130,7 @@ export type AuthError = {
 
 export type Query = {
   __typename?: 'Query';
-  findPostsWithTag?: Maybe<Array<Maybe<Post>>>;
+  findPostsByTagId?: Maybe<Array<Maybe<Post>>>;
   getCollectionFromUser?: Maybe<Array<Maybe<Post>>>;
   getMyCollection?: Maybe<Array<Maybe<Post>>>;
   getMyProfile?: Maybe<Profile>;
@@ -150,8 +151,8 @@ export type Query = {
 };
 
 
-export type QueryFindPostsWithTagArgs = {
-  name: Scalars['String'];
+export type QueryFindPostsByTagIdArgs = {
+  tagId: Scalars['String'];
 };
 
 
@@ -214,6 +215,12 @@ export type Post = {
   createdAt: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
   isInMyCollection?: Maybe<Scalars['Boolean']>;
+  tags?: Maybe<Array<Maybe<Tag>>>;
+};
+
+export type PostObject = {
+  title: Scalars['String'];
+  body: Scalars['String'];
 };
 
 export type Profile = {
@@ -228,6 +235,11 @@ export type Tag = {
   name: Scalars['String'];
   posts?: Maybe<Array<Maybe<Post>>>;
   count?: Maybe<Scalars['Int']>;
+};
+
+export type TagInput = {
+  id?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
 };
 
 export type Library = {
