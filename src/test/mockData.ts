@@ -1,5 +1,6 @@
 import faker from 'faker'
 import { Post } from '../entity/Post'
+import { Tag } from '../entity/Tag'
 import { User } from '../entity/User'
 
 const mockPassword = 'password1234'
@@ -12,7 +13,7 @@ const createMockUser = async (confirm = true) => {
 }
 
 const createMockPostByUser = async (user: User) => {
-  let { title, body } = mockPostObject()
+  let { title, body } = createMockPostInput()
   return await Post.create({
     title,
     body,
@@ -20,7 +21,7 @@ const createMockPostByUser = async (user: User) => {
   }).save()
 }
 
-const mockPostObject = () => {
+const createMockPostInput = () => {
   const title = faker.random.words(4)
   const body = faker.random.words(10)
   return {
@@ -29,4 +30,11 @@ const mockPostObject = () => {
   }
 }
 
-export { mockPassword, createMockUser, createMockPostByUser, mockPostObject }
+const createMockTag = () => {
+  const name = faker.random.word()
+  return Tag.create({
+    name
+  })
+}
+
+export { mockPassword, createMockUser, createMockPostByUser, createMockPostInput as createMockPostObject, createMockTag }

@@ -1,26 +1,28 @@
 import { createQueryBuilder, Like } from 'typeorm'
 import { Tag } from '../../entity/Tag'
 import {
-  QueryFindPostsByTagIdArgs,
+  QueryGetPostsByTagIdArgs,
   QueryLookUpTagArgs,
 } from '../../types/graphql'
 import { ResolverMap } from '../../types/graphql-utils'
 import { transformStringToTagSearchKey } from '../../utils/tagUtils'
+import { QueryGetTagByIdArgs } from '../../types/graphql'
 export const resolver: ResolverMap = {
   Query: {
-    lookUpTag: async (_, { input }: QueryLookUpTagArgs) => {
-      if (!input) return null
-      input = transformStringToTagSearchKey(input)
+    lookUpTag: async (_, { name }: QueryLookUpTagArgs) => {
+      let searchKey = transformStringToTagSearchKey(name)
       return await Tag.find({
-        name: Like(`%${input}%`),
+        where: {searchKey: Like(`%${searchKey}%`)},
       })
     },
-    findPostsByTagId: async (_, { tagId }: QueryFindPostsByTagIdArgs) => {
-      const tag = await Tag.findOne(tagId, {
-				relations: ['posts'],
-				
+    getPostsByTagId: async (_, { id }: QueryGetPostsByTagIdArgs) => {
+      const tag = await Tag.findOne(id, {
+        relations: ['posts'],
       })
       return tag?.posts
+    },
+    getTagById: async (_, { id }: QueryGetTagByIdArgs) => {
+      return await Tag.findOne(id)
     },
   },
   Tag: {

@@ -1,20 +1,19 @@
 import { TestClient } from '../../test/testClient'
-import { Post } from '../../entity/Post'
 import { Server } from 'http'
 import { testServerSetup, testTeardown } from '../../test/testSetup'
 import {
   createMockPostByUser,
   createMockUser,
   mockPassword,
-  mockPostObject,
+  createMockPostObject,
 } from '../../test/mockData'
 
 let server: Server
 let client: TestClient
 let user: any
 let post: any
-const postObj1 = mockPostObject()
-const postObj2 = mockPostObject()
+const postObj1 = createMockPostObject()
+const postObj2 = createMockPostObject()
 
 beforeAll(async () => {
   server = await testServerSetup()
@@ -36,14 +35,14 @@ describe('postCore tests', () => {
     expect(res.data.data.getPostById.title).toEqual(post.title)
     expect(res.data.data.getPostById.author.email).toEqual(user.email)
   })
-  it('typeorm gets author from post using queryBuilder', async () => {
-    let res = await Post.createQueryBuilder('posts')
-      .leftJoinAndSelect('posts.author', 'users')
-      .getMany()
-    expect(res.length).toBeGreaterThan(0)
-    expect(res[0].id).toEqual(post.id)
-    expect(res[0].author.id).toEqual(user.id)
-  })
+  // it('typeorm gets author from post using queryBuilder', async () => {
+  //   let res = await Post.createQueryBuilder('posts')
+  //     .leftJoinAndSelect('posts.author', 'users')
+  //     .getMany()
+  //   expect(res.length).toBeGreaterThan(0)
+  //   expect(res[0].id).toEqual(post.id)
+  //   expect(res[0].author.id).toEqual(user.id)
+  // })
   it('queries getPostByTitle', async () => {
     let res = await client.getPostsByTitle(post.title)
     expect(res.data.data.getPostsByTitle.length).toBeGreaterThan(0)

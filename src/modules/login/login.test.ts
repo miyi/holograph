@@ -4,6 +4,7 @@ import { redis } from '../../server_configs/redisServer'
 import { startServer } from '../../startServer'
 import { createMockUser, mockPassword } from '../../test/mockData'
 import { TestClient } from '../../test/testClient'
+import { alreadyLoggedIn } from '../../utils/auth/AuthErrors'
 
 let server: Server
 let bademail = 'bob@bob.com'
@@ -67,6 +68,6 @@ describe('login in user', () => {
     expect(res.data.data.login.success).toBeTruthy()
     let user2 = await createMockUser()
     res = await client.login(user2.email, mockPassword)
-    console.log(res.data.data.login.error[0])
+    expect(res.data.data.login.error[0]).toEqual(alreadyLoggedIn)
   })
 })

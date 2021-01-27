@@ -5,16 +5,27 @@ import { formatYupErr } from '../../utils/formatYupError'
 import { createConfirmEmailLink } from '../../utils/createLink'
 import { sendConfirmationEmail } from '../../utils/sendEmail'
 import { emailPasswordSchema } from '../../utils/yupValidate'
-import { duplicateEmail } from '../../utils/auth/AuthErrors'
+import { alreadyLoggedIn, duplicateEmail } from '../../utils/auth/AuthErrors'
+import { verifyLogin } from '../../utils/auth/auth-utils'
+import { asyncRedis } from '../../server_configs/redisServer'
 
 export const resolvers: ResolverMap = {
   Mutation: {
-    register: async (_: any, args: MutationRegisterArgs, { redis, url }) => {
+    register: async (_: any, args: MutationRegisterArgs, { session, redis, url }) => {
       let authResponse: AuthResponse = {
         success: false,
         error: [],
       }
-
+      //check if a legit user is already logged in
+      if (session.userId) {
+        const isLoggedIn = await verifyLogin(session, asyncRedis)
+        if(isLoggedIn) {
+          authResponse.success = false
+          authResponse.error.push(alreadyLoggedIn) 
+          return authResponse
+        }
+      }
+      //not currently logged in
       try {
         await emailPasswordSchema.validate(args, { abortEarly: false })
       } catch (err) {

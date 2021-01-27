@@ -4,7 +4,7 @@ import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
 import { User } from '../../entity/User'
-import { loginUser } from '../../utils/auth/auth-utils'
+import { loginUser, verifyLogin } from '../../utils/auth/auth-utils'
 
 import {
   alreadyLoggedIn,
@@ -25,7 +25,7 @@ export const resolvers: ResolverMap = {
         error: [],
       }
 
-      if (session && session.userId) {
+      if (await verifyLogin(session, redis)) {
         //check if already logged in
         authResponse.error?.push(alreadyLoggedIn)
       } else {

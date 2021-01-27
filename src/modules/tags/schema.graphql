@@ -5,11 +5,12 @@ type Tag {
 }
 
 type Query {
-  lookUpTag(input: String!): [Tag]
-  findPostsByTagId(tagId: String!): [Post]
+  lookUpTag(name: String!): [Tag]
+  getPostsByTagId(id: ID!): [Post]
+  getTagById(id: ID!): Tag
 }
 
 input tagInput {
-  id: String
+  id: ID
   name: String!
 }

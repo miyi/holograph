@@ -46,13 +46,13 @@ export const resolvers: ResolverMap = {
       isLoggedInMiddleware,
       async (
         _,
-        { postObject }: MutationCreatePostArgs,
+        { postInput }: MutationCreatePostArgs,
         { session }: GraphqlContext,
       ) => {
         const user = await User.findOne(session.userId)
         const post = await Post.create({
-          title: postObject.title,
-          body: postObject.body,
+          title: postInput.title,
+          body: postInput.body,
           author: user,
         }).save()
         return post
@@ -86,20 +86,17 @@ export const resolvers: ResolverMap = {
       async (parent, args: MutationSaveEditPostArgs) => {
         let { post } = parent
         if (!post.published) {
-          if (args.postObject.title) post.title = args.postObject.title
+          if (args.postInput.title) post.title = args.postInput.title
         }
-        if (args.postObject.body) post.body = args.postObject.body
+        if (args.postInput.body) post.body = args.postInput.body
         return await post.save()
       },
     ),
   },
   Post: {
     author: async (parent) => {
-      let post = await Post.findOne({
+      let post = await Post.findOne(parent.id, {
         relations: ['author'],
-        where: {
-          id: parent.id,
-        },
       })
       return post?.author
     },

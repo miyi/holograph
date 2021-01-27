@@ -89,12 +89,4 @@ describe('profileCore tests', () => {
       profileDescription,
     )
   })
-  // it('deletes user and cascade delete posts and profile', async () => {
-  //   let deleteThisUser = await User.findOne()
-  //   await User.remove(deleteThisUser as User)
-  //   let profile = await Profile.findOne()
-  //   expect(profile).toBeUndefined()
-  //   let myPost = await Post.findOne()
-  //   expect(myPost).toBeUndefined()
-  // })
 })

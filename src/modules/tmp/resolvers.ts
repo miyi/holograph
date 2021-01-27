@@ -1,5 +1,6 @@
 import { GraphqlContext } from '../../types/graphql-utils'
 import { ResolverMap } from '../../types/graphql-utils'
+import { QueryGetFullNameArgs } from '../../types/graphql'
 import {
   QueryHelloArgs,
   QueryGetRedisArgs,
@@ -25,6 +26,10 @@ export const resolvers: ResolverMap = {
       { redis }: GraphqlContext,
     ) => {
       return await redis('get', [key])
+    },
+    getFullName: async (_, { input }: QueryGetFullNameArgs) => {
+      let { firstName, lastName } = input
+      return firstName + ' ' + lastName
     },
   },
   Mutation: {

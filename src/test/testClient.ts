@@ -1,7 +1,7 @@
 import { CookieJar } from 'tough-cookie'
 import axios, { AxiosInstance } from 'axios'
 import axiosCookieJarSupport from 'axios-cookiejar-support'
-import { TagInput, PostObject } from '../types/graphql';
+import { TagInput, PostInput } from '../types/graphql'
 
 axiosCookieJarSupport(axios)
 const cookieJar = new CookieJar()
@@ -197,7 +197,9 @@ export class TestClient {
               email
             }
             isInMyCollection
-            tags
+            tags {
+              name
+            }
           }
         }
       `,
@@ -214,7 +216,9 @@ export class TestClient {
             author {
               email
             }
-            tags
+            tags {
+              name
+            }
           }
         }
       `,
@@ -231,18 +235,20 @@ export class TestClient {
             author {
               email
             }
-            tags
+            tags {
+              name
+            }
           }
         }
       `,
     })
   }
 
-  createPost(postObject: PostObject) {
+  createPost(postInput: PostInput) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          createPost(postObject: "${postObject}") {
+          createPost(postObject: ${postInput}) {
             id
             title
             author {
@@ -274,16 +280,18 @@ export class TestClient {
     })
   }
 
-  saveEditPost(id: string, postObject: PostObject) {
+  saveEditPost(id: string, postInput: PostInput) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          saveEditPost(id: "${id}", postObject: "${postObject}") {
+          saveEditPost(id: "${id}", postObject: "${postInput}") {
             body
             author {
               email
             }
-            tags
+            tags {
+              name
+            }
           }
         }
       `,

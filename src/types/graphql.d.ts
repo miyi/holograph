@@ -41,7 +41,7 @@ export type MutationAddPostToMyCollectionArgs = {
 
 
 export type MutationCreatePostArgs = {
-  postObject: PostObject;
+  postInput: PostInput;
 };
 
 
@@ -86,7 +86,7 @@ export type MutationRemovePostFromMyCollectionArgs = {
 
 export type MutationSaveEditPostArgs = {
   id: Scalars['ID'];
-  postObject: PostObject;
+  postInput: PostInput;
 };
 
 
@@ -130,15 +130,17 @@ export type AuthError = {
 
 export type Query = {
   __typename?: 'Query';
-  findPostsByTagId?: Maybe<Array<Maybe<Post>>>;
   getCollectionFromUser?: Maybe<Array<Maybe<Post>>>;
+  getFullName?: Maybe<Scalars['String']>;
   getMyCollection?: Maybe<Array<Maybe<Post>>>;
   getMyProfile?: Maybe<Profile>;
   getPostById?: Maybe<Post>;
   getPostsByAuthorId?: Maybe<Array<Maybe<Post>>>;
+  getPostsByTagId?: Maybe<Array<Maybe<Post>>>;
   getPostsByTitle?: Maybe<Array<Maybe<Post>>>;
   getProfileByUserId?: Maybe<Profile>;
   getRedis?: Maybe<Scalars['String']>;
+  getTagById?: Maybe<Tag>;
   getUserByEmail?: Maybe<User>;
   getUserById?: Maybe<User>;
   hello: Scalars['String'];
@@ -151,13 +153,13 @@ export type Query = {
 };
 
 
-export type QueryFindPostsByTagIdArgs = {
-  tagId: Scalars['String'];
+export type QueryGetCollectionFromUserArgs = {
+  userId: Scalars['String'];
 };
 
 
-export type QueryGetCollectionFromUserArgs = {
-  userId: Scalars['String'];
+export type QueryGetFullNameArgs = {
+  input: NameInput;
 };
 
 
@@ -168,6 +170,11 @@ export type QueryGetPostByIdArgs = {
 
 export type QueryGetPostsByAuthorIdArgs = {
   authorId: Scalars['ID'];
+};
+
+
+export type QueryGetPostsByTagIdArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -183,6 +190,11 @@ export type QueryGetProfileByUserIdArgs = {
 
 export type QueryGetRedisArgs = {
   key: Scalars['String'];
+};
+
+
+export type QueryGetTagByIdArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -202,7 +214,7 @@ export type QueryHelloArgs = {
 
 
 export type QueryLookUpTagArgs = {
-  input: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type Post = {
@@ -218,7 +230,7 @@ export type Post = {
   tags?: Maybe<Array<Maybe<Tag>>>;
 };
 
-export type PostObject = {
+export type PostInput = {
   title: Scalars['String'];
   body: Scalars['String'];
 };
@@ -238,7 +250,7 @@ export type Tag = {
 };
 
 export type TagInput = {
-  id?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['ID']>;
   name: Scalars['String'];
 };
 
@@ -259,6 +271,11 @@ export type Author = {
   __typename?: 'Author';
   name: Scalars['String'];
   dob: Scalars['String'];
+};
+
+export type NameInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
 };
 
 export type User = {
