@@ -1,7 +1,7 @@
 import { Server } from 'http'
 import {
   createMockUser,
-  createMockPostObject,
+  createMockPostInput,
   mockPassword,
 } from '../../test/mockData'
 import { TestClient } from '../../test/testClient'
@@ -26,21 +26,20 @@ describe('debug post requests', () => {
     expect(res.data.data.login.success).toBeTruthy()
   })
   it('creates a post', async () => {
-    let postObject = createMockPostObject()
+    let postInput = createMockPostInput()
     let res = await client.axiosInstance.post('/', {
       query: `
-        {
-          createPost(postObject: {
-            title: "${postObject.title}",
-            body: "${postObject.body}"
+        mutation {
+          createPost(postInput: {
+            title: "${postInput.title}" 
+            body: "${postInput.body}"
           }) {
             title
             body
           }
         }
-      `
+      `,
     })
-    console.log(res.data.data.createPost);
+    console.log(res.data.data.createPost)
   })
-
 })

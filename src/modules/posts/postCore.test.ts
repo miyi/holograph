@@ -70,7 +70,7 @@ describe('postCore tests', () => {
     expect(res.data.data.createPost.author.email).toEqual(user.email)
   })
   it('publishes an existing post', async () => {
-    let res = await client.publishPost(post.id)
+    let res = await client.tagAndPublishPost(post.id)
     expect(res.data.data.publishPost).toEqual(post.id)
   })
   it('remove the previously published post', async () => {

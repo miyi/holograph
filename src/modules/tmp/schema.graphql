@@ -5,6 +5,7 @@ type Query {
   readSessionDummy2: String
   getRedis(key: String!): String
   getFullName(input: NameInput!): String
+  returnArray(stringArray: [String!]!): String
 }
 
 type Mutation {
@@ -18,3 +19,4 @@ input NameInput {
   firstName: String!
   lastName: String!
 }
+

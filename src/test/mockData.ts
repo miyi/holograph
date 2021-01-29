@@ -33,8 +33,14 @@ const createMockPostInput = () => {
 const createMockTag = () => {
   const name = faker.random.word()
   return Tag.create({
-    name
+    name,
   })
 }
 
-export { mockPassword, createMockUser, createMockPostByUser, createMockPostInput as createMockPostObject, createMockTag }
+export {
+  mockPassword,
+  createMockUser,
+  createMockPostByUser,
+  createMockPostInput,
+  createMockTag,
+}

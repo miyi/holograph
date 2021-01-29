@@ -1,6 +1,6 @@
 import { GraphqlContext } from '../../types/graphql-utils'
 import { ResolverMap } from '../../types/graphql-utils'
-import { QueryGetFullNameArgs } from '../../types/graphql'
+import { QueryGetFullNameArgs, QueryReturnArrayArgs } from '../../types/graphql';
 import {
   QueryHelloArgs,
   QueryGetRedisArgs,
@@ -11,6 +11,16 @@ import {
 export const resolvers: ResolverMap = {
   Query: {
     hello: (_: any, { name }: QueryHelloArgs) => `Hello ${name || 'World'}`,
+    returnArray: async (_, { stringArray }: QueryReturnArrayArgs) => {
+      console.log('resolver: ', stringArray);
+      let response = ''
+      stringArray?.forEach((e) => {
+        response = response + e + ' '
+        console.log('tick');
+      })
+      console.log('resolver last: ', response.trim());
+      return response.trim()
+    },
     url: (_: void, __: void, context: any) => {
       return context.url
     },
