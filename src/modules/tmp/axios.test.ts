@@ -1,24 +1,24 @@
 import { Server } from 'http'
-import { testServerSetup, testTeardown } from '../../test/testSetup'
+import stringifyObject from 'stringify-object'
 import { TestClient } from '../../test/testClient'
-import { inspect } from 'util'
+import { testServerSetup, testTeardown } from '../../test/testSetup'
 let server: Server
 let client: TestClient
-jest.setTimeout(3 * 60 * 1000)
+const arrayNames = ['John', 'Harry', 'Mike', 'Tom']
 
-// const readSession = `
-// 	query {
-//   	readSessionDummy1
-// 	}
-// `
+const nameInput = {
+  firstName: 'Ming',
+  lastName: 'Yin',
+}
 
-// doesn't work
-// const getFullNameObj = `
-//   {
-//     getFullName(input: ${JSON.stringify(nameInput)})
-//   }
-// `
-
+const getFullNameString = `
+  {
+    getFullName(input: {
+      firstName: "${nameInput.firstName}",
+      lastName: "${nameInput.lastName}"
+    })
+  }
+`
 beforeAll(async () => {
   server = await testServerSetup()
   client = new TestClient()
@@ -29,15 +29,7 @@ afterAll(async () => {
 })
 
 describe('axios tests', () => {
-  it('getFullNameString direct input', async () => {
-    const getFullNameString = `
-      {
-        getFullName(input: {
-          firstName: "Ming",
-          lastName: "Yin"
-        })
-      }
-    `
+  it('axios getFullNameString', async () => {
     let res = await client.axiosInstance
       .post('/', {
         query: getFullNameString,
@@ -47,48 +39,38 @@ describe('axios tests', () => {
       })
     expect(res.data.data.getFullName).toEqual('Ming Yin')
   })
-  it('getFullNameString input as var', async () => {
-    const nameInput = {
-      firstName: 'Ming',
-      lastName: 'Yin',
-    }
-
-    console.log(inspect(nameInput))
-
-    const getFullNameString = `
-      {
-        getFullName(input: ${inspect(nameInput)})
-      }
-    `
+  it('axios helloAll array input test', async () => {
+    let res = await client.axiosInstance.post('/', {
+      query: `
+        {
+          helloAll(stringArray: ["John", "Harry", "Mike", "Tom"])
+        }
+      `,
+    })
+    expect(res.data.data.helloAll).toEqual('Hello John Harry Mike Tom!')
+  })
+  it('test stringify-object', async () => {
     let res = await client.axiosInstance
       .post('/', {
-        query: getFullNameString,
+        query: `{
+          getFullName(input: ${stringifyObject(nameInput, {
+            singleQuotes: false,
+          })})
+        }`,
       })
       .catch((e) => {
         throw Error(e)
       })
     expect(res.data.data.getFullName).toEqual('Ming Yin')
-  })
-  it('returnArray direct input', async () => {
-    let res = await client.axiosInstance.post('/', {
+    res = await client.axiosInstance.post('/', {
       query: `
         {
-          returnArray(stringArray: ["John", "Harry", "Mike", "Tom"])
+          helloAll(stringArray: ${stringifyObject(arrayNames, {
+            singleQuotes: false,
+          })})
         }
       `,
     })
-    expect(res.data.data.helloAll).toEqual('John Harry Mike Tom')
-  })
-  it('returnArray variable input', async () => {
-    const arrayNames = ['John', 'Harry', 'Mike', 'Tom']
-    console.log(inspect(arrayNames))
-    let res = await client.axiosInstance.post('/', {
-      query: `
-        {
-          returnArray(stringArray: ${inspect(arrayNames)})
-        }
-      `,
-    })
-    expect(res.data.data.helloAll).toEqual('John Harry Mike Tom')
+    expect(res.data.data.helloAll).toEqual('Hello John Harry Mike Tom!')
   })
 })

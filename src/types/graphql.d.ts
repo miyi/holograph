@@ -144,12 +144,12 @@ export type Query = {
   getUserByEmail?: Maybe<User>;
   getUserById?: Maybe<User>;
   hello: Scalars['String'];
+  helloAll?: Maybe<Scalars['String']>;
   libraries?: Maybe<Array<Maybe<Library>>>;
   lookUpTag?: Maybe<Array<Maybe<Tag>>>;
   me?: Maybe<User>;
   readSessionDummy1?: Maybe<Scalars['String']>;
   readSessionDummy2?: Maybe<Scalars['String']>;
-  returnArray?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
 };
 
@@ -214,13 +214,13 @@ export type QueryHelloArgs = {
 };
 
 
-export type QueryLookUpTagArgs = {
-  name: Scalars['String'];
+export type QueryHelloAllArgs = {
+  stringArray: Array<Scalars['String']>;
 };
 
 
-export type QueryReturnArrayArgs = {
-  stringArray: Array<Scalars['String']>;
+export type QueryLookUpTagArgs = {
+  name: Scalars['String'];
 };
 
 export type Post = {
