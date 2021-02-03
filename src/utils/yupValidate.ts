@@ -8,9 +8,19 @@ const tagNameSchema = yup
   .max(32)
   .matches(/^[a-zA-Z0-9_]*$/)
 
-const tagInputSchema = yup.object().shape({
-  id: yup.string(),
-  name: tagNameSchema.required(),
+const tagInputSchema = yup
+  .array()
+  .of(
+    yup.object().shape({
+      id: yup.string(),
+      name: tagNameSchema.required(),
+    }),
+  )
+  .max(8)
+
+const postInputSchema = yup.object().shape({
+  title: yup.string(),
+  body: yup.string(),
 })
 
 const emailPasswordSchema = yup.object().shape({
@@ -24,4 +34,5 @@ export {
   emailPasswordSchema,
   tagNameSchema,
   tagInputSchema,
+  postInputSchema,
 }

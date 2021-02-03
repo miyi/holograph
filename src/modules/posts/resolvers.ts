@@ -15,6 +15,8 @@ import {
 import { createMiddleware } from '../../utils/createMiddleware'
 import { MutationTagAndPublishPostArgs } from '../../types/graphql'
 import { mockValidateTagInputArray } from '../../utils/tagUtils'
+import { tagInputSchema } from '../../utils/yupValidate'
+import { ApolloError, UserInputError } from 'apollo-server-express'
 
 export const resolvers: ResolverMap = {
   Query: {
@@ -61,17 +63,32 @@ export const resolvers: ResolverMap = {
     tagAndPublishPost: createMiddleware(
       isPostAuthorMiddleware,
       async (parent, { tags }: MutationTagAndPublishPostArgs) => {
-        if (parent.post.publish) return null
-        let { post } = parent.post
+        let { post } = parent
+        if (post.publish)
+          throw new ApolloError('This post is already published.')
         if (tags) {
-          const post = await Post.findOne(parent.post.id, {
+          //validate tagInput
+          try {
+            await tagInputSchema.validate(tags, {
+              abortEarly: false,
+            })
+          } catch {
+            throw new UserInputError('invalid tags')
+          }
+          post = await Post.findOne(parent.post.id, {
             relations: ['tags'],
           })
+          console.log('resolver 1: ', post)
           let validatedTags = await mockValidateTagInputArray(tags)
-          post?.tags?.concat(validatedTags)
+          console.log('resolver2: ', validatedTags)
+          validatedTags.forEach((tag) => {
+            post?.tags?.push(tag)
+          })
+          console.log('resolver3: ', post?.tags)
         }
         post.published = true
-        await post.save()
+        const res = await post.save()
+        console.log('resolver4: ', res)
         return post.id
       },
     ),

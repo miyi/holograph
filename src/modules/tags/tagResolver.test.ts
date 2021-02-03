@@ -68,10 +68,12 @@ describe('tag resolver test', () => {
             author {
               email
             }
+            tags
           }
         }
       `,
     })
     expect(res.data.data.getPostsByTagId[0].author.email).toEqual(user.email)
+    expect(res.data.data.getPostsByTagId[0].tags.name).toEqual(tag1.name)
   })
 })
