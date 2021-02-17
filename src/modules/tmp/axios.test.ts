@@ -25,7 +25,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await testTeardown(server)
+  testTeardown(server)
 })
 
 describe('axios tests', () => {
@@ -72,5 +72,15 @@ describe('axios tests', () => {
       `,
     })
     expect(res.data.data.helloAll).toEqual('Hello John Harry Mike Tom!')
+  })
+  it('test createMiddlewareResolver', async () => {
+    let res = await client.axiosInstance.post('/', {
+      query: `
+        {
+          addThreeToThis(num: 1)
+        }
+      `,
+    })
+    expect(res.data.data.addThreeToThis).toEqual(4)
   })
 })

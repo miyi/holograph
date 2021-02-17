@@ -1,12 +1,17 @@
 import { GraphqlContext } from '../../types/graphql-utils'
 import { ResolverMap } from '../../types/graphql-utils'
-import { QueryGetFullNameArgs, QueryHelloAllArgs } from '../../types/graphql'
+import {
+  QueryGetFullNameArgs,
+  QueryHelloAllArgs,
+  QueryAddThreeToThisArgs,
+} from '../../types/graphql'
 import {
   QueryHelloArgs,
   QueryGetRedisArgs,
   MutationSetRedisArgs,
   MutationDelRedisArgs,
 } from '../../types/graphql'
+import { addOneMiddleware, createMiddlewareResolver } from './testMiddleware'
 
 export const resolvers: ResolverMap = {
   Query: {
@@ -38,6 +43,15 @@ export const resolvers: ResolverMap = {
       let { firstName, lastName } = input
       return firstName + ' ' + lastName
     },
+    addThreeToThis: createMiddlewareResolver(
+      addOneMiddleware,
+      addOneMiddleware,
+      addOneMiddleware,
+      (_: any, { num }: QueryAddThreeToThisArgs) => {
+        console.log('resolver num: ', num);
+        return num
+      },
+    ),
   },
   Mutation: {
     setSessionDummy1: (_: void, __: void, context: GraphqlContext) => {

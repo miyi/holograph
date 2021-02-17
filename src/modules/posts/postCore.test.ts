@@ -5,15 +5,15 @@ import {
   createMockPostByUser,
   createMockUser,
   mockPassword,
-  createMockPostObject,
+  createMockPostInput,
 } from '../../test/mockData'
 
 let server: Server
 let client: TestClient
 let user: any
 let post: any
-const postObj1 = createMockPostObject()
-const postObj2 = createMockPostObject()
+const postObj1 = createMockPostInput()
+const postObj2 = createMockPostInput()
 
 beforeAll(async () => {
   server = await testServerSetup()

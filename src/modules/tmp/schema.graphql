@@ -6,6 +6,7 @@ type Query {
   getRedis(key: String!): String
   getFullName(input: NameInput!): String
   helloAll(stringArray: [String!]!): String
+  addThreeToThis(num: Int!): Int!
 }
 
 type Mutation {
@@ -19,4 +20,3 @@ input NameInput {
   firstName: String!
   lastName: String!
 }
-

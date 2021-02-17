@@ -130,6 +130,7 @@ export type AuthError = {
 
 export type Query = {
   __typename?: 'Query';
+  addThreeToThis: Scalars['Int'];
   getCollectionFromUser?: Maybe<Array<Maybe<Post>>>;
   getFullName?: Maybe<Scalars['String']>;
   getMyCollection?: Maybe<Array<Maybe<Post>>>;
@@ -151,6 +152,11 @@ export type Query = {
   readSessionDummy1?: Maybe<Scalars['String']>;
   readSessionDummy2?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryAddThreeToThisArgs = {
+  num: Scalars['Int'];
 };
 
 
