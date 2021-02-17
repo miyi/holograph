@@ -4,6 +4,9 @@ type Query {
   readSessionDummy1: String
   readSessionDummy2: String
   getRedis(key: String!): String
+  getFullName(input: NameInput!): String
+  helloAll(stringArray: [String!]!): String
+  addThreeToThis(num: Int!): Int!
 }
 
 type Mutation {
@@ -11,4 +14,9 @@ type Mutation {
   setSessionDummy2: String
   setRedis(key: String!, value: String!): String
   delRedis(key: String!): String
+}
+
+input NameInput {
+  firstName: String!
+  lastName: String!
 }

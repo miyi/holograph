@@ -1,32 +1,24 @@
 import { Server } from 'http'
-import { Users } from '../../entity/Users'
-import request from 'graphql-request'
+import { User } from '../../entity/User'
+import { redis } from '../../server_configs/redisServer'
 import { startServer } from '../../startServer'
+import { createMockUser, mockPassword } from '../../test/mockData'
+import { TestClient } from '../../test/testClient'
+import { alreadyLoggedIn } from '../../utils/auth/AuthErrors'
 
 let server: Server
-let email = 'jim@jim.com'
-let password = 'password123'
 let bademail = 'bob@bob.com'
 let badpassword = 'notrealpassword'
 let badinput = 'aaa'
 let req_url: string
-
-const mutation = (email: string, password: string) => `
-	mutation {
-		login(email: "${email}", password: "${password}") {
-			success
-      error {
-				path
-				message
-			}
-    }
-	}
-`
+let user: User
+let client: TestClient
 
 beforeAll(async () => {
   server = await startServer()
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
+    client = new TestClient(req_url)
   } else {
     throw Error('no url')
   }
@@ -34,51 +26,48 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await server.close()
+  await new Promise((resolve) => {
+    redis.quit(() => {
+      resolve(true)
+    })
+  })
 })
 
 describe('login in user', () => {
   it('registers a user via typeorm', async () => {
-    await Users.create({
-      email,
-      password,
-    }).save()
-    const user: any = await Users.findOne({
-      where: {
-        email,
-      },
-    })
-    user.confirm = true
-    Users.save(user)
-    expect(user).not.toBeNull()
+    user = await createMockUser()
+    expect(user).toBeTruthy()
   })
 
   it('tests login resolver', async () => {
-    const loginResponse: any = await request(req_url, mutation(email, password))
-    expect(loginResponse.login.success).toBeTruthy()
+    let res = await client.login(user.email, mockPassword)
+    expect(res.data.data.login.success).toBeTruthy()
+    res = await client.logout()
+    expect(res.data.data.logout.success).toBeTruthy()
   })
   it('bad input', async () => {
-    const loginResponse: any = await request(
-      req_url,
-      mutation(badinput, badinput),
-    )
-    expect(loginResponse.login.success as any).toBeFalsy()
+    let res = await client.login(badinput, mockPassword)
+    expect(res.data.data.login.success).toBeFalsy()
+    expect(res.data.data.login.error.length).toBeGreaterThan(0)
   })
   it('bad email', async () => {
-    const loginResponse: any = await request(
-      req_url,
-      mutation(bademail, password),
-    )
-    expect(loginResponse.login.success).toBeFalsy()
-    expect(loginResponse.login.error[0].path).toEqual('email')
-    expect(loginResponse.login.error[0].message).toEqual('incorrect email')
+    let res = await client.login(bademail, mockPassword)
+    expect(res.data.data.login.success).toBeFalsy()
+    expect(res.data.data.login.error[0].path).toEqual('email')
+    expect(res.data.data.login.error[0].message).toEqual('incorrect email')
   })
   it('bad password', async () => {
-    const loginResponse: any = await request(
-      req_url,
-      mutation(email, badpassword),
-    )
-    expect(loginResponse.login.success).toBeFalsy()
-    expect(loginResponse.login.error[0].path).toEqual('password')
-    expect(loginResponse.login.error[0].message).toEqual('incorrect password')
+    let res = await client.login(user.email, badpassword)
+    expect(res.data.data.login.success).toBeFalsy()
+    expect(res.data.data.login.error[0].path).toEqual('password')
+    expect(res.data.data.login.error[0].message).toEqual('incorrect password')
+  })
+
+  it('log in again while already logged in', async () => {
+    let res = await client.login(user.email, mockPassword)
+    expect(res.data.data.login.success).toBeTruthy()
+    let user2 = await createMockUser()
+    res = await client.login(user2.email, mockPassword)
+    expect(res.data.data.login.error[0]).toEqual(alreadyLoggedIn)
   })
 })

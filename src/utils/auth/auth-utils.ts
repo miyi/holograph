@@ -1,3 +1,4 @@
+import { User } from '../../entity/User'
 import { AsyncRedis } from '../../types/server-utils'
 import { userSessionIdPrefix, redisSessionPrefix } from '../constants'
 
@@ -57,15 +58,29 @@ const verifyLogin = async (
 ): Promise<boolean> => {
   if (isLoggedIn(session)) {
     let userId = session.userId
-    let sessionList = await asyncRedis('lrange', [
-      userSessionIdPrefix + userId,
-      0,
-      -1,
-    ])
-    return Boolean(sessionList.find((e: string) => e === session.id))
-  } else {
-    return false
+    if (userId) {
+      let sessionList = await asyncRedis('lrange', [
+        userSessionIdPrefix + userId,
+        0,
+        -1,
+      ])
+      //check if sessionId exists in sessionList
+      if (
+        sessionList &&
+        Boolean(sessionList.find((e: string) => e === session.id))
+      ) {
+        //check if session.userId actually has a user
+        let user = await User.findOne(userId)
+        if (user?.email) {
+          return true
+        }
+        //if no user found remove all session related to userId
+        await removeAllUserSessions(userId, asyncRedis)
+      }
+      session.userId = null
+    }
   }
+  return false
 }
 
 export { removeAllUserSessions, loginUser, isLoggedIn, verifyLogin }

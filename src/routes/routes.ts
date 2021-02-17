@@ -1,6 +1,6 @@
 import { Router, Response } from 'express'
 import { asyncRedis, redis } from '../server_configs/redisServer'
-import { Users } from '../entity/Users'
+import { User } from '../entity/User'
 import { confirmUserPrefix } from '../utils/constants'
 import passport from 'passport'
 import { loginUser } from '../utils/auth/auth-utils'
@@ -20,7 +20,7 @@ routes.get('/confirm/:id', async (req, res) => {
   await redis.get(confirmUserPrefix + id, async (_, reply) => {
     const userId = reply
     if (userId) {
-      await Users.update({ id: userId }, { confirm: true })
+      await User.update({ id: userId }, { confirm: true })
       await redis.del(`${confirmUserPrefix}${id}`, () => {
         res.send('ok')
       })

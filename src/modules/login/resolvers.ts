@@ -3,8 +3,8 @@ import { MutationLoginArgs, AuthResponse } from '../../types/graphql'
 import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
-import { Users } from '../../entity/Users'
-import { loginUser } from '../../utils/auth/auth-utils'
+import { User } from '../../entity/User'
+import { loginUser, verifyLogin } from '../../utils/auth/auth-utils'
 
 import {
   alreadyLoggedIn,
@@ -25,7 +25,7 @@ export const resolvers: ResolverMap = {
         error: [],
       }
 
-      if (session && session.userId) {
+      if (await verifyLogin(session, redis)) {
         //check if already logged in
         authResponse.error?.push(alreadyLoggedIn)
       } else {
@@ -33,15 +33,12 @@ export const resolvers: ResolverMap = {
         try {
           await emailPasswordSchema.validate(args, { abortEarly: false })
         } catch (err) {
-          const badInputResponse = {
-            success: false,
-            error: formatYupErr(err),
-          }
-          return badInputResponse
+          authResponse.error = formatYupErr(err)
+          return authResponse
         }
         const { email, password } = args
         //check user exist
-        const user = await Users.findOne({
+        const user = await User.findOne({
           where: {
             email,
           },

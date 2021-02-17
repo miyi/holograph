@@ -1,14 +1,14 @@
 // import { Server } from 'http'
 import { createQueryBuilder } from 'typeorm'
-import { Posts } from '../../../entity/Posts'
-import { Users } from '../../../entity/Users'
+import { Post } from '../../../entity/Post'
+import { User } from '../../../entity/User'
 import { startServer } from '../../../startServer'
 import { TmpTestClient } from '../../../test/tmpTestClient'
 
 // let server: Server
 let req_url: string
 let client: any
-let user: Users
+let user: User
 const postTitle = 'fake title'
 const email = 'jim@jim.com'
 const password = 'password123'
@@ -18,7 +18,7 @@ beforeAll(async () => {
   if (process.env.HOST_URL) {
     req_url = process.env.HOST_URL + '/graphql'
     client = new TmpTestClient(req_url)
-    user = await Users.create({
+    user = await User.create({
       email,
       password,
       confirm: true,
@@ -38,7 +38,7 @@ describe('test resolver chain  setup', () => {
     expect(reply.data.data.libraries.length).toBeGreaterThan(0)
   }),
     it('typeorm gets posts from user', async () => {
-      await Posts.create({
+      await Post.create({
         title: postTitle,
         author: user,
       }).save()
@@ -49,7 +49,7 @@ describe('test resolver chain  setup', () => {
       expect((directGetUsers as Users).id).toEqual(user.id)
       console.log(directGetPosts)
 
-      const userPosts = await Users.findOne({
+      const userPosts = await User.findOne({
         relations: ['posts'],
         where: {
           id: user.id,
@@ -57,7 +57,7 @@ describe('test resolver chain  setup', () => {
       })
       console.log(userPosts?.posts)
 
-      const postsFromUser = await Posts.find({
+      const postsFromUser = await Post.find({
         author: {
           id: user.id,
         },

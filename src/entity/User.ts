@@ -1,21 +1,23 @@
+import { hashSync } from 'bcryptjs'
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
   BaseEntity,
   BeforeInsert,
-  OneToMany,
+  Column,
   CreateDateColumn,
+  Entity,
+  OneToMany,
   OneToOne,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
-  AfterInsert,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
 } from 'typeorm'
-import { hashSync } from 'bcryptjs'
-import { Posts } from './Posts'
-import { Profiles } from './Profiles'
+import { Post } from './Post'
+import { Profile } from './Profile'
 
 @Entity('user')
-export class Users extends BaseEntity {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
@@ -40,30 +42,37 @@ export class Users extends BaseEntity {
   @Column('bool', { default: false })
   confirm!: boolean
 
-  @Column('bool', { nullable: false, default: true })
+  @Column('bool', { nullable: false, default: false })
   deactivated!: boolean
 
-  @OneToOne(() => Profiles, (profile) => profile.user, {
+  @OneToOne(() => Profile, (profile) => profile.user, {
     cascade: true,
-    onDelete: 'CASCADE',
   })
-  profile!: Profiles
+  @JoinColumn()
+  profile!: Profile
 
-  @OneToMany(() => Posts, (posts) => posts.author, {
-    cascade: true,
-    onDelete: 'CASCADE',
+  @ManyToMany(() => Post, {
+    cascade: true
   })
-  posts!: Posts[]
+  @JoinTable()
+  collection!: Post[]
+
+  @OneToMany(() => Post, (posts) => posts.author, {
+    cascade: true,
+  })
+  posts!: Post[]
 
   @BeforeInsert()
   hashPassword() {
     if (this.password) this.password = hashSync(this.password, 12)
   }
-
-  @AfterInsert()
+  @BeforeInsert()
   async createProfile() {
-    let profile = await Profiles.create().save()
-    this.profile = profile
-    this.save()
+    this.profile = await Profile.create().save()
   }
+
+  // @BeforeRemove()
+  // async removeProfile() {
+  //   await Profile.remove(this.profile)
+  // }
 }

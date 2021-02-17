@@ -1,4 +1,4 @@
-import { AsyncRedis } from "./server-utils"
+import { AsyncRedis } from './server-utils'
 
 export interface GraphqlContext {
   redis: AsyncRedis
@@ -25,3 +25,13 @@ export interface ResolverMap {
     [key: string]: Resolver
   }
 }
+
+export type MiddlewareStack = [...any[], Resolver]
+
+export type ResolverMiddleware = (
+  middlewareStack: MiddlewareStack,
+  parent: any,
+  args: any,
+  context: GraphqlContext,
+  info: any,
+) => any

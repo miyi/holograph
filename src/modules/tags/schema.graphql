@@ -1,0 +1,16 @@
+type Tag {
+  name: String!
+  posts: [Post]
+  count: Int
+}
+
+type Query {
+  lookUpTag(name: String!): [Tag]
+  getPostsByTagId(id: ID!): [Post]
+  getTagById(id: ID!): Tag
+}
+
+input tagInput {
+  id: ID
+  name: String!
+}

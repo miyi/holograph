@@ -1,4 +1,4 @@
-import { Posts } from '../../entity/Posts'
+import { Post } from '../../entity/Post'
 import { Resolver, GraphqlContext } from '../../types/graphql-utils'
 import { verifyLogin } from './auth-utils'
 
@@ -28,7 +28,7 @@ export const isPostAuthorMiddleware = async (
 ) => {
   let result = null
   if (args?.id) {
-    let post = await Posts.findOne({
+    let post = await Post.findOne({
       relations: ['author'],
       where: {
         id: args.id,

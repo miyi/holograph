@@ -1,6 +1,7 @@
 import { CookieJar } from 'tough-cookie'
 import axios, { AxiosInstance } from 'axios'
 import axiosCookieJarSupport from 'axios-cookiejar-support'
+import { PostInput } from '../types/graphql'
 
 axiosCookieJarSupport(axios)
 const cookieJar = new CookieJar()
@@ -9,8 +10,9 @@ export class TestClient {
   url: string
   axiosInstance: AxiosInstance
 
-  constructor(url: string) {
+  constructor(url: string = process.env.HOST_URL + '/graphql') {
     this.url = url
+    console.log(url)
     this.axiosInstance = axios.create({
       jar: cookieJar,
       withCredentials: true,
@@ -39,7 +41,11 @@ export class TestClient {
       query: `
 				mutation {
 					login(email: "${email}", password: "${password}") {
-						success
+            success
+            error {
+              path
+              message
+            }
 					}
 				}
 			`,
@@ -187,20 +193,12 @@ export class TestClient {
         {
           getPostById(id: "${id}") {
             title
-          }
-        }
-      `,
-    })
-  }
-
-  getPostByIdPlusAuthor(id: string) {
-    return this.axiosInstance.post('/', {
-      query: `
-        {
-          getPostById(id: "${id}") {
-            title
             author {
               email
+            }
+            isInMyCollection
+            tags {
+              name
             }
           }
         }
@@ -213,10 +211,13 @@ export class TestClient {
       query: `
         {
           getPostsByTitle(title: "${title}") {
-            title,
-            id,
+            title
+            id
             author {
               email
+            }
+            tags {
+              name
             }
           }
         }
@@ -234,17 +235,23 @@ export class TestClient {
             author {
               email
             }
+            tags {
+              name
+            }
           }
         }
       `,
     })
   }
 
-  createPost(title: string) {
+  createPost(postInput: PostInput) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          createPost(title: "${title}") {
+          createPost(postObject: {
+            title: "${postInput.title}"
+            body: "${postInput.body}"
+          }) {
             id
             title
             author {
@@ -256,46 +263,42 @@ export class TestClient {
     })
   }
 
-  publishPost(id: string) {
+  // publishPost(id: string, tags: TagInput[] | undefined = undefined) {
+  //   return this.axiosInstance.post('/', {
+  //     query: `
+  //       mutation {
+  //         publishPost(id: "${id}", tags: {
+  //           id: ""
+  //         })
+  //       }
+  //     `,
+  //   })
+  // }
+
+  removePost(id: string) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          publishPost(id: "${id}") {
-            id
-            published
-            author {
-              email
-            }
-          }
+          removePost(id: "${id}")
         }
       `,
     })
   }
 
-  unPublishPost(id: string) {
+  saveEditPost(id: string, postInput: PostInput) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          unPublishPost(id: "${id}") {
-            title
-            published
-            author {
-              email
-            }
-          }
-        }
-      `,
-    })
-  }
-
-  saveEditPostBody(id: string, body: string) {
-    return this.axiosInstance.post('/', {
-      query: `
-        mutation {
-          saveEditPostBody(id: "${id}", body: "${body}") {
+          saveEditPost(id: "${id}", postObject: {
+            title: "${postInput.title}"
+            body: "${postInput.body}"
+          }) {
             body
             author {
               email
+            }
+            tags {
+              name
             }
           }
         }
@@ -336,11 +339,48 @@ export class TestClient {
     })
   }
 
+  updateMyProfileDescription(description: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          updateMyProfileDescription(description: "${description}") {
+            id
+            description
+          }
+        }
+      `,
+    })
+  }
+
+  getMyCollection() {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getMyCollection {
+            title
+          }
+        }
+      `,
+    })
+  }
+
+  getCollectionFromUser(userId: string) {
+    return this.axiosInstance.post('/', {
+      query: `
+        {
+          getCollectionFromUser(userId: "${userId}") {
+            title
+          }
+        }
+      `,
+    })
+  }
+
   addPostToMyCollection(postId: string) {
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          addPostToMyCollection(postId: "${postId}")
+          addPostToMyCollection(postId: "${postId}") 
         }
       `,
     })
@@ -351,19 +391,6 @@ export class TestClient {
       query: `
         mutation {
           removePostFromMyCollection(postId: "${postId}")
-        }
-      `,
-    })
-  }
-
-  updateMyProfileDescription(description: string) {
-    return this.axiosInstance.post('/', {
-      query: `
-        mutation {
-          updateMyProfileDescription(description: "${description}") {
-            id
-            description
-          }
         }
       `,
     })

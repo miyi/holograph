@@ -1,7 +1,7 @@
 import { Server } from 'http'
 import { TestClient } from '../../test/testClient'
 import { AxiosResponse } from 'axios'
-import { Users } from '../../entity/Users'
+import { User } from '../../entity/User'
 import { startServer } from '../../startServer'
 
 let req_url: string
@@ -27,7 +27,7 @@ afterAll(() => {
 describe('testing logout', () => {
   let res: AxiosResponse
   it('creates new user', async () => {
-    const user = await Users.create({
+    const user = await User.create({
       email,
       password,
     })

@@ -1,13 +1,13 @@
 import { TestClient } from '../../test/testClient'
-import { Users } from '../../entity/Users'
+import { User } from '../../entity/User'
 import { Server } from 'http'
 import { AxiosResponse } from 'axios'
 import { createForgotPasswordLink } from '../../utils/createLink'
 import { asyncRedis } from '../../server_configs/redisServer'
 import { forgotPasswordPrefix } from '../../utils/constants'
-import { startServer } from '../../startServer'
+import { testServerSetup, testTeardown } from '../../test/testSetup'
 
-let user: Users
+let user: User
 let server: Server
 let userId: string
 let req_url: string
@@ -21,22 +21,16 @@ const newPassword = 'asfdsagafbag'
 const badNewPassword = '1111'
 
 beforeAll(async () => {
-  server = await startServer()
-  if (process.env.HOST_URL) {
-    req_url = process.env.HOST_URL + '/graphql'
-    client = new TestClient(req_url)
-  } else {
-    throw Error('no url')
-  }
+  server = await testServerSetup()
 })
 
-afterAll(() => {
-  server.close()
+afterAll(async () => {
+  await testTeardown(server)
 })
 
 describe('forgotPassword test suite', () => {
   it('create user via typeorm', async () => {
-    user = await Users.create({
+    user = await User.create({
       email,
       password,
     })

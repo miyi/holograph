@@ -1,104 +1,86 @@
-import axios, { AxiosResponse } from 'axios'
-import { startServer } from '../../startServer'
 import { Server } from 'http'
-import axiosCookieJarSupport from 'axios-cookiejar-support'
-import tough from 'tough-cookie'
-
-axiosCookieJarSupport(axios)
-const cookieJar = new tough.CookieJar()
-const withCredentials = false
-
-let REQUEST_URL: string
+import stringifyObject from 'stringify-object'
+import { TestClient } from '../../test/testClient'
+import { testServerSetup, testTeardown } from '../../test/testSetup'
 let server: Server
-jest.setTimeout(3 * 60 * 1000)
-const urlQuery = `
-	{
-		url
-	}
-`
+let client: TestClient
+const arrayNames = ['John', 'Harry', 'Mike', 'Tom']
 
-const helloQuery = `
+const nameInput = {
+  firstName: 'Ming',
+  lastName: 'Yin',
+}
+
+const getFullNameString = `
   {
-    hello
+    getFullName(input: {
+      firstName: "${nameInput.firstName}",
+      lastName: "${nameInput.lastName}"
+    })
   }
 `
-
-const setSession = `
-	mutation {
-		setSessionDummy1
-	}
-`
-
-const readSession = `
-	query {
-  	readSessionDummy1
-	}
-`
-
 beforeAll(async () => {
-  server = await startServer()
-  if (process.env.HOST_URL) REQUEST_URL = process.env.HOST_URL + '/graphql'
+  server = await testServerSetup()
+  client = new TestClient()
 })
 
-afterAll(() => {
-  if (server) server.close()
+afterAll(async () => {
+  testTeardown(server)
 })
 
 describe('axios tests', () => {
-  it('makes a url query call', async () => {
-    const response = await axios
-      .post(
-        REQUEST_URL,
-        {
-          query: urlQuery,
-        },
-        {
-          withCredentials,
-          jar: cookieJar,
-        },
-      )
-      .catch((error: any) => {
-        console.log(error)
-      })
-    expect((response as any).data.data.url).toEqual(process.env.HOST_URL)
-  })
-
-  it('sets session', async () => {
-    const setResponse: any = await axios
-      .post(
-        REQUEST_URL,
-        { query: setSession },
-        { withCredentials, jar: cookieJar },
-      )
-      .catch((e: any) => console.log(e))
-
-    expect(typeof setResponse.data.data.setSessionDummy1).toBe('string')
-  })
-
-  it('reads session', async () => {
-    const readResponse: any = await axios
-      .post(
-        REQUEST_URL,
-        { query: readSession },
-        { withCredentials, jar: cookieJar },
-      )
-      .catch((e: any) => console.log(e))
-    expect(readResponse.data.data.readSessionDummy1).toBe('true')
-  })
-
-  it('axios instance call', async () => {
-    const instance = axios.create({
-      baseURL: REQUEST_URL,
-      withCredentials,
-      jar: cookieJar,
-    })
-    const helloResponse: AxiosResponse = await instance
+  it('axios getFullNameString', async () => {
+    let res = await client.axiosInstance
       .post('/', {
-        query: helloQuery,
+        query: getFullNameString,
       })
       .catch((e) => {
         throw Error(e)
       })
-    expect(helloResponse.data.data.hello).toEqual('Hello World')
+    expect(res.data.data.getFullName).toEqual('Ming Yin')
+  })
+  it('axios helloAll array input test', async () => {
+    let res = await client.axiosInstance.post('/', {
+      query: `
+        {
+          helloAll(stringArray: ["John", "Harry", "Mike", "Tom"])
+        }
+      `,
+    })
+    expect(res.data.data.helloAll).toEqual('Hello John Harry Mike Tom!')
+  })
+  it('test stringify-object', async () => {
+    let res = await client.axiosInstance
+      .post('/', {
+        query: `{
+          getFullName(input: ${stringifyObject(nameInput, {
+            singleQuotes: false,
+          })})
+        }`,
+      })
+      .catch((e) => {
+        throw Error(e)
+      })
+    expect(res.data.data.getFullName).toEqual('Ming Yin')
+    res = await client.axiosInstance.post('/', {
+      query: `
+        {
+          helloAll(stringArray: ${stringifyObject(arrayNames, {
+            singleQuotes: false,
+          })})
+        }
+      `,
+    })
+    expect(res.data.data.helloAll).toEqual('Hello John Harry Mike Tom!')
+  })
+  it('test createMiddlewareResolver', async () => {
+    let res = await client.axiosInstance.post('/', {
+      query: `
+        {
+          addThreeToThis(num: 1)
+        }
+      `,
+    })
+    expect(res.data.data.addThreeToThis).toEqual(4)
   })
 })

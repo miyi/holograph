@@ -1,8 +1,8 @@
-import { Posts } from '../../entity/Posts'
-import { Users } from '../../entity/Users'
+import { Post } from '../../entity/Post'
+import { User } from '../../entity/User'
 import {
   MutationCreatePostArgs,
-  MutationSaveEditPostBodyArgs,
+  MutationSaveEditPostArgs,
   QueryGetPostByIdArgs,
   QueryGetPostsByAuthorIdArgs,
   QueryGetPostsByTitleArgs,
@@ -13,28 +13,28 @@ import {
   isPostAuthorMiddleware,
 } from '../../utils/auth/authMiddleware'
 import { createMiddleware } from '../../utils/createMiddleware'
+import { MutationTagAndPublishPostArgs } from '../../types/graphql'
+import { mockValidateTagInputArray } from '../../utils/tagUtils'
 
 export const resolvers: ResolverMap = {
   Query: {
-    getPostById: async (
-      _,
-      { id }: QueryGetPostByIdArgs,
-    ): Promise<Posts | undefined> => {
-      return await Posts.findOne(id as string)
+    getPostById: async (_, { id }: QueryGetPostByIdArgs) => {
+      return await Post.findOne(id, {
+        where: { removed: false },
+      })
     },
-    getPostsByTitle: async (
-      _,
-      { title }: QueryGetPostsByTitleArgs,
-    ): Promise<Posts[] | undefined> => {
-      return await Posts.find({
+    getPostsByTitle: async (_, { title }: QueryGetPostsByTitleArgs) => {
+      return await Post.find({
         title: title,
+        removed: false,
       })
     },
     getPostsByAuthorId: async (
       _,
       { authorId }: QueryGetPostsByAuthorIdArgs,
-    ): Promise<Posts[] | undefined> => {
-      return await Posts.find({
+    ) => {
+      return await Post.find({
+        removed: false,
         author: {
           id: authorId,
         },
@@ -46,51 +46,86 @@ export const resolvers: ResolverMap = {
       isLoggedInMiddleware,
       async (
         _,
-        { title }: MutationCreatePostArgs,
+        { postInput }: MutationCreatePostArgs,
         { session }: GraphqlContext,
       ) => {
-        const user = await Users.findOne(session.userId)
-        const post = await Posts.create({
-          title,
+        const user = await User.findOne(session.userId)
+        const post = await Post.create({
+          title: postInput.title,
+          body: postInput.body,
           author: user,
         }).save()
         return post
       },
     ),
-    publishPost: createMiddleware(isPostAuthorMiddleware, async (parent, _) => {
-      let { post } = parent
-      post.published = true
-      await post.save()
-      return post
-    }),
-    unPublishPost: createMiddleware(
+    tagAndPublishPost: createMiddleware(
       isPostAuthorMiddleware,
-      async (parent, _) => {
-        let { post } = parent
-        post.published = false
+      async (parent, { tags }: MutationTagAndPublishPostArgs) => {
+        if (parent.post.publish) return null
+        let { post } = parent.post
+        if (tags) {
+          const post = await Post.findOne(parent.post.id, {
+            relations: ['tags'],
+          })
+          let validatedTags = await mockValidateTagInputArray(tags)
+          post?.tags?.concat(validatedTags)
+        }
+        post.published = true
         await post.save()
-        return post
+        return post.id
       },
     ),
-    saveEditPostBody: createMiddleware(
+    removePost: createMiddleware(isPostAuthorMiddleware, async (parent, _) => {
+      let { post } = parent
+      post.removed = true
+      await post.save()
+      return true
+    }),
+    saveEditPost: createMiddleware(
       isPostAuthorMiddleware,
-      async (parent, { body }: MutationSaveEditPostBodyArgs) => {
+      async (parent, args: MutationSaveEditPostArgs) => {
         let { post } = parent
-        post.body = body
-        await post.save()
-        return post
+        if (!post.published) {
+          if (args.postInput.title) post.title = args.postInput.title
+        }
+        if (args.postInput.body) post.body = args.postInput.body
+        return await post.save()
       },
     ),
   },
   Post: {
     author: async (parent) => {
-      let post = await Posts.findOne({
+      let post = await Post.findOne(parent.id, {
         relations: ['author'],
-        where: {
-          id: parent.id,
-        },
       })
       return post?.author
+    },
+    isInMyCollection: createMiddleware(
+      isLoggedInMiddleware,
+      async (parent, _, { session }) => {
+        let response = false
+        console.log('triggered')
+        let userWithCollection = await User.findOne({
+          relations: ['collection'],
+          where: {
+            id: session.userId,
+          },
+        })
+        if (userWithCollection) {
+          userWithCollection.collection.forEach((post) => {
+            if (post.id === parent.id) {
+              response = true
+            }
+          })
+        }
+        return response
+      },
+    ),
+    tags: async (parent) => {
+      const postWithTags = await Post.findOne(parent.id, {
+        relations: ['tags'],
+      })
+      return postWithTags?.tags
     },
   },
 }

@@ -1,9 +1,9 @@
 import { createConfirmEmailLink } from './createLink'
-import { Users } from '../entity/Users'
+import { User } from '../entity/User'
 import fetch from 'node-fetch'
 import { Server } from 'http'
-import { asyncRedis } from '../server_configs/redisServer';
-import { startServer } from '../startServer';
+import { asyncRedis } from '../server_configs/redisServer'
+import { startServer } from '../startServer'
 
 let email = 'timmy@tim.com'
 let password = 'lajfjlkakjl'
@@ -15,7 +15,7 @@ let host_url: string
 beforeAll(async () => {
   server = await startServer()
   if (process.env.HOST_URL) host_url = process.env.HOST_URL
-  const user = await Users.create({
+  const user = await User.create({
     email,
     password,
   }).save()
@@ -46,14 +46,14 @@ describe('tests createConfirmEmailLink', () => {
     //fetch link to confirm user
     const message = await fetch(link).then((res) => res.text())
     expect(message).toEqual('ok')
-    const user = await Users.findOne({
+    const user = await User.findOne({
       where: {
         email,
       },
     })
     expect(user).not.toBeNull()
     //check if user confirmed
-    expect((user as Users).confirm).toBeTruthy()
+    expect((user as User).confirm).toBeTruthy()
     const chunks = link.split('/')
     const key = chunks[chunks.length - 1]
     let reply = await asyncRedis('get', [key])
