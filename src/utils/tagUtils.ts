@@ -1,17 +1,11 @@
 import { Tag } from '../entity/Tag'
-import { tagNameSchema } from './yupValidate'
-import { TagInput } from '../types/graphql';
+import { TagInput } from '../types/graphql'
 
 const transformStringToTagSearchKey = (input: string) => {
   return input.replace(/\s/g, '').toLocaleLowerCase()
 }
 
 const upsertTag = async (name: string) => {
-  try {
-    tagNameSchema.validate(name, { abortEarly: false })
-  } catch (err) {
-    return undefined
-  }
   const searchKey = transformStringToTagSearchKey(name)
   const existingTag = await Tag.findOne({
     where: {
@@ -26,17 +20,16 @@ const upsertTag = async (name: string) => {
 }
 
 const mockValidateTagInputArray = async (tags: TagInput[]) => {
-	const validatedTags: Tag[] = []
-	tags = tags.slice(0,8)
-  tags.forEach(async ({id, name}) => {
-		let tag: Tag | null | undefined
-    if (id) {
-			tag = await Tag.findOne(id)	
-		} else if (name) {
-			tag = await upsertTag(name)
-		}
-		if (tag) validatedTags.push(tag)
-  })
+  const validatedTags: Tag[] = []
+  await Promise.all(tags.map(async (tag) => {
+    let validatedTag: Tag | undefined | null
+    if (tag.id) {
+      validatedTag = await Tag.findOne(tag.id)
+    } else {
+      validatedTag = await upsertTag(tag.name)
+    }
+    if(validatedTag) validatedTags.push(validatedTag)
+  }))
   return validatedTags
 }
 
