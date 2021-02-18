@@ -1,27 +1,23 @@
 import { TestClient } from '../../test/testClient'
-import { User } from '../../entity/User'
 import { Server } from 'http'
-import { AxiosResponse } from 'axios'
 import { createForgotPasswordLink } from '../../utils/createLink'
 import { asyncRedis } from '../../server_configs/redisServer'
 import { forgotPasswordPrefix } from '../../utils/constants'
 import { testServerSetup, testTeardown } from '../../test/testSetup'
+import { createMockUser, mockPassword } from '../../test/mockData'
 
-let user: User
+let user: any
 let server: Server
-let userId: string
-let req_url: string
 let linkId: string
 let client: TestClient
-let res: AxiosResponse
 let forgotPasswordLink: string
-const email = 'bob5@bob.com'
-const password = 'jlkajoioiqwe'
-const newPassword = 'asfdsagafbag'
-const badNewPassword = '1111'
+const badPassword = 'as'
+const newPassword = 'asdfagar'
 
 beforeAll(async () => {
   server = await testServerSetup()
+  client = new TestClient()
+  user = await createMockUser()
 })
 
 afterAll(async () => {
@@ -29,24 +25,14 @@ afterAll(async () => {
 })
 
 describe('forgotPassword test suite', () => {
-  it('create user via typeorm', async () => {
-    user = await User.create({
-      email,
-      password,
-    })
-    user.confirm = true
-    await user.save()
-    userId = user.id
-  })
-
   it('logs in as user', async () => {
-    res = await client.login(email, password)
+    let res = await client.login(user.email, mockPassword)
     expect(res.data.data.login.success).toBeTruthy()
   })
   it('requests forgotPasswordLink', async () => {
     forgotPasswordLink = await createForgotPasswordLink(
-      req_url,
-      userId,
+      process.env.HOST_URL as string,
+      user.id,
       asyncRedis,
     )
     const parts: string[] = forgotPasswordLink.split('/')
@@ -54,26 +40,27 @@ describe('forgotPassword test suite', () => {
     const redisStoreUserId = await asyncRedis('get', [
       forgotPasswordPrefix + linkId,
     ])
-    expect(redisStoreUserId).toEqual(userId)
+    expect(redisStoreUserId).toEqual(user.id)
   })
   it('check if logged out', async () => {
-    res = await client.me()
+    let res = await client.me()
     expect(res.data.data.me).toBeFalsy()
   })
   it('uses badNewPassword to change password', async () => {
-    res = await client.forgotPasswordChange(linkId, badNewPassword)
+    let res = await client.forgotPasswordChange(linkId, badPassword)
     expect(res.data.data.forgotPasswordChange.success).toBeFalsy()
     console.log('errors', res.data.data.forgotPasswordChange.error[0])
     expect(res.data.data.forgotPasswordChange.error).toBeTruthy()
   })
   it('uses forgotPasswordLink to change password', async () => {
-    res = await client.forgotPasswordChange(linkId, newPassword)
+    let res = await client.forgotPasswordChange(linkId, newPassword)
     expect(res.data.data.forgotPasswordChange.success).toBeTruthy()
     expect(res.data.data.forgotPasswordChange.error).toEqual([])
   })
   it('logs in with newPassword', async () => {
-    await client.login(email, newPassword)
-    res = await client.me()
-    expect(res.data.data.me.email).toEqual(email)
+    await client.login(user.email, newPassword)
+    let res = await client.me()
+    console.log(res.data.data.me)
+    expect(res.data.data.me.email).toEqual(user.email)
   })
 })

@@ -10,7 +10,7 @@ const RedisStore = connectRedis(session)
 const asyncRedis: AsyncRedis = promisify(redis.sendCommand).bind(redis)
 
 redis.on('error', function (error) {
-  console.error(error)
+  throw new Error(error)
 })
 
 export { redis, asyncRedis, RedisStore, RateLimitRedisStore }
