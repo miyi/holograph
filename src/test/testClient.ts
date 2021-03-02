@@ -12,7 +12,6 @@ export class TestClient {
 
   constructor(url: string = process.env.HOST_URL + '/graphql') {
     this.url = url
-    console.log(url)
     this.axiosInstance = axios.create({
       jar: cookieJar,
       withCredentials: true,

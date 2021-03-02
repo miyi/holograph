@@ -1,44 +1,28 @@
 import { Server } from 'http'
 import { User } from '../../entity/User'
-import { redis } from '../../server_configs/redisServer'
-import { startServer } from '../../startServer'
 import { createMockUser, mockPassword } from '../../test/mockData'
 import { TestClient } from '../../test/testClient'
+import { testServerSetup, testTeardown } from '../../test/testSetup'
 import { alreadyLoggedIn } from '../../utils/auth/AuthErrors'
 
 let server: Server
 let bademail = 'bob@bob.com'
 let badpassword = 'notrealpassword'
 let badinput = 'aaa'
-let req_url: string
 let user: User
 let client: TestClient
 
 beforeAll(async () => {
-  server = await startServer()
-  if (process.env.HOST_URL) {
-    req_url = process.env.HOST_URL + '/graphql'
-    client = new TestClient(req_url)
-  } else {
-    throw Error('no url')
-  }
+  server = await testServerSetup()
+  user = await createMockUser()
+  client = new TestClient()
 })
 
 afterAll(async () => {
-  await server.close()
-  await new Promise((resolve) => {
-    redis.quit(() => {
-      resolve(true)
-    })
-  })
+  await testTeardown(server)
 })
 
 describe('login in user', () => {
-  it('registers a user via typeorm', async () => {
-    user = await createMockUser()
-    expect(user).toBeTruthy()
-  })
-
   it('tests login resolver', async () => {
     let res = await client.login(user.email, mockPassword)
     expect(res.data.data.login.success).toBeTruthy()

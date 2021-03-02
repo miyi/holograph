@@ -1,11 +1,17 @@
 import * as yup from 'yup'
+import { tag_max_num } from './constants'
+
+const password_min_length = 7
+const password_max_length = 128
+const tag_name_min = 3
+const tag_name_max = 32
 
 const emailValidateSchema = yup.string().min(6).max(255).email()
-const passwordValidateSchema = yup.string().min(6).max(255)
+const passwordValidateSchema = yup.string().min(password_min_length).max(password_max_length)
 const tagNameSchema = yup
   .string()
-  .min(3)
-  .max(32)
+  .min(tag_name_min)
+  .max(tag_name_max)
   .matches(/^[a-zA-Z0-9_]*$/)
 
 const tagInputSchema = yup
@@ -16,7 +22,7 @@ const tagInputSchema = yup
       name: tagNameSchema.required(),
     }),
   )
-  .max(8)
+  .max(tag_max_num)
 
 const postInputSchema = yup.object().shape({
   title: yup.string(),
