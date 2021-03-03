@@ -78,15 +78,4 @@ describe('tag entity typeorm tests', () => {
     })
     console.log(postWithTag125?.tags)
   })
-  it('pushes partial tag objects to post', async () => {
-    let post2 = await createMockPostByUser(user)
-    let post2WithTags = await Post.findOne(post2.id, {
-      relations: ['tags']
-    })
-    let newTag = Tag.create({name: 'tag5'})
-    console.log(newTag);
-    post2WithTags?.tags?.push(tag1, newTag)
-    post2WithTags = await post2WithTags?.save()
-    expect(post2WithTags?.tags?.length).toEqual(2)
-  })
 })
