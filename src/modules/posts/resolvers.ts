@@ -17,6 +17,7 @@ import { MutationTagAndPublishPostArgs } from '../../types/graphql'
 import { mockValidateTagInputArray } from '../../utils/tagUtils'
 import { tagInputSchema } from '../../utils/yupValidate'
 import { ApolloError, UserInputError } from 'apollo-server-express'
+import { tagAndPublishPostSaveError } from '../../utils/errorMessage/resolverErrorMessages'
 
 export const resolvers: ResolverMap = {
   Query: {
@@ -78,17 +79,15 @@ export const resolvers: ResolverMap = {
           post = await Post.findOne(parent.post.id, {
             relations: ['tags'],
           })
-          console.log('resolver 1: ', post)
           let validatedTags = await mockValidateTagInputArray(tags)
-          console.log('resolver2: ', validatedTags)
           validatedTags.forEach((tag) => {
             post?.tags?.push(tag)
           })
-          console.log('resolver3: ', post?.tags)
         }
         post.published = true
-        const res = await post.save()
-        console.log('resolver4: ', res)
+        await post.save().catch(() => {
+          throw new ApolloError(tagAndPublishPostSaveError)
+        })
         return post.id
       },
     ),
@@ -121,7 +120,6 @@ export const resolvers: ResolverMap = {
       isLoggedInMiddleware,
       async (parent, _, { session }) => {
         let response = false
-        console.log('triggered')
         let userWithCollection = await User.findOne({
           relations: ['collection'],
           where: {

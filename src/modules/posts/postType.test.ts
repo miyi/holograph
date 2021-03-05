@@ -78,6 +78,6 @@ describe('debug post requests', () => {
         }
       `
     })
-    console.log(res.data.data);
+    expect(res.data.data.getPostById.published).toBeTruthy()
   })
 })
