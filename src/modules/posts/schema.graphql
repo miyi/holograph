@@ -17,13 +17,13 @@ type Query {
 }
 
 type Mutation {
-  createPost(postInput: PostInput!): Post
+  createPost(postForm: PostForm!): Post
   tagAndPublishPost(id: ID!, tags: [tagInput!]): ID
   removePost(id: ID!): Boolean
-  saveEditPost(id: ID!, postInput: PostInput!): Post
+  saveEditPost(id: ID!, postForm: PostForm!): Post
 }
 
-input PostInput {
+input PostForm {
   title: String!
   body: String!
 }

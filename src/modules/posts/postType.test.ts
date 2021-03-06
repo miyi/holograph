@@ -11,8 +11,8 @@ import stringifyObject from 'stringify-object'
 let server: Server
 let client: TestClient
 let user: any
-let postInput = createMockPostInput()
-let tag1: any  
+let postForm = createMockPostInput()
+let tag1: any
 let postId: string
 
 beforeAll(async () => {
@@ -35,9 +35,9 @@ describe('debug post requests', () => {
     let res = await client.axiosInstance.post('/', {
       query: `
         mutation {
-          createPost(postInput: {
-            title: "${postInput.title}" 
-            body: "${postInput.body}"
+          createPost(postForm: {
+            title: "${postForm.title}" 
+            body: "${postForm.body}"
           }) {
             id
             title
@@ -76,7 +76,7 @@ describe('debug post requests', () => {
             }
           }
         }
-      `
+      `,
     })
     expect(res.data.data.getPostById.published).toBeTruthy()
   })

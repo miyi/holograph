@@ -1,6 +1,8 @@
+import { AuthenticationError } from 'apollo-server-errors'
 import { Post } from '../../entity/Post'
 import { Resolver, GraphqlContext } from '../../types/graphql-utils'
 import { verifyLogin } from './auth-utils'
+import { genericAuthError, notLoggedIn } from './AuthErrors'
 
 export const isLoggedInMiddleware = async (
   resolver: Resolver,
@@ -10,13 +12,13 @@ export const isLoggedInMiddleware = async (
   info: any,
 ) => {
   // middleware
-  let result = null
   const isLoggedIn = await verifyLogin(context.session, context.redis)
   if (isLoggedIn) {
-    result = await resolver(parent, args, context, info)
+    return await resolver(parent, args, context, info)
+  } else {
+    throw new AuthenticationError(notLoggedIn)
   }
   // afterware
-  return result
 }
 
 export const isPostAuthorMiddleware = async (
@@ -26,7 +28,6 @@ export const isPostAuthorMiddleware = async (
   context: GraphqlContext,
   info: any,
 ) => {
-  let result = null
   if (args?.id) {
     let post = await Post.findOne({
       relations: ['author'],
@@ -35,8 +36,9 @@ export const isPostAuthorMiddleware = async (
       },
     })
     if (post && post.author.id === context.session.userId) {
-      result = await resolver({ ...parent, post }, args, context, info)
+      return await resolver({ ...parent, post }, args, context, info)
     }
+  } else {
+    throw new AuthenticationError(genericAuthError)
   }
-  return result
 }

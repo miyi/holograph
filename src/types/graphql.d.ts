@@ -41,7 +41,7 @@ export type MutationAddPostToMyCollectionArgs = {
 
 
 export type MutationCreatePostArgs = {
-  postInput: PostInput;
+  postForm: PostForm;
 };
 
 
@@ -86,7 +86,7 @@ export type MutationRemovePostFromMyCollectionArgs = {
 
 export type MutationSaveEditPostArgs = {
   id: Scalars['ID'];
-  postInput: PostInput;
+  postForm: PostForm;
 };
 
 
@@ -242,7 +242,7 @@ export type Post = {
   tags?: Maybe<Array<Maybe<Tag>>>;
 };
 
-export type PostInput = {
+export type PostForm = {
   title: Scalars['String'];
   body: Scalars['String'];
 };

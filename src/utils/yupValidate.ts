@@ -7,7 +7,10 @@ const tag_name_min = 3
 const tag_name_max = 32
 
 const emailValidateSchema = yup.string().min(6).max(255).email()
-const passwordValidateSchema = yup.string().min(password_min_length).max(password_max_length)
+const passwordValidateSchema = yup
+  .string()
+  .min(password_min_length)
+  .max(password_max_length)
 const tagNameSchema = yup
   .string()
   .min(tag_name_min)
@@ -24,7 +27,7 @@ const tagInputSchema = yup
   )
   .max(tag_max_num)
 
-const postInputSchema = yup.object().shape({
+const postFormSchema = yup.object().shape({
   title: yup.string(),
   body: yup.string(),
 })
@@ -40,5 +43,5 @@ export {
   emailPasswordSchema,
   tagNameSchema,
   tagInputSchema,
-  postInputSchema,
+  postFormSchema,
 }

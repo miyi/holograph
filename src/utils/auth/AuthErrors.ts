@@ -1,5 +1,9 @@
 import { AuthError } from '../../types/graphql'
 
+const notLoggedIn = 'please login before performing this action'
+
+const genericAuthError = 'not authorized to perform this action'
+
 const alreadyLoggedIn: AuthError = {
   path: 'session',
   message: 'already logged in',
@@ -54,6 +58,8 @@ const socialLoginMissingEmail = (authServer: string): Error => {
 }
 
 export {
+  notLoggedIn,
+  genericAuthError,
   alreadyLoggedIn,
   confirmEmailError,
   emailError,

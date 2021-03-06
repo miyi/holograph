@@ -1,6 +1,7 @@
 import { TestClient } from '../../test/testClient'
 import { Server } from 'http'
 import { testServerSetup, testTeardown } from '../../test/testSetup'
+import stringifyObject from 'stringify-object'
 import {
   createMockPostByUser,
   createMockUser,
@@ -12,8 +13,9 @@ let server: Server
 let client: TestClient
 let user: any
 let post: any
-const postObj1 = createMockPostInput()
-const postObj2 = createMockPostInput()
+const postForm1 = createMockPostInput()
+const postForm2 = createMockPostInput()
+const postForm3 = createMockPostInput()
 
 beforeAll(async () => {
   server = await testServerSetup()
@@ -55,38 +57,49 @@ describe('postCore tests', () => {
     expect(res.data.data.getPostsByAuthorId[0].author.email).toEqual(user.email)
   })
   it('creates post before logging in', async () => {
-    let res = await client.createPost(postObj1)
+    let postFormStr = stringifyObject(postForm1, { singleQuotes: false })
+    let res = await client.axiosInstance.post('/', {
+      query: `
+        mutation {
+          createPost(postForm: ${postFormStr}) {
+            id
+          }
+        }
+      `,
+    })
     expect(res.data.data.createPost).toBeNull()
   })
   it('publish before logging in', async () => {
-    let res = await client.publishPost(post.id)
-    expect(res.data.data.publishPost).toBeNull()
+    let res = await client.tagAndPublishPost(post.id)
+    expect(res.data.data.tagAndPublishPost).toBeNull()
   })
   it('creates post after logging in', async () => {
     let loginRes = await client.login(user.email, mockPassword)
     expect(loginRes.data.data.login.success).toBeTruthy()
-    let res = await client.createPost(postObj2)
+    let res = await client.createPost(postForm2)
     expect(res.data.data.createPost.id).toBeTruthy()
     expect(res.data.data.createPost.author.email).toEqual(user.email)
   })
   it('publishes an existing post', async () => {
     let res = await client.tagAndPublishPost(post.id)
-    expect(res.data.data.publishPost).toEqual(post.id)
+    expect(res.data.data.tagAndPublishPost).toEqual(post.id)
   })
   it('remove the previously published post', async () => {
     let res = await client.removePost(post.id)
     expect(res.data.data.removePost).toBeTruthy()
   })
-  it('saveEditPostBody', async () => {
-    let res = await client.saveEditPost(post.id, postObj2)
-    expect(res.data.data.saveEditPostBody.body).toEqual(postObj2.body)
-    expect(res.data.data.saveEditPostBody.author.email).toEqual(user.email)
+  it('saveEditPost', async () => {
+    let res = await client.saveEditPost(post.id, postForm2)
+    expect(res.data.data.saveEditPost.body).toEqual(postForm2.body)
+    expect(res.data.data.saveEditPost.author.email).toEqual(user.email)
   })
   it('gets post then checks isInMyCollection', async () => {
-    let res = await client.getPostById(post.id)
+    let res = await client.createPost(postForm3)
+    let postId = res.data.data.createPost.id
+    res = await client.getPostById(postId)
     expect(res.data.data.getPostById.isInMyCollection).toEqual(false)
-    await client.addPostToMyCollection(post.id)
-    res = await client.getPostById(post.id)
+    await client.addPostToMyCollection(postId)
+    res = await client.getPostById(postId)
     expect(res.data.data.getPostById.isInMyCollection).toEqual(true)
   })
 })

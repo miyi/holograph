@@ -1,7 +1,8 @@
 import { CookieJar } from 'tough-cookie'
 import axios, { AxiosInstance } from 'axios'
 import axiosCookieJarSupport from 'axios-cookiejar-support'
-import { PostInput } from '../types/graphql'
+import { PostForm, TagInput } from '../types/graphql'
+import stringifyObject from 'stringify-object'
 
 axiosCookieJarSupport(axios)
 const cookieJar = new CookieJar()
@@ -243,14 +244,12 @@ export class TestClient {
     })
   }
 
-  createPost(postInput: PostInput) {
+  createPost(postForm: PostForm) {
+    let postFormStr = stringifyObject(postForm, { singleQuotes: false })
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          createPost(postObject: {
-            title: "${postInput.title}"
-            body: "${postInput.body}"
-          }) {
+          createPost(postForm: ${postFormStr}) {
             id
             title
             author {
@@ -262,17 +261,22 @@ export class TestClient {
     })
   }
 
-  // publishPost(id: string, tags: TagInput[] | undefined = undefined) {
-  //   return this.axiosInstance.post('/', {
-  //     query: `
-  //       mutation {
-  //         publishPost(id: "${id}", tags: {
-  //           id: ""
-  //         })
-  //       }
-  //     `,
-  //   })
-  // }
+  tagAndPublishPost(id: string, tags: TagInput[] | undefined = undefined) {
+    let args = `id: "${id}"`
+    if (tags) {
+      const tagArrayStr = stringifyObject(tags, {
+        singleQuotes: false,
+      })
+      args += `, tags: ${tagArrayStr}`
+    }
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          tagAndPublishPost(${args})
+        }
+      `,
+    })
+  }
 
   removePost(id: string) {
     return this.axiosInstance.post('/', {
@@ -284,14 +288,12 @@ export class TestClient {
     })
   }
 
-  saveEditPost(id: string, postInput: PostInput) {
+  saveEditPost(id: string, postForm: PostForm) {
+    let postFormStr = stringifyObject(postForm, { singleQuotes: false })
     return this.axiosInstance.post('/', {
       query: `
         mutation {
-          saveEditPost(id: "${id}", postObject: {
-            title: "${postInput.title}"
-            body: "${postInput.body}"
-          }) {
+          saveEditPost(id: "${id}", postForm: ${postFormStr}) {
             body
             author {
               email
