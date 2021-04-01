@@ -15,6 +15,7 @@ import {
 } from 'typeorm'
 import { Post } from './Post'
 import { Profile } from './Profile'
+import { Pub } from './Pub'
 
 @Entity('user')
 export class User extends BaseEntity {
@@ -62,6 +63,9 @@ export class User extends BaseEntity {
   })
   posts!: Post[]
 
+  @ManyToMany(() => Pub, pub => pub.mods)
+  modOf?: Pub[]
+
   @BeforeInsert()
   hashPassword() {
     if (this.password) this.password = hashSync(this.password, 12)
@@ -70,9 +74,4 @@ export class User extends BaseEntity {
   async createProfile() {
     this.profile = await Profile.create().save()
   }
-
-  // @BeforeRemove()
-  // async removeProfile() {
-  //   await Profile.remove(this.profile)
-  // }
 }

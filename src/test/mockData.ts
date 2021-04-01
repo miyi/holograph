@@ -2,6 +2,8 @@ import faker from 'faker'
 import { Post } from '../entity/Post'
 import { Tag } from '../entity/Tag'
 import { User } from '../entity/User'
+import { createPub } from '../models/pubModel'
+import { CreatePubForm } from '../types/graphql'
 
 const mockPassword = 'password1234'
 const createMockUser = async (confirm = true) => {
@@ -37,10 +39,19 @@ const createMockTag = () => {
   })
 }
 
+const createMockPubByUser = async (user: User) => {
+  let createMockPubForm: CreatePubForm = {
+    name: faker.random.words(2).replace(' ', ''),
+    description: faker.lorem.sentence(),
+  }
+  return await createPub(createMockPubForm, user.id)
+}
+
 export {
   mockPassword,
   createMockUser,
   createMockPostByUser,
   createMockPostInput,
   createMockTag,
+  createMockPubByUser,
 }

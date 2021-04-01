@@ -1,12 +1,17 @@
 import * as yup from 'yup'
 import { tag_max_num } from './constants'
 
-const password_min_length = 7
+const email_min = 6
+const email_max = 64
+const password_min_length = 8
 const password_max_length = 128
 const tag_name_min = 3
-const tag_name_max = 32
+const tag_name_max = 16
+const post_title_min = 4
+const pub_name_min = 3
+const pub_name_max = 32
 
-const emailValidateSchema = yup.string().min(6).max(255).email()
+const emailValidateSchema = yup.string().min(email_min).max(email_max).email()
 const passwordValidateSchema = yup
   .string()
   .min(password_min_length)
@@ -28,13 +33,20 @@ const tagInputSchema = yup
   .max(tag_max_num)
 
 const postFormSchema = yup.object().shape({
-  title: yup.string(),
+  title: yup.string().min(post_title_min),
   body: yup.string(),
 })
 
 const emailPasswordSchema = yup.object().shape({
   email: emailValidateSchema,
   password: passwordValidateSchema,
+})
+
+const pubNameSchema = yup.string().min(pub_name_min).max(pub_name_max)
+
+const createPubFormSchema = yup.object().shape({
+  name: pubNameSchema,
+  description: yup.string().nullable(true),
 })
 
 export {
@@ -44,4 +56,6 @@ export {
   tagNameSchema,
   tagInputSchema,
   postFormSchema,
+  pubNameSchema,
+  createPubFormSchema,
 }

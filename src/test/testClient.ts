@@ -1,7 +1,7 @@
 import { CookieJar } from 'tough-cookie'
 import axios, { AxiosInstance } from 'axios'
 import axiosCookieJarSupport from 'axios-cookiejar-support'
-import { PostForm, TagInput } from '../types/graphql'
+import { PostForm, TagInput, CreatePubForm } from '../types/graphql';
 import stringifyObject from 'stringify-object'
 
 axiosCookieJarSupport(axios)
@@ -17,6 +17,26 @@ export class TestClient {
       jar: cookieJar,
       withCredentials: true,
       baseURL: url,
+    })
+  }
+
+  createPub(form: CreatePubForm) {
+    const formString = stringifyObject(form, {
+      singleQuotes: false
+    })
+    return this.axiosInstance.post('/', {
+      query: `
+        mutation {
+          createPub(form: ${formString}) {
+            id
+            name
+            description
+            mods {
+              email
+            }
+          }
+        }
+      `
     })
   }
 

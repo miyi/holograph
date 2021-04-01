@@ -3,7 +3,7 @@ import { User } from '../../entity/User'
 import { createMockUser, mockPassword } from '../../test/mockData'
 import { TestClient } from '../../test/testClient'
 import { testServerSetup, testTeardown } from '../../test/testSetup'
-import { alreadyLoggedIn } from '../../utils/auth/AuthErrors'
+import { alreadyLoggedIn } from '../../utils/errorMessage/AuthErrors'
 
 let server: Server
 let bademail = 'bob@bob.com'

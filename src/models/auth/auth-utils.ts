@@ -1,6 +1,6 @@
 import { User } from '../../entity/User'
 import { AsyncRedis } from '../../types/server-utils'
-import { userSessionIdPrefix, redisSessionPrefix } from '../constants'
+import { userSessionIdPrefix, redisSessionPrefix } from '../../utils/constants'
 
 const removeAllUserSessions = async (
   userId: string,

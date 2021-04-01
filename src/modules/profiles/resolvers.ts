@@ -5,7 +5,7 @@ import {
   QueryGetProfileByUserIdArgs,
 } from '../../types/graphql'
 import { ResolverMap } from '../../types/graphql-utils'
-import { isLoggedInMiddleware } from '../../utils/auth/authMiddleware'
+import { isLoggedInMiddleware } from '../../models/auth/authMiddleware'
 import { createMiddleware } from '../../utils/createMiddleware'
 export const resolvers: ResolverMap = {
   Mutation: {

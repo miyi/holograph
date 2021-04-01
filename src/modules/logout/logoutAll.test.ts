@@ -1,7 +1,7 @@
 import { Server } from 'http'
 import { TestClient } from '../../test/testClient'
-import { sessionUserError } from '../../utils/auth/AuthErrors'
-import { createMockUser, mockPassword } from '../../test/mockData'
+import { sessionUserError } from '../../models/auth/AuthErrors'
+import { createMockUser, mockPassw../../utils/errorMessage/AuthErrorsData'
 import { testServerSetup, testTeardown } from '../../test/testSetup'
 
 let client: any

@@ -5,8 +5,8 @@ import { formatYupErr } from '../../utils/formatYupError'
 import { createConfirmEmailLink } from '../../utils/createLink'
 import { sendConfirmationEmail } from '../../utils/sendEmail'
 import { emailPasswordSchema } from '../../utils/yupValidate'
-import { alreadyLoggedIn, duplicateEmail } from '../../utils/auth/AuthErrors'
-import { verifyLogin } from '../../utils/auth/auth-utils'
+import { alreadyLoggedIn, duplicateEmail } from '../../utils/errorMessage/AuthErrors'
+import { verifyLogin } from '../../models/auth/auth-utils'
 import { asyncRedis } from '../../server_configs/redisServer'
 
 export const resolvers: ResolverMap = {

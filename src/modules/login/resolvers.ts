@@ -4,14 +4,14 @@ import { emailPasswordSchema } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { compareSync } from 'bcryptjs'
 import { User } from '../../entity/User'
-import { loginUser, verifyLogin } from '../../utils/auth/auth-utils'
+import { loginUser, verifyLogin } from '../../models/auth/auth-utils'
 
 import {
   alreadyLoggedIn,
   confirmEmailError,
   emailError,
   passwordError,
-} from '../../utils/auth/AuthErrors'
+} from '../../utils/errorMessage/AuthErrors'
 
 export const resolvers: ResolverMap = {
   Mutation: {

@@ -13,8 +13,10 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addMod?: Maybe<Pub>;
   addPostToMyCollection: Scalars['Boolean'];
   createPost?: Maybe<Post>;
+  createPub?: Maybe<Pub>;
   delRedis?: Maybe<Scalars['String']>;
   dummyLogin?: Maybe<Scalars['Boolean']>;
   forgotPasswordChange: AuthResponse;
@@ -22,6 +24,7 @@ export type Mutation = {
   logout: AuthResponse;
   logoutAll: AuthResponse;
   register: AuthResponse;
+  removeMod?: Maybe<Pub>;
   removePost?: Maybe<Scalars['Boolean']>;
   removePostFromMyCollection: Scalars['Boolean'];
   saveEditPost?: Maybe<Post>;
@@ -35,6 +38,12 @@ export type Mutation = {
 };
 
 
+export type MutationAddModArgs = {
+  pubId: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+
 export type MutationAddPostToMyCollectionArgs = {
   postId: Scalars['String'];
 };
@@ -42,6 +51,11 @@ export type MutationAddPostToMyCollectionArgs = {
 
 export type MutationCreatePostArgs = {
   postForm: PostForm;
+};
+
+
+export type MutationCreatePubArgs = {
+  form: CreatePubForm;
 };
 
 
@@ -71,6 +85,12 @@ export type MutationLoginArgs = {
 export type MutationRegisterArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationRemoveModArgs = {
+  pubId: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 
@@ -140,6 +160,8 @@ export type Query = {
   getPostsByTagId?: Maybe<Array<Maybe<Post>>>;
   getPostsByTitle?: Maybe<Array<Maybe<Post>>>;
   getProfileByUserId?: Maybe<Profile>;
+  getPubById?: Maybe<Pub>;
+  getPubByName?: Maybe<Pub>;
   getRedis?: Maybe<Scalars['String']>;
   getTagById?: Maybe<Tag>;
   getUserByEmail?: Maybe<User>;
@@ -147,6 +169,7 @@ export type Query = {
   hello: Scalars['String'];
   helloAll?: Maybe<Scalars['String']>;
   libraries?: Maybe<Array<Maybe<Library>>>;
+  lookUpPubsByName?: Maybe<Array<Maybe<Pub>>>;
   lookUpTag?: Maybe<Array<Maybe<Tag>>>;
   me?: Maybe<User>;
   readSessionDummy1?: Maybe<Scalars['String']>;
@@ -195,6 +218,16 @@ export type QueryGetProfileByUserIdArgs = {
 };
 
 
+export type QueryGetPubByIdArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryGetPubByNameArgs = {
+  name: Scalars['String'];
+};
+
+
 export type QueryGetRedisArgs = {
   key: Scalars['String'];
 };
@@ -225,6 +258,11 @@ export type QueryHelloAllArgs = {
 };
 
 
+export type QueryLookUpPubsByNameArgs = {
+  name: Scalars['String'];
+};
+
+
 export type QueryLookUpTagArgs = {
   name: Scalars['String'];
 };
@@ -252,6 +290,26 @@ export type Profile = {
   id: Scalars['ID'];
   user: User;
   description?: Maybe<Scalars['String']>;
+};
+
+export type Pub = {
+  __typename?: 'Pub';
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  mods?: Maybe<Array<Maybe<User>>>;
+  info?: Maybe<PubInfo>;
+};
+
+export type PubInfo = {
+  __typename?: 'PubInfo';
+  details?: Maybe<Scalars['String']>;
+};
+
+export type CreatePubForm = {
+  name: Scalars['String'];
+  description: Scalars['String'];
 };
 
 export type Tag = {
@@ -296,4 +354,5 @@ export type User = {
   email: Scalars['String'];
   posts?: Maybe<Array<Post>>;
   collection?: Maybe<Array<Maybe<Post>>>;
+  modOf?: Maybe<Array<Maybe<Pub>>>;
 };

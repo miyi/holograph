@@ -7,14 +7,14 @@ import {
 } from '../../types/graphql'
 import { ResolverMap } from '../../types/graphql-utils'
 import { User } from '../../entity/User'
-import { sessionUserError } from '../../utils/auth/AuthErrors'
+import { sessionUserError } from '../../utils/errorMessage/AuthErrors'
 import {
   passwordValidateSchema,
   emailValidateSchema,
 } from '../../utils/yupValidate'
 import { formatYupErr } from '../../utils/formatYupError'
 import { hashSync } from 'bcryptjs'
-import { removeAllUserSessions } from '../../utils/auth/auth-utils'
+import { removeAllUserSessions } from '../../models/auth/auth-utils'
 import { sendForgotPasswordEmail } from '../../utils/sendEmail'
 import { createForgotPasswordLink } from '../../utils/createLink'
 

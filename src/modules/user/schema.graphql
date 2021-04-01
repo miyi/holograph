@@ -3,6 +3,7 @@ type User {
   email: String!
   posts: [Post!]
   collection: [Post]
+  modOf: [Pub]
 }
 
 type Query {

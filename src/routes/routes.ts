@@ -3,7 +3,7 @@ import { asyncRedis, redis } from '../server_configs/redisServer'
 import { User } from '../entity/User'
 import { confirmUserPrefix } from '../utils/constants'
 import passport from 'passport'
-import { loginUser } from '../utils/auth/auth-utils'
+import { loginUser } from '../models/auth/auth-utils'
 
 const routes: Router = Router()
 

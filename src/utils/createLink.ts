@@ -4,7 +4,7 @@ import {
   confirmUserPrefix,
   forgotPasswordPrefix,
 } from './constants'
-import { removeAllUserSessions } from './auth/auth-utils'
+import { removeAllUserSessions } from '../models/auth/auth-utils'
 
 const createConfirmEmailLink = async (
   url: string,

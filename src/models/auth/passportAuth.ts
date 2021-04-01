@@ -5,7 +5,7 @@ import {
 import { Profile as TwitterProfile } from 'passport-twitter'
 import { PassportStatic } from 'passport'
 import { IStrategyOption, Strategy as TwitterStrategy } from 'passport-twitter'
-import { socialLoginMissingEmail } from './AuthErrors'
+import { socialLoginMissingEmail } from '../../utils/errorMessage/AuthErrors'
 import {
   Strategy as GoogleStrategy,
   StrategyOptions as GoogleStrategyOptions,

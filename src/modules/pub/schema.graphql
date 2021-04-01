@@ -1,0 +1,29 @@
+type Pub {
+  id: ID!
+  name: String
+  description: String
+  createdAt: String
+  mods: [User]
+  info: PubInfo
+}
+
+type PubInfo {
+  details: String
+}
+
+type Query {
+  getPubById(id: String!): Pub
+  lookUpPubsByName(name: String!): [Pub]
+  getPubByName(name: String!): Pub
+}
+
+type Mutation {
+  createPub(form: CreatePubForm!): Pub
+  addMod(pubId: String!, userId: String!): Pub
+  removeMod(pubId: String!, userId: String!): Pub
+}
+
+input CreatePubForm {
+  name: String!
+  description: String!
+}

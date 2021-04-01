@@ -11,7 +11,7 @@ import { GraphqlContext, ResolverMap } from '../../types/graphql-utils'
 import {
   isLoggedInMiddleware,
   isPostAuthorMiddleware,
-} from '../../utils/auth/authMiddleware'
+} from '../../models/auth/authMiddleware'
 import { createMiddleware } from '../../utils/createMiddleware'
 import { MutationTagAndPublishPostArgs } from '../../types/graphql'
 import { mockValidateTagInputArray } from '../../utils/tagUtils'

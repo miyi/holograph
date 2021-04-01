@@ -8,7 +8,7 @@ import { User } from '../../entity/User'
 import { emailValidateSchema } from '../../utils/yupValidate'
 import { Post } from '../../entity/Post'
 import { createMiddleware } from '../../utils/createMiddleware'
-import { isLoggedInMiddleware } from '../../utils/auth/authMiddleware'
+import { isLoggedInMiddleware } from '../../models/auth/authMiddleware'
 import { QueryGetCollectionFromUserArgs } from '../../types/graphql'
 
 export const resolvers: ResolverMap = {
@@ -136,6 +136,12 @@ export const resolvers: ResolverMap = {
       })
       if (userWithCollection) return userWithCollection.collection
       return null
+    },
+    modOf: async (parent) => {
+      let user = await User.findOne(parent.id, {
+        relations: ['modOf'],
+      })
+      return user?.modOf
     },
   },
 }

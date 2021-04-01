@@ -1,6 +1,6 @@
 import { Server } from 'http'
 import { TestClient } from '../../test/testClient'
-import { sessionUserError } from '../../utils/auth/AuthErrors'
+import { sessionUserError } from '../../utils/errorMessage/AuthErrors'
 import { testServerSetup, testTeardown } from '../../test/testSetup'
 import { createMockUser, mockPassword } from '../../test/mockData'
 
